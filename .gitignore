@@ -71,3 +71,9 @@ override.tf.json
 terraform.rc
 
 # End of https://www.toptal.com/developers/gitignore/api/macos,terraform
+
+# bulk-export raw output dir (exploratory dumps, not source of truth)
+dump/
+
+# terraform plan -generate-config-out output
+generated.tf
