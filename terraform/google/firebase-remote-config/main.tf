@@ -9,16 +9,6 @@ resource "google_firebase_remote_config_remote_config" "basic" {
     name       = "Android"
     tag_color  = "TEAL"
   }
-  conditions {
-    expression = "app.id == '1:107577467292:android:bf5758604cdceb8506e859' && app.version.>=(['1.5.1'])"
-    name       = "Android Valid App Version"
-    tag_color  = "TEAL"
-  }
-  conditions {
-    expression = "app.id == '1:107577467292:android:bf5758604cdceb8506e859' && app.version.>=(['1.5.1'])"
-    name       = "Android Latest App Version"
-    tag_color  = "GREEN"
-  }
 
   parameter_groups {
     description          = ""
