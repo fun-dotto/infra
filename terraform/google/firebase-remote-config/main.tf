@@ -12,51 +12,6 @@ resource "google_firebase_remote_config_remote_config" "basic" {
 
   parameter_groups {
     description          = ""
-    parameter_group_name = "API"
-
-    parameters {
-      description    = ""
-      parameter_name = "app_bff_api_prod_url"
-      value_type     = "STRING"
-
-      default_value {
-        use_in_app_default = false
-        value              = "https://app-bff-api-107577467292.asia-northeast1.run.app"
-      }
-    }
-    parameters {
-      description    = ""
-      parameter_name = "app_bff_api_dev_url"
-      value_type     = "STRING"
-
-      default_value {
-        use_in_app_default = false
-        value              = "https://app-bff-api-dev-107577467292.asia-northeast1.run.app"
-      }
-    }
-    parameters {
-      description    = ""
-      parameter_name = "app_bff_api_qa_url"
-      value_type     = "STRING"
-
-      default_value {
-        use_in_app_default = false
-        value              = "https://app-bff-api-qa-107577467292.asia-northeast1.run.app"
-      }
-    }
-    parameters {
-      description    = ""
-      parameter_name = "app_bff_api_stg_url"
-      value_type     = "STRING"
-
-      default_value {
-        use_in_app_default = false
-        value              = "https://app-bff-api-stg-107577467292.asia-northeast1.run.app"
-      }
-    }
-  }
-  parameter_groups {
-    description          = ""
     parameter_group_name = "Feature"
 
     parameters {
