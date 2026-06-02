@@ -24,6 +24,16 @@ resource "google_firebase_remote_config_remote_config" "basic" {
         value              = "false"
       }
     }
+    parameters {
+      description    = ""
+      parameter_name = "is_personalized_subject_sorting_enabled"
+      value_type     = "BOOLEAN"
+
+      default_value {
+        use_in_app_default = false
+        value              = "false"
+      }
+    }
   }
   parameter_groups {
     description          = ""
