@@ -26,7 +26,7 @@ resource "google_firebase_remote_config_remote_config" "basic" {
     }
     parameters {
       description    = ""
-      parameter_name = "is_personalized_subject_sorting_enabled"
+      parameter_name = "subject_sort_by_user_attributes"
       value_type     = "BOOLEAN"
 
       default_value {
