@@ -24,16 +24,6 @@ resource "google_firebase_remote_config_remote_config" "basic" {
         value              = "false"
       }
     }
-    parameters {
-      description    = "2.0.0-2.0.1"
-      parameter_name = "is_v2_enabled"
-      value_type     = "BOOLEAN"
-
-      default_value {
-        use_in_app_default = false
-        value              = "true"
-      }
-    }
   }
   parameter_groups {
     description          = ""
