@@ -57,31 +57,6 @@ resource "google_firebase_remote_config_remote_config" "basic" {
   }
   parameter_groups {
     description          = ""
-    parameter_group_name = "Deprecated"
-
-    parameters {
-      description    = "-1.5.3"
-      parameter_name = "is_latest_app_version"
-      value_type     = "BOOLEAN"
-
-      default_value {
-        use_in_app_default = false
-        value              = "false"
-      }
-    }
-    parameters {
-      description    = "-1.5.3"
-      parameter_name = "is_valid_app_version"
-      value_type     = "BOOLEAN"
-
-      default_value {
-        use_in_app_default = false
-        value              = "false"
-      }
-    }
-  }
-  parameter_groups {
-    description          = ""
     parameter_group_name = "Feature"
 
     parameters {
