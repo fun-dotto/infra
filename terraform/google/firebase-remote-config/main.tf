@@ -25,7 +25,7 @@ resource "google_firebase_remote_config_remote_config" "basic" {
       }
     }
     parameters {
-      description    = ""
+      description    = "科目ソート"
       parameter_name = "subject_sort_by_user_attributes"
       value_type     = "BOOLEAN"
 
