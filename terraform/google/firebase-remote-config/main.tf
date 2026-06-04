@@ -9,87 +9,7 @@ resource "google_firebase_remote_config_remote_config" "basic" {
     name       = "Android"
     tag_color  = "TEAL"
   }
-  conditions {
-    expression = "app.id == '1:107577467292:android:bf5758604cdceb8506e859' && app.version.>=(['1.5.1'])"
-    name       = "Android Valid App Version"
-    tag_color  = "TEAL"
-  }
-  conditions {
-    expression = "app.id == '1:107577467292:android:bf5758604cdceb8506e859' && app.version.>=(['1.5.1'])"
-    name       = "Android Latest App Version"
-    tag_color  = "GREEN"
-  }
 
-  parameter_groups {
-    description          = ""
-    parameter_group_name = "API"
-
-    parameters {
-      description    = ""
-      parameter_name = "app_bff_api_prod_url"
-      value_type     = "STRING"
-
-      default_value {
-        use_in_app_default = false
-        value              = "https://app-bff-api-107577467292.asia-northeast1.run.app"
-      }
-    }
-    parameters {
-      description    = ""
-      parameter_name = "app_bff_api_dev_url"
-      value_type     = "STRING"
-
-      default_value {
-        use_in_app_default = false
-        value              = "https://app-bff-api-dev-107577467292.asia-northeast1.run.app"
-      }
-    }
-    parameters {
-      description    = ""
-      parameter_name = "app_bff_api_qa_url"
-      value_type     = "STRING"
-
-      default_value {
-        use_in_app_default = false
-        value              = "https://app-bff-api-qa-107577467292.asia-northeast1.run.app"
-      }
-    }
-    parameters {
-      description    = ""
-      parameter_name = "app_bff_api_stg_url"
-      value_type     = "STRING"
-
-      default_value {
-        use_in_app_default = false
-        value              = "https://app-bff-api-stg-107577467292.asia-northeast1.run.app"
-      }
-    }
-  }
-  parameter_groups {
-    description          = ""
-    parameter_group_name = "Deprecated"
-
-    parameters {
-      description    = "-1.5.3"
-      parameter_name = "is_latest_app_version"
-      value_type     = "BOOLEAN"
-
-      default_value {
-        use_in_app_default = false
-        value              = "false"
-      }
-    }
-    parameters {
-      description    = "-1.5.3"
-      parameter_name = "is_valid_app_version"
-      value_type     = "BOOLEAN"
-
-      default_value {
-        use_in_app_default = false
-        value              = "false"
-      }
-    }
-  }
   parameter_groups {
     description          = ""
     parameter_group_name = "Feature"
@@ -102,16 +22,6 @@ resource "google_firebase_remote_config_remote_config" "basic" {
       default_value {
         use_in_app_default = false
         value              = "false"
-      }
-    }
-    parameters {
-      description    = "2.0.0-2.0.1"
-      parameter_name = "is_v2_enabled"
-      value_type     = "BOOLEAN"
-
-      default_value {
-        use_in_app_default = false
-        value              = "true"
       }
     }
   }
