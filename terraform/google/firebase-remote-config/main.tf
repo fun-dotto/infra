@@ -24,6 +24,16 @@ resource "google_firebase_remote_config_remote_config" "basic" {
         value              = "false"
       }
     }
+    parameters {
+      description    = "科目ソート"
+      parameter_name = "subject_sort_by_user_attributes"
+      value_type     = "BOOLEAN"
+
+      default_value {
+        use_in_app_default = false
+        value              = "false"
+      }
+    }
   }
   parameter_groups {
     description          = ""
