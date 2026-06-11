@@ -9,6 +9,11 @@ terraform {
       version = "7.34.0"
     }
   }
+
+  backend "gcs" {
+    bucket = "swift2023groupc-tfstate"
+    prefix = "secret-manager"
+  }
 }
 
 provider "google" {
