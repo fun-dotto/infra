@@ -1,0 +1,18 @@
+{
+  "defaultMode": "default",
+  "permissions": {
+    "allow": [
+      "mcp__plugin_context7_context7__resolve-library-id",
+      "mcp__plugin_context7_context7__query-docs"
+    ],
+    "deny": [],
+    "ask": []
+  },
+  "enabledPlugins": {
+    "code-review@claude-plugins-official": true,
+    "codex@openai-codex": true,
+    "context7@claude-plugins-official": true,
+    "pr-review-toolkit@claude-plugins-official": true,
+    "terraform@claude-plugins-official": true
+  }
+}
