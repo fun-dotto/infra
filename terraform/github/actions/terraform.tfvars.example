@@ -1,0 +1,12 @@
+github_owner      = "fun-dotto"
+github_repository = "infra"
+
+google_cloud_project_id   = ""
+google_cloud_region       = ""
+google_cloud_project_name = ""
+
+google_cloud_billing_account = ""
+
+# production environment の必須レビュアー（GitHub ユーザー ID の数値）。
+# 例: gh api users/<login> --jq .id で取得できる。
+production_reviewer_ids = []
