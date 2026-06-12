@@ -1,6 +1,3 @@
-google_cloud_project_id = ""
-google_cloud_region     = ""
-
 # Cloud Run サービスごとの環境変数。キーはリソース名。
 # 例:
 # service_envs = {

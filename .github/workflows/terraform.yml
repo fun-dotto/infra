@@ -28,9 +28,8 @@ env:
   TF_INPUT: "false"
   WORKLOAD_IDENTITY_PROVIDER: "projects/107577467292/locations/global/workloadIdentityPools/dotto/providers/github"
   SERVICE_ACCOUNT: "terraform-ci@swift2023groupc.iam.gserviceaccount.com"
-  # 全ディレクトリ共通の変数。リポジトリ Variables から供給する。
-  TF_VAR_google_cloud_project_id: ${{ vars.GOOGLE_CLOUD_PROJECT_ID }}
-  TF_VAR_google_cloud_region: ${{ vars.GOOGLE_CLOUD_REGION }}
+  # google_cloud_project_id / google_cloud_region は
+  # terraform/google/_shared/variables.shared.tf の default で供給するため env 不要。
   # project ディレクトリ専用の変数。
   TF_VAR_google_cloud_project_name: ${{ vars.GOOGLE_CLOUD_PROJECT_NAME }}
   TF_VAR_google_cloud_billing_account: ${{ secrets.GOOGLE_CLOUD_BILLING_ACCOUNT }}

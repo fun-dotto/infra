@@ -1,8 +1,6 @@
 github_owner      = "fun-dotto"
 github_repository = "infra"
 
-google_cloud_project_id   = ""
-google_cloud_region       = ""
 google_cloud_project_name = ""
 
 google_cloud_billing_account = ""

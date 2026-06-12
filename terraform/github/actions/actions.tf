@@ -1,8 +1,6 @@
 locals {
   # 平文で問題ない設定値は Variables として登録する。
   variables = {
-    GOOGLE_CLOUD_PROJECT_ID   = var.google_cloud_project_id
-    GOOGLE_CLOUD_REGION       = var.google_cloud_region
     GOOGLE_CLOUD_PROJECT_NAME = var.google_cloud_project_name
   }
 }
