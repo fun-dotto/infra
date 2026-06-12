@@ -67,7 +67,7 @@ jobs:
           - firebase-remote-config
     defaults:
       run:
-        working-directory: terraform/google/${{ matrix.dir }}
+        working-directory: terraform/google/modules/${{ matrix.dir }}
     steps:
       - uses: actions/checkout@v4
 
@@ -131,7 +131,7 @@ jobs:
         if: env.TFVARS != ''
         env:
           TFVARS: ${{ secrets.TFVARS_CLOUD_RUN_SERVICE }}
-        run: printf '%s' "$TFVARS" > terraform/google/cloud-run-service/terraform.tfvars
+        run: printf '%s' "$TFVARS" > terraform/google/modules/cloud-run-service/terraform.tfvars
 
       # 依存関係に沿って直列に apply する。
       # project → storage → registry → IAM → secrets → sql → jobs → services
@@ -152,7 +152,7 @@ jobs:
           )
           for dir in "${DIRS[@]}"; do
             echo "::group::apply ${dir}"
-            terraform -chdir="terraform/google/${dir}" init -input=false
-            terraform -chdir="terraform/google/${dir}" apply -input=false -auto-approve -no-color
+            terraform -chdir="terraform/google/modules/${dir}" init -input=false
+            terraform -chdir="terraform/google/modules/${dir}" apply -input=false -auto-approve -no-color
             echo "::endgroup::"
           done
