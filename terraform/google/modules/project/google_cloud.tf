@@ -8,12 +8,3 @@ resource "google_project" "default" {
     prevent_destroy = true
   }
 }
-
-resource "google_firebase_project" "default" {
-  provider = google-beta
-  project  = google_project.default.project_id
-
-  lifecycle {
-    prevent_destroy = true
-  }
-}
