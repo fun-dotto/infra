@@ -1,6 +1,6 @@
 terraform {
   backend "gcs" {
     bucket = "swift2023groupc-tfstate"
-    prefix = "server/academic-service"
+    prefix = "server/academic-service-prd"
   }
 }
