@@ -10,7 +10,8 @@ resource "google_cloud_run_v2_service" "funch_service" {
 
     containers {
       command = [
-        "/bin/funch-api",
+        # TODO: 追加する
+        # "/bin/funch-api",
       ]
 
       env {
