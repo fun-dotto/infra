@@ -12,3 +12,27 @@ resource "google_project_iam_member" "server_admin_api" {
   role    = each.value
   member  = "serviceAccount:${google_service_account.server_admin_api.email}"
 }
+
+resource "google_cloud_run_v2_service_iam_member" "academic_service_invoker" {
+  name   = data.terraform_remote_state.academic_service.outputs.cloud_run_service_name
+  role   = "roles/run.invoker"
+  member = "serviceAccount:${google_service_account.server_admin_api.email}"
+}
+
+resource "google_cloud_run_v2_service_iam_member" "announcement_service_invoker" {
+  name   = data.terraform_remote_state.announcement_service.outputs.cloud_run_service_name
+  role   = "roles/run.invoker"
+  member = "serviceAccount:${google_service_account.server_admin_api.email}"
+}
+
+resource "google_cloud_run_v2_service_iam_member" "funch_service_invoker" {
+  name   = data.terraform_remote_state.funch_service.outputs.cloud_run_service_name
+  role   = "roles/run.invoker"
+  member = "serviceAccount:${google_service_account.server_admin_api.email}"
+}
+
+resource "google_cloud_run_v2_service_iam_member" "user_service_invoker" {
+  name   = data.terraform_remote_state.user_service.outputs.cloud_run_service_name
+  role   = "roles/run.invoker"
+  member = "serviceAccount:${google_service_account.server_admin_api.email}"
+}
