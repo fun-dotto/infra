@@ -1,41 +1,36 @@
 import {
-  to = google_secret_manager_secret.app_dart_define_development
-  id = "projects/swift2023groupc/secrets/app_dart_define_development"
+  to = google_secret_manager_secret.app_dart_define_dev
+  id = "projects/swift2023groupc/secrets/app_dart_define_dev"
 }
 
 import {
-  to = google_secret_manager_secret.app_dart_define_production
-  id = "projects/swift2023groupc/secrets/app_dart_define_production"
+  to = google_secret_manager_secret.app_dart_define_stg
+  id = "projects/swift2023groupc/secrets/app_dart_define_stg"
 }
 
 import {
-  to = google_secret_manager_secret.app_env_fastlane_android
-  id = "projects/swift2023groupc/secrets/app_env_fastlane_android"
+  to = google_secret_manager_secret.app_dart_define_prd
+  id = "projects/swift2023groupc/secrets/app_dart_define_prd"
 }
 
 import {
-  to = google_secret_manager_secret.app_env_fastlane_ios
-  id = "projects/swift2023groupc/secrets/app_env_fastlane_ios"
+  to = google_secret_manager_secret.app_fastlane_env
+  id = "projects/swift2023groupc/secrets/app_fastlane_env"
 }
 
 # Secret-level IAM members (who can access each secret)
 
 import {
-  to = google_secret_manager_secret_iam_member.app_dart_define_development
-  id = "projects/swift2023groupc/secrets/app_dart_define_development roles/secretmanager.secretAccessor group:fun-dotto-dev-app@googlegroups.com"
+  to = google_secret_manager_secret_iam_member.app_dart_define_dev
+  id = "projects/swift2023groupc/secrets/app_dart_define_dev roles/secretmanager.secretAccessor group:fun-dotto-dev-app@googlegroups.com"
 }
 
 import {
-  to = google_secret_manager_secret_iam_member.app_dart_define_production
-  id = "projects/swift2023groupc/secrets/app_dart_define_production roles/secretmanager.secretAccessor group:fun-dotto-dev-app@googlegroups.com"
+  to = google_secret_manager_secret_iam_member.app_dart_define_stg
+  id = "projects/swift2023groupc/secrets/app_dart_define_stg roles/secretmanager.secretAccessor group:fun-dotto-dev-app@googlegroups.com"
 }
 
 import {
-  to = google_secret_manager_secret_iam_member.app_env_fastlane_android
-  id = "projects/swift2023groupc/secrets/app_env_fastlane_android roles/secretmanager.secretAccessor group:fun-dotto-dev-app@googlegroups.com"
-}
-
-import {
-  to = google_secret_manager_secret_iam_member.app_env_fastlane_ios
-  id = "projects/swift2023groupc/secrets/app_env_fastlane_ios roles/secretmanager.secretAccessor group:fun-dotto-dev-app@googlegroups.com"
+  to = google_secret_manager_secret_iam_member.app_dart_define_prd
+  id = "projects/swift2023groupc/secrets/app_dart_define_prd roles/secretmanager.secretAccessor group:fun-dotto-dev-app@googlegroups.com"
 }
