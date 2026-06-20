@@ -1,4 +1,4 @@
-service_account_id           = "server-academic-service"
+service_account_id           = "academic-svc"
 service_account_display_name = "Academic Service"
 db_name                      = "dotto"
 service_name                 = "academic-api"

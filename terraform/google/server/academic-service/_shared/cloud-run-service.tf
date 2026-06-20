@@ -34,14 +34,14 @@ resource "google_cloud_run_v2_service" "academic_service" {
       }
 
       resources {
-        cpu_idle = false
+        cpu_idle = true
 
         limits = {
           cpu    = "1"
           memory = "512Mi"
         }
 
-        startup_cpu_boost = false
+        startup_cpu_boost = true
       }
 
       startup_probe {
