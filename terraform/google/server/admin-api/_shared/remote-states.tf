@@ -17,10 +17,10 @@ locals {
       user_service         = "server/user-service-stg"
     }
     prd = {
-      academic_service     = "server/academic-service"
-      announcement_service = "server/announcement-service"
-      funch_service        = "server/funch-service"
-      user_service         = "server/user-service"
+      academic_service     = "server/academic-service-prd"
+      announcement_service = "server/announcement-service-prd"
+      funch_service        = "server/funch-service-prd"
+      user_service         = "server/user-service-prd"
     }
   }
 }
