@@ -6,7 +6,7 @@ resource "google_service_account" "terraform_ci" {
 
 resource "google_project_iam_member" "terraform_ci" {
   for_each = toset([
-    "roles/owner", # 全リソースを管理するため、オーナーロールを付与する。
+    # "roles/owner", # 全リソースを管理するため、オーナーロールを付与する。
   ])
 
   project = var.google_cloud_project_id
