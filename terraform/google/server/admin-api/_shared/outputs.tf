@@ -15,10 +15,10 @@ output "cloud_run_service_id" {
 
 output "service_account_email" {
   description = "The email of the service account used by Academic Service."
-  value       = google_service_account.server_admin_api.email
+  value       = google_service_account.admin_api.email
 }
 
 output "service_account_name" {
   description = "The full resource name of the service account used by Academic Service."
-  value       = google_service_account.server_admin_api.name
+  value       = google_service_account.admin_api.name
 }

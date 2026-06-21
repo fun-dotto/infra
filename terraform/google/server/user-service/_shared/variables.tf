@@ -10,6 +10,10 @@ variable "instance_connection_name" {
 
 variable "service_name" {}
 
+variable "image" {
+  default = "asia-northeast1-docker.pkg.dev/swift2023groupc/github-actions/server:latest"
+}
+
 variable "max_instance_count" {
   type = number
 }

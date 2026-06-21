@@ -32,7 +32,7 @@ resource "google_cloud_run_v2_service" "admin_api" {
         value = data.terraform_remote_state.user_service.outputs.cloud_run_service_uri
       }
 
-      image = "${var.google_cloud_region}-docker.pkg.dev/${var.google_cloud_project_id}/github-actions/server:latest"
+      image = var.image
 
       ports {
         container_port = 8080
@@ -70,7 +70,7 @@ resource "google_cloud_run_v2_service" "admin_api" {
       min_instance_count = var.min_instance_count
     }
 
-    service_account = google_service_account.server_admin_api.email
+    service_account = google_service_account.admin_api.email
     timeout         = "300s"
   }
 

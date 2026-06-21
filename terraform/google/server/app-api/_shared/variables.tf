@@ -8,6 +8,10 @@ variable "tfstate_bucket" {
   default = "swift2023groupc-tfstate"
 }
 
+variable "image" {
+  default = "asia-northeast1-docker.pkg.dev/swift2023groupc/github-actions/server:latest"
+}
+
 variable "max_instance_count" {
   type = number
 }

@@ -16,7 +16,7 @@ resource "google_cloud_run_v2_service" "funch_service" {
 
       env {
         name  = "DB_IAM_USER"
-        value = "${var.service_account_id}@${var.google_cloud_project_id}.iam"
+        value = trimsuffix(google_service_account.funch_service.email, ".gserviceaccount.com")
       }
       env {
         name  = "DB_NAME"
@@ -27,7 +27,7 @@ resource "google_cloud_run_v2_service" "funch_service" {
         value = var.instance_connection_name
       }
 
-      image = "${var.google_cloud_region}-docker.pkg.dev/${var.google_cloud_project_id}/github-actions/server:latest"
+      image = var.image
 
       ports {
         container_port = 8080
@@ -65,7 +65,7 @@ resource "google_cloud_run_v2_service" "funch_service" {
       min_instance_count = var.min_instance_count
     }
 
-    service_account = google_service_account.server_funch_service.email
+    service_account = google_service_account.funch_service.email
     timeout         = "300s"
   }
 

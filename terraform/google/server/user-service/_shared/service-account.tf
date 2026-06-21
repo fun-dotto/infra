@@ -1,9 +1,9 @@
-resource "google_service_account" "server_user_service" {
+resource "google_service_account" "user_service" {
   account_id   = var.service_account_id
   display_name = var.service_account_display_name
 }
 
-resource "google_project_iam_member" "server_user_service" {
+resource "google_project_iam_member" "user_service" {
   for_each = toset([
     "roles/cloudsql.client",
     "roles/cloudsql.instanceUser",
@@ -12,5 +12,5 @@ resource "google_project_iam_member" "server_user_service" {
 
   project = var.google_cloud_project_id
   role    = each.value
-  member  = "serviceAccount:${google_service_account.server_user_service.email}"
+  member  = "serviceAccount:${google_service_account.user_service.email}"
 }

@@ -15,10 +15,10 @@ output "cloud_run_service_id" {
 
 output "service_account_email" {
   description = "The email of the service account used by Announcement Service."
-  value       = google_service_account.server_announcement_service.email
+  value       = google_service_account.announcement_service.email
 }
 
 output "service_account_name" {
   description = "The full resource name of the service account used by Announcement Service."
-  value       = google_service_account.server_announcement_service.name
+  value       = google_service_account.announcement_service.name
 }

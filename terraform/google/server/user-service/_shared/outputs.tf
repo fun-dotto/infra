@@ -15,10 +15,10 @@ output "cloud_run_service_id" {
 
 output "service_account_email" {
   description = "The email of the service account used by User Service."
-  value       = google_service_account.server_user_service.email
+  value       = google_service_account.user_service.email
 }
 
 output "service_account_name" {
   description = "The full resource name of the service account used by User Service."
-  value       = google_service_account.server_user_service.name
+  value       = google_service_account.user_service.name
 }
