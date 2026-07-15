@@ -1,0 +1,54 @@
+name: CI
+
+on:
+  merge_group:
+    types:
+      - checks_requested
+  pull_request:
+    types:
+      - opened
+      - ready_for_review
+      - reopened
+      - synchronize
+  schedule:
+    - cron: "0 15 * * *"
+  workflow_dispatch:
+
+permissions:
+  actions: write
+  contents: read
+
+env:
+  TF_IN_AUTOMATION: "true"
+  TF_INPUT: "false"
+
+jobs:
+  fmt:
+    name: Format
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: jdx/mise-action@e6a8b3978addb5a52f2b4cd9d91eafa7f0ab959d # v4.2.0
+        with:
+          github_token: ${{ github.token }}
+          cache: true
+      - name: terraform fmt -check
+        run: terraform fmt -check -recursive terraform
+
+  validate:
+    name: Validate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: jdx/mise-action@e6a8b3978addb5a52f2b4cd9d91eafa7f0ab959d # v4.2.0
+        with:
+          github_token: ${{ github.token }}
+          cache: true
+      - name: terraform validate
+        run: |
+          find terraform/google -name versions.tf -not -path '*/_shared/*' -print0 |
+            while IFS= read -r -d '' versions_file; do
+              directory="$(dirname "$versions_file")"
+              terraform -chdir="$directory" init -backend=false
+              terraform -chdir="$directory" validate
+            done
