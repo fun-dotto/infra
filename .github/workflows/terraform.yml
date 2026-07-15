@@ -72,6 +72,8 @@ jobs:
           google-service-account: ${{ env.SERVICE_ACCOUNT }}
           google-workload-identity-provider: ${{ env.WORKLOAD_IDENTITY_PROVIDER }}
           no-backend: true
+          post-plans-as-one-comment: true
+          reporting-strategy: latest_run_comment
           setup-google-cloud: true
           setup-terraform: true
           terraform-version: 1.15.5
