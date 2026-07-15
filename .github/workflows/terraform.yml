@@ -1,146 +1,83 @@
 name: Terraform
 
 on:
-  push:
+  pull_request:
     branches:
       - main
-  pull_request:
+    paths:
+      - "terraform/google/**"
+      - "digger.yml"
     types:
+      - closed
       - opened
       - ready_for_review
       - reopened
       - synchronize
-  merge_group:
+  issue_comment:
     types:
-      - checks_requested
-  schedule:
-    - cron: "0 15 * * *"
+      - created
+  workflow_dispatch:
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+  group: digger-${{ github.event.pull_request.number || github.event.issue.number || github.ref }}
+  cancel-in-progress: false
 
 permissions:
+  actions: write
   contents: read
   id-token: write
+  issues: read
   pull-requests: write
+  statuses: write
 
 env:
   TF_IN_AUTOMATION: "true"
   TF_INPUT: "false"
   WORKLOAD_IDENTITY_PROVIDER: "projects/107577467292/locations/global/workloadIdentityPools/dotto/providers/github"
   SERVICE_ACCOUNT: "terraform-ci@swift2023groupc.iam.gserviceaccount.com"
+  DIGGER_LOCK_BUCKET: "swift2023groupc-tfstate"
 
 jobs:
   fmt:
     name: Format
-    if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
+    if: github.event_name == 'pull_request' && github.event.action != 'closed' && github.event.pull_request.draft == false
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
-      - uses: jdx/mise-action@v4
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: jdx/mise-action@e6a8b3978addb5a52f2b4cd9d91eafa7f0ab959d # v4.2.0
         with:
           github_token: ${{ github.token }}
           cache: true
       - name: terraform fmt -check
         run: terraform fmt -check -recursive terraform
 
-  plan:
-    name: plan (${{ matrix.dir }})
-    # TODO: 手順を見直す
-    if: false
-    # if: github.event_name == 'pull_request'
+  digger:
+    name: Digger
+    if: >-
+      (github.event_name == 'pull_request' && github.event.pull_request.draft == false) ||
+      (github.event_name == 'issue_comment' &&
+       github.event.issue.pull_request != null &&
+       contains(github.event.comment.body, 'digger')) ||
+      github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
-    needs: fmt
-    strategy:
-      fail-fast: false
-      matrix:
-        dir:
-          - google/modules/project
-          - google/modules/cloud-storage
-          - google/modules/cloud-sql
-          - google/modules/iam-workload-identity
-          - google/modules/artifact-registry
-          - google/modules/secret-manager
-          - google/modules/firebase-remote-config
-    defaults:
-      run:
-        working-directory: terraform/${{ matrix.dir }}
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
 
-      - uses: jdx/mise-action@v4
+      - name: Run Digger
+        uses: diggerhq/digger@6baf84cd9cd7c6522b98504f4a2258474d6c2de3 # v0.6.147
         with:
-          github_token: ${{ github.token }}
-          cache: true
-
-      - uses: google-github-actions/auth@v2
-        with:
-          workload_identity_provider: ${{ env.WORKLOAD_IDENTITY_PROVIDER }}
-          service_account: ${{ env.SERVICE_ACCOUNT }}
-
-      - name: terraform init
-        run: terraform init -input=false
-
-      - name: terraform validate
-        run: terraform validate -no-color
-
-      - name: terraform plan
-        id: plan
-        run: terraform plan -input=false -no-color
-
-      - name: Summarize plan
-        if: always()
-        run: |
-          {
-            echo "### Terraform Plan — \`${{ matrix.dir }}\` (\`${{ steps.plan.outcome }}\`)"
-            echo '```'
-            echo "${{ steps.plan.outputs.stdout }}" | tail -c 60000
-            echo '```'
-          } >> "$GITHUB_STEP_SUMMARY"
-
-  apply:
-    name: apply
-    # TODO: 手順を見直す
-    if: false
-    # if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
-    needs: fmt
-    # 本番への apply。必須: GitHub の Settings → Environments → production に
-    # "Required reviewers" を設定し、apply 前に手動承認を強制すること。
-    environment: production
-    steps:
-      - uses: actions/checkout@v7
-
-      - uses: jdx/mise-action@v4
-        with:
-          github_token: ${{ github.token }}
-          cache: true
-
-      - uses: google-github-actions/auth@v2
-        with:
-          workload_identity_provider: ${{ env.WORKLOAD_IDENTITY_PROVIDER }}
-          service_account: ${{ env.SERVICE_ACCOUNT }}
-
-      # 依存関係に沿って直列に apply する。
-      - name: terraform apply (ordered)
-        run: |
-          set -euo pipefail
-          DIRS=(
-            project
-            cloud-storage
-            artifact-registry
-            iam-service-account
-            iam-workload-identity
-            secret-manager
-            cloud-sql
-            cloud-run-job
-            cloud-run-service
-            firebase-remote-config
-          )
-          for dir in "${DIRS[@]}"; do
-            echo "::group::apply ${dir}"
-            terraform -chdir="terraform/google/modules/${dir}" init -input=false
-            terraform -chdir="terraform/google/modules/${dir}" apply -input=false -auto-approve -no-color
-            echo "::endgroup::"
-          done
+          cache-dependencies: true
+          digger-version: v0.6.147
+          google-lock-bucket: ${{ env.DIGGER_LOCK_BUCKET }}
+          google-service-account: ${{ env.SERVICE_ACCOUNT }}
+          google-workload-identity-provider: ${{ env.WORKLOAD_IDENTITY_PROVIDER }}
+          no-backend: true
+          post-plans-as-one-comment: true
+          reporting-strategy: latest_run_comment
+          setup-google-cloud: true
+          setup-terraform: true
+          terraform-version: 1.15.5
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+          GITHUB_TOKEN: ${{ github.token }}
+          LOCK_PROVIDER: gcp

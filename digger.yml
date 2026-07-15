@@ -1,0 +1,105 @@
+projects:
+  - name: modules-artifact-registry
+    dir: terraform/google/modules/artifact-registry
+  - name: modules-cloud-sql
+    dir: terraform/google/modules/cloud-sql
+  - name: modules-cloud-storage
+    dir: terraform/google/modules/cloud-storage
+  - name: modules-firebase-remote-config
+    dir: terraform/google/modules/firebase-remote-config
+  - name: modules-iam-workload-identity
+    dir: terraform/google/modules/iam-workload-identity
+  - name: modules-project
+    dir: terraform/google/modules/project
+  - name: modules-secret-manager
+    dir: terraform/google/modules/secret-manager
+  - name: server-academic-service-dev
+    dir: terraform/google/server/academic-service/dev
+    include_patterns: ["terraform/google/server/academic-service/_shared/**", "terraform/google/_shared/**"]
+  - name: server-academic-service-stg
+    dir: terraform/google/server/academic-service/stg
+    include_patterns: ["terraform/google/server/academic-service/_shared/**", "terraform/google/_shared/**"]
+  - name: server-academic-service-prd
+    dir: terraform/google/server/academic-service/prd
+    include_patterns: ["terraform/google/server/academic-service/_shared/**", "terraform/google/_shared/**"]
+  - name: server-admin-api-dev
+    dir: terraform/google/server/admin-api/dev
+    include_patterns: ["terraform/google/server/admin-api/_shared/**", "terraform/google/_shared/**"]
+  - name: server-admin-api-stg
+    dir: terraform/google/server/admin-api/stg
+    include_patterns: ["terraform/google/server/admin-api/_shared/**", "terraform/google/_shared/**"]
+  - name: server-admin-api-prd
+    dir: terraform/google/server/admin-api/prd
+    include_patterns: ["terraform/google/server/admin-api/_shared/**", "terraform/google/_shared/**"]
+  - name: server-announcement-service-dev
+    dir: terraform/google/server/announcement-service/dev
+    include_patterns: ["terraform/google/server/announcement-service/_shared/**", "terraform/google/_shared/**"]
+  - name: server-announcement-service-stg
+    dir: terraform/google/server/announcement-service/stg
+    include_patterns: ["terraform/google/server/announcement-service/_shared/**", "terraform/google/_shared/**"]
+  - name: server-announcement-service-prd
+    dir: terraform/google/server/announcement-service/prd
+    include_patterns: ["terraform/google/server/announcement-service/_shared/**", "terraform/google/_shared/**"]
+  - name: server-app-api-dev
+    dir: terraform/google/server/app-api/dev
+    include_patterns: ["terraform/google/server/app-api/_shared/**", "terraform/google/_shared/**"]
+  - name: server-app-api-stg
+    dir: terraform/google/server/app-api/stg
+    include_patterns: ["terraform/google/server/app-api/_shared/**", "terraform/google/_shared/**"]
+  - name: server-app-api-prd
+    dir: terraform/google/server/app-api/prd
+    include_patterns: ["terraform/google/server/app-api/_shared/**", "terraform/google/_shared/**"]
+  - name: server-build-irregular-notification-job-dev
+    dir: terraform/google/server/build-irregular-notification-job/dev
+    include_patterns: ["terraform/google/server/build-irregular-notification-job/_shared/**", "terraform/google/_shared/**"]
+  - name: server-build-irregular-notification-job-stg
+    dir: terraform/google/server/build-irregular-notification-job/stg
+    include_patterns: ["terraform/google/server/build-irregular-notification-job/_shared/**", "terraform/google/_shared/**"]
+  - name: server-build-irregular-notification-job-prd
+    dir: terraform/google/server/build-irregular-notification-job/prd
+    include_patterns: ["terraform/google/server/build-irregular-notification-job/_shared/**", "terraform/google/_shared/**"]
+  - name: server-funch-service-dev
+    dir: terraform/google/server/funch-service/dev
+    include_patterns: ["terraform/google/server/funch-service/_shared/**", "terraform/google/_shared/**"]
+  - name: server-funch-service-stg
+    dir: terraform/google/server/funch-service/stg
+    include_patterns: ["terraform/google/server/funch-service/_shared/**", "terraform/google/_shared/**"]
+  - name: server-funch-service-prd
+    dir: terraform/google/server/funch-service/prd
+    include_patterns: ["terraform/google/server/funch-service/_shared/**", "terraform/google/_shared/**"]
+  - name: server-notify-user-job-dev
+    dir: terraform/google/server/notify-user-job/dev
+    include_patterns: ["terraform/google/server/notify-user-job/_shared/**", "terraform/google/_shared/**"]
+  - name: server-notify-user-job-stg
+    dir: terraform/google/server/notify-user-job/stg
+    include_patterns: ["terraform/google/server/notify-user-job/_shared/**", "terraform/google/_shared/**"]
+  - name: server-notify-user-job-prd
+    dir: terraform/google/server/notify-user-job/prd
+    include_patterns: ["terraform/google/server/notify-user-job/_shared/**", "terraform/google/_shared/**"]
+  - name: server-user-service-dev
+    dir: terraform/google/server/user-service/dev
+    include_patterns: ["terraform/google/server/user-service/_shared/**", "terraform/google/_shared/**"]
+  - name: server-user-service-stg
+    dir: terraform/google/server/user-service/stg
+    include_patterns: ["terraform/google/server/user-service/_shared/**", "terraform/google/_shared/**"]
+  - name: server-user-service-prd
+    dir: terraform/google/server/user-service/prd
+    include_patterns: ["terraform/google/server/user-service/_shared/**", "terraform/google/_shared/**"]
+  - name: web-admin-web-dev
+    dir: terraform/google/web/admin-web/dev
+    include_patterns: ["terraform/google/web/admin-web/_shared/**", "terraform/google/_shared/**"]
+  - name: web-admin-web-stg
+    dir: terraform/google/web/admin-web/stg
+    include_patterns: ["terraform/google/web/admin-web/_shared/**", "terraform/google/_shared/**"]
+  - name: web-admin-web-prd
+    dir: terraform/google/web/admin-web/prd
+    include_patterns: ["terraform/google/web/admin-web/_shared/**", "terraform/google/_shared/**"]
+  - name: web-web-dev
+    dir: terraform/google/web/web/dev
+    include_patterns: ["terraform/google/web/web/_shared/**", "terraform/google/_shared/**"]
+  - name: web-web-stg
+    dir: terraform/google/web/web/stg
+    include_patterns: ["terraform/google/web/web/_shared/**", "terraform/google/_shared/**"]
+  - name: web-web-prd
+    dir: terraform/google/web/web/prd
+    include_patterns: ["terraform/google/web/web/_shared/**", "terraform/google/_shared/**"]
