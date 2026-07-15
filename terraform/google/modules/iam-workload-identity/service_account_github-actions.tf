@@ -6,9 +6,11 @@ resource "google_service_account" "github_actions" {
 resource "google_project_iam_member" "github_actions" {
   for_each = toset([
     "roles/artifactregistry.writer",
+    "roles/firebase.appDistributionSdkServiceAgent",
+    "roles/firebase.viewer",
     "roles/iam.serviceAccountUser",
     "roles/iam.workloadIdentityUser",
-    "roles/run.admin",
+    "roles/run.developer",
   ])
 
   project = var.google_cloud_project_id
