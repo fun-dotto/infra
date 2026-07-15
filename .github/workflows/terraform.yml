@@ -67,6 +67,7 @@ jobs:
         uses: diggerhq/digger@6baf84cd9cd7c6522b98504f4a2258474d6c2de3 # v0.6.147
         with:
           cache-dependencies: true
+          digger-version: v0.6.147
           google-lock-bucket: ${{ env.DIGGER_LOCK_BUCKET }}
           google-service-account: ${{ env.SERVICE_ACCOUNT }}
           google-workload-identity-provider: ${{ env.WORKLOAD_IDENTITY_PROVIDER }}
