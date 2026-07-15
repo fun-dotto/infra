@@ -63,6 +63,21 @@ jobs:
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
 
+      - name: Verify PR satisfies branch rules before apply
+        if: >-
+          github.event_name == 'issue_comment' &&
+          contains(github.event.comment.body, 'digger apply')
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          merge_state="$(gh pr view "$PR_NUMBER" --json mergeStateStatus --jq '.mergeStateStatus')"
+
+          if [[ "$merge_state" != "CLEAN" ]]; then
+            echo "::error::PR does not satisfy branch rules: $merge_state"
+            exit 1
+          fi
+
       - name: Run Digger
         uses: diggerhq/digger@6baf84cd9cd7c6522b98504f4a2258474d6c2de3 # v0.6.147
         with:
