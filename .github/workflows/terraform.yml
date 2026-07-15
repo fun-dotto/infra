@@ -43,8 +43,8 @@ jobs:
     if: github.event_name == 'pull_request' && github.event.action != 'closed' && github.event.pull_request.draft == false
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
-      - uses: jdx/mise-action@v4
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+      - uses: jdx/mise-action@e6a8b3978addb5a52f2b4cd9d91eafa7f0ab959d # v4
         with:
           github_token: ${{ github.token }}
           cache: true
@@ -61,10 +61,10 @@ jobs:
       github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
 
       - name: Run Digger
-        uses: diggerhq/digger@v0.6.147
+        uses: diggerhq/digger@6baf84cd9cd7c6522b98504f4a2258474d6c2de3 # v0.6.147
         with:
           cache-dependencies: true
           google-lock-bucket: ${{ env.DIGGER_LOCK_BUCKET }}
