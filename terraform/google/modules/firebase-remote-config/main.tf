@@ -15,8 +15,8 @@ resource "google_firebase_remote_config_remote_config" "basic" {
     parameter_group_name = "Feature"
 
     parameters {
-      description    = ""
-      parameter_name = "is_funch_enabled"
+      description    = "Funch"
+      parameter_name = "funch"
       value_type     = "BOOLEAN"
 
       default_value {
@@ -25,8 +25,18 @@ resource "google_firebase_remote_config_remote_config" "basic" {
       }
     }
     parameters {
-      description    = "科目ソート"
-      parameter_name = "subject_sort_by_user_attributes"
+      description    = "Web版"
+      parameter_name = "web"
+      value_type     = "BOOLEAN"
+
+      default_value {
+        use_in_app_default = false
+        value              = "false"
+      }
+    }
+    parameters {
+      description    = "意見箱"
+      parameter_name = "opinion_box"
       value_type     = "BOOLEAN"
 
       default_value {
