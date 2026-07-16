@@ -71,7 +71,7 @@ resource "google_firebase_remote_config_remote_config" "basic" {
       }
     }
     parameters {
-      description    = ""
+      description    = "Web版URL"
       parameter_name = "dotto_web_url"
       value_type     = "STRING"
 
@@ -81,13 +81,23 @@ resource "google_firebase_remote_config_remote_config" "basic" {
       }
     }
     parameters {
-      description    = ""
+      description    = "MacサポートURL"
       parameter_name = "mac_support_desk_url"
       value_type     = "STRING"
 
       default_value {
         use_in_app_default = false
         value              = "https://dotto.furari.co/mac"
+      }
+    }
+    parameters {
+      description    = "意見箱URL"
+      parameter_name = "opinion_box_url"
+      value_type     = "STRING"
+
+      default_value {
+        use_in_app_default = false
+        value              = "https://forms.gle/Y5xh3mNH1YptocSu7"
       }
     }
     parameters {
