@@ -229,7 +229,7 @@ resource "google_firebase_remote_config_remote_config" "basic" {
 
     default_value {
       use_in_app_default = false
-      value              = "{\"title\":null,\"url\":null,\"is_external\":null}"
+      value              = "{\"title\":\"大学への意見箱をリリース！\",\"url\":\"https://forms.gle/Y5xh3mNH1YptocSu7\",\"is_external\":true}"
     }
   }
 }
