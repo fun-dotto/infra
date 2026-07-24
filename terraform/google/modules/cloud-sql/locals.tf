@@ -9,6 +9,7 @@ locals {
     "axitian882@gmail.com",
     "identityv5656@gmail.com",
     "kaxu123456@gmail.com",
+    "tash19695@gmail.com",
     "yamas.jto@gmail.com",
     "yonggoutwitter89@gmail.com",
   ])
