@@ -41,7 +41,7 @@ resource "google_firebase_remote_config_remote_config" "basic" {
 
       default_value {
         use_in_app_default = false
-        value              = "false"
+        value              = "true"
       }
     }
   }
