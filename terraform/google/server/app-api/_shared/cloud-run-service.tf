@@ -24,10 +24,6 @@ resource "google_cloud_run_v2_service" "app_api" {
         value = data.terraform_remote_state.announcement_service.outputs.cloud_run_service_uri
       }
       env {
-        name  = "FUNCH_API_URL"
-        value = data.terraform_remote_state.funch_service.outputs.cloud_run_service_uri
-      }
-      env {
         name  = "USER_API_URL"
         value = data.terraform_remote_state.user_service.outputs.cloud_run_service_uri
       }
