@@ -173,7 +173,7 @@ resource "google_firebase_remote_config_remote_config" "basic" {
   }
 
   parameters {
-    description    = ""
+    description    = "有効な最低アプリバージョン。このバージョンを下回ると強制アップデート画面が表示される。"
     parameter_name = "valid_app_version"
     value_type     = "STRING"
 
@@ -183,13 +183,13 @@ resource "google_firebase_remote_config_remote_config" "basic" {
     }
   }
   parameters {
-    description    = ""
+    description    = "最新アプリバージョン。このバージョンを下回るとアップデートを促すダイアログが表示される。ダイアログを表示する必要がなければ最新バージョンを設定する必要はない。"
     parameter_name = "latest_app_version"
     value_type     = "STRING"
 
     default_value {
       use_in_app_default = false
-      value              = "2.0.3"
+      value              = "2.2.0"
     }
   }
   parameters {
