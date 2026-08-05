@@ -5,6 +5,8 @@ projects:
     dir: terraform/google/modules/cloud-sql
   - name: modules-cloud-storage
     dir: terraform/google/modules/cloud-storage
+  - name: modules-cloudflare-tunnel
+    dir: terraform/google/modules/cloudflare-tunnel
   - name: modules-firebase-remote-config
     dir: terraform/google/modules/firebase-remote-config
   - name: modules-iam-workload-identity
