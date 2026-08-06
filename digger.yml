@@ -9,6 +9,8 @@ projects:
     dir: terraform/google/modules/firebase-remote-config
   - name: modules-iam-workload-identity
     dir: terraform/google/modules/iam-workload-identity
+  - name: modules-monitoring
+    dir: terraform/google/modules/monitoring
   - name: modules-project
     dir: terraform/google/modules/project
   - name: modules-secret-manager

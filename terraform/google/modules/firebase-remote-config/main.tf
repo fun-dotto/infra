@@ -15,8 +15,8 @@ resource "google_firebase_remote_config_remote_config" "basic" {
     parameter_group_name = "Feature"
 
     parameters {
-      description    = ""
-      parameter_name = "is_funch_enabled"
+      description    = "Funch"
+      parameter_name = "funch"
       value_type     = "BOOLEAN"
 
       default_value {
@@ -25,8 +25,18 @@ resource "google_firebase_remote_config_remote_config" "basic" {
       }
     }
     parameters {
-      description    = "科目ソート"
-      parameter_name = "subject_sort_by_user_attributes"
+      description    = "Web版"
+      parameter_name = "web"
+      value_type     = "BOOLEAN"
+
+      default_value {
+        use_in_app_default = false
+        value              = "false"
+      }
+    }
+    parameters {
+      description    = "意見箱"
+      parameter_name = "opinion_box"
       value_type     = "BOOLEAN"
 
       default_value {
@@ -61,7 +71,7 @@ resource "google_firebase_remote_config_remote_config" "basic" {
       }
     }
     parameters {
-      description    = ""
+      description    = "Web版URL"
       parameter_name = "dotto_web_url"
       value_type     = "STRING"
 
@@ -71,13 +81,23 @@ resource "google_firebase_remote_config_remote_config" "basic" {
       }
     }
     parameters {
-      description    = ""
+      description    = "MacサポートURL"
       parameter_name = "mac_support_desk_url"
       value_type     = "STRING"
 
       default_value {
         use_in_app_default = false
         value              = "https://dotto.furari.co/mac"
+      }
+    }
+    parameters {
+      description    = "意見箱URL"
+      parameter_name = "opinion_box_url"
+      value_type     = "STRING"
+
+      default_value {
+        use_in_app_default = false
+        value              = "https://forms.gle/Y5xh3mNH1YptocSu7"
       }
     }
     parameters {
@@ -153,7 +173,7 @@ resource "google_firebase_remote_config_remote_config" "basic" {
   }
 
   parameters {
-    description    = ""
+    description    = "有効な最低アプリバージョン。このバージョンを下回ると強制アップデート画面が表示される。"
     parameter_name = "valid_app_version"
     value_type     = "STRING"
 
@@ -163,13 +183,13 @@ resource "google_firebase_remote_config_remote_config" "basic" {
     }
   }
   parameters {
-    description    = ""
+    description    = "最新アプリバージョン。このバージョンを下回るとアップデートを促すダイアログが表示される。ダイアログを表示する必要がなければ最新バージョンを設定する必要はない。"
     parameter_name = "latest_app_version"
     value_type     = "STRING"
 
     default_value {
       use_in_app_default = false
-      value              = "2.0.3"
+      value              = "2.2.0"
     }
   }
   parameters {

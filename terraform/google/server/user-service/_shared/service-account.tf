@@ -7,6 +7,7 @@ resource "google_project_iam_member" "user_service" {
   for_each = toset([
     "roles/cloudsql.client",
     "roles/cloudsql.instanceUser",
+    "roles/firebasecloudmessaging.admin",
     "roles/logging.logWriter",
   ])
 

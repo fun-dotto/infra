@@ -1,4 +1,4 @@
-name: Terraform
+name: Digger
 
 on:
   pull_request:
@@ -38,19 +38,6 @@ env:
   DIGGER_LOCK_BUCKET: "swift2023groupc-tfstate"
 
 jobs:
-  fmt:
-    name: Format
-    if: github.event_name == 'pull_request' && github.event.action != 'closed' && github.event.pull_request.draft == false
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
-      - uses: jdx/mise-action@e6a8b3978addb5a52f2b4cd9d91eafa7f0ab959d # v4.2.0
-        with:
-          github_token: ${{ github.token }}
-          cache: true
-      - name: terraform fmt -check
-        run: terraform fmt -check -recursive terraform
-
   digger:
     name: Digger
     if: >-
