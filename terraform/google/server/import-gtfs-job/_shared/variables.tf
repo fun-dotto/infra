@@ -15,7 +15,7 @@ variable "image" {
 }
 
 variable "schedule" {
-  default = "0 6 * * *"
+  default = "0 21 * * *"
 }
 
 variable "timezone" {
