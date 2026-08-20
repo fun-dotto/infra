@@ -69,6 +69,15 @@ projects:
   - name: server-funch-service-prd
     dir: terraform/google/server/funch-service/prd
     include_patterns: ["terraform/google/server/funch-service/_shared/**", "terraform/google/_shared/**"]
+  - name: server-import-gtfs-job-dev
+    dir: terraform/google/server/import-gtfs-job/dev
+    include_patterns: ["terraform/google/server/import-gtfs-job/_shared/**", "terraform/google/_shared/**"]
+  - name: server-import-gtfs-job-stg
+    dir: terraform/google/server/import-gtfs-job/stg
+    include_patterns: ["terraform/google/server/import-gtfs-job/_shared/**", "terraform/google/_shared/**"]
+  - name: server-import-gtfs-job-prd
+    dir: terraform/google/server/import-gtfs-job/prd
+    include_patterns: ["terraform/google/server/import-gtfs-job/_shared/**", "terraform/google/_shared/**"]
   - name: server-notify-user-job-dev
     dir: terraform/google/server/notify-user-job/dev
     include_patterns: ["terraform/google/server/notify-user-job/_shared/**", "terraform/google/_shared/**"]
