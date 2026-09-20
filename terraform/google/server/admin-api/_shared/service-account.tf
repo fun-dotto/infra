@@ -25,12 +25,6 @@ resource "google_cloud_run_v2_service_iam_member" "announcement_service_invoker"
   member = "serviceAccount:${google_service_account.admin_api.email}"
 }
 
-resource "google_cloud_run_v2_service_iam_member" "funch_service_invoker" {
-  name   = data.terraform_remote_state.funch_service.outputs.cloud_run_service_name
-  role   = "roles/run.invoker"
-  member = "serviceAccount:${google_service_account.admin_api.email}"
-}
-
 resource "google_cloud_run_v2_service_iam_member" "user_service_invoker" {
   name   = data.terraform_remote_state.user_service.outputs.cloud_run_service_name
   role   = "roles/run.invoker"
