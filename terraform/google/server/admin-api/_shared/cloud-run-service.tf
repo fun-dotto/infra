@@ -11,7 +11,8 @@ resource "google_cloud_run_v2_service" "admin_api" {
 
     containers {
       command = [
-        "/bin/admin-api",
+        # TODO: BFF廃止後は /bin/admin-api に変更する
+        "/bin/admin-bff-api",
       ]
 
       env {
