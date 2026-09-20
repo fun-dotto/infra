@@ -1,6 +1,6 @@
 service_account_id           = "admin-api-dev"
 service_account_display_name = "Admin API (Dev)"
 # TODO: BFF廃止後は admin-api-dev に変更する
-service_name                 = "admin-bff-api-dev"
-max_instance_count           = 10
-min_instance_count           = 0
+service_name       = "admin-bff-api-dev"
+max_instance_count = 10
+min_instance_count = 0
