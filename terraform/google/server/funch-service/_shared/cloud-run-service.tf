@@ -1,9 +1,10 @@
 resource "google_cloud_run_v2_service" "funch_service" {
   ingress = "INGRESS_TRAFFIC_ALL"
 
-  launch_stage = "GA"
-  location     = var.google_cloud_region
-  name         = var.service_name
+  deletion_protection = false
+  launch_stage        = "GA"
+  location            = var.google_cloud_region
+  name                = var.service_name
 
   template {
     execution_environment = null
