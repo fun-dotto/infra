@@ -1,24 +1,24 @@
 output "cloud_run_service_name" {
   description = "The name of the Academic Service Cloud Run service."
-  value       = google_cloud_run_v2_service.admin_api.name
+  value       = google_cloud_run_v2_service.app_bff_api.name
 }
 
 output "cloud_run_service_uri" {
   description = "The URI of the Academic Service Cloud Run service."
-  value       = google_cloud_run_v2_service.admin_api.uri
+  value       = google_cloud_run_v2_service.app_bff_api.uri
 }
 
 output "cloud_run_service_id" {
   description = "The full resource ID of the Academic Service Cloud Run service."
-  value       = google_cloud_run_v2_service.admin_api.id
+  value       = google_cloud_run_v2_service.app_bff_api.id
 }
 
 output "service_account_email" {
   description = "The email of the service account used by Academic Service."
-  value       = google_service_account.admin_api.email
+  value       = google_service_account.app_bff_api.email
 }
 
 output "service_account_name" {
   description = "The full resource name of the service account used by Academic Service."
-  value       = google_service_account.admin_api.name
+  value       = google_service_account.app_bff_api.name
 }

@@ -1,9 +1,9 @@
-resource "google_service_account" "app_api" {
+resource "google_service_account" "app_bff_api" {
   account_id   = var.service_account_id
   display_name = var.service_account_display_name
 }
 
-resource "google_project_iam_member" "app_api" {
+resource "google_project_iam_member" "app_bff_api" {
   for_each = toset([
     "roles/firebaseappcheck.tokenVerifier",
     "roles/logging.logWriter",
@@ -11,23 +11,23 @@ resource "google_project_iam_member" "app_api" {
 
   project = var.google_cloud_project_id
   role    = each.value
-  member  = "serviceAccount:${google_service_account.app_api.email}"
+  member  = "serviceAccount:${google_service_account.app_bff_api.email}"
 }
 
 resource "google_cloud_run_v2_service_iam_member" "academic_service_invoker" {
   name   = data.terraform_remote_state.academic_service.outputs.cloud_run_service_name
   role   = "roles/run.invoker"
-  member = "serviceAccount:${google_service_account.app_api.email}"
+  member = "serviceAccount:${google_service_account.app_bff_api.email}"
 }
 
 resource "google_cloud_run_v2_service_iam_member" "announcement_service_invoker" {
   name   = data.terraform_remote_state.announcement_service.outputs.cloud_run_service_name
   role   = "roles/run.invoker"
-  member = "serviceAccount:${google_service_account.app_api.email}"
+  member = "serviceAccount:${google_service_account.app_bff_api.email}"
 }
 
 resource "google_cloud_run_v2_service_iam_member" "user_service_invoker" {
   name   = data.terraform_remote_state.user_service.outputs.cloud_run_service_name
   role   = "roles/run.invoker"
-  member = "serviceAccount:${google_service_account.app_api.email}"
+  member = "serviceAccount:${google_service_account.app_bff_api.email}"
 }
