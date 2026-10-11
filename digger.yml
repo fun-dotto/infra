@@ -24,15 +24,15 @@ projects:
   - name: server-academic-service-prd
     dir: terraform/google/server/academic-service/prd
     include_patterns: ["terraform/google/server/academic-service/_shared/**", "terraform/google/_shared/**"]
-  - name: server-admin-api-dev
-    dir: terraform/google/server/admin-api/dev
-    include_patterns: ["terraform/google/server/admin-api/_shared/**", "terraform/google/_shared/**"]
-  - name: server-admin-api-stg
-    dir: terraform/google/server/admin-api/stg
-    include_patterns: ["terraform/google/server/admin-api/_shared/**", "terraform/google/_shared/**"]
-  - name: server-admin-api-prd
-    dir: terraform/google/server/admin-api/prd
-    include_patterns: ["terraform/google/server/admin-api/_shared/**", "terraform/google/_shared/**"]
+  - name: server-admin-bff-api-dev
+    dir: terraform/google/server/admin-bff-api/dev
+    include_patterns: ["terraform/google/server/admin-bff-api/_shared/**", "terraform/google/_shared/**"]
+  - name: server-admin-bff-api-stg
+    dir: terraform/google/server/admin-bff-api/stg
+    include_patterns: ["terraform/google/server/admin-bff-api/_shared/**", "terraform/google/_shared/**"]
+  - name: server-admin-bff-api-prd
+    dir: terraform/google/server/admin-bff-api/prd
+    include_patterns: ["terraform/google/server/admin-bff-api/_shared/**", "terraform/google/_shared/**"]
   - name: server-announcement-service-dev
     dir: terraform/google/server/announcement-service/dev
     include_patterns: ["terraform/google/server/announcement-service/_shared/**", "terraform/google/_shared/**"]
@@ -42,15 +42,15 @@ projects:
   - name: server-announcement-service-prd
     dir: terraform/google/server/announcement-service/prd
     include_patterns: ["terraform/google/server/announcement-service/_shared/**", "terraform/google/_shared/**"]
-  - name: server-app-api-dev
-    dir: terraform/google/server/app-api/dev
-    include_patterns: ["terraform/google/server/app-api/_shared/**", "terraform/google/_shared/**"]
-  - name: server-app-api-stg
-    dir: terraform/google/server/app-api/stg
-    include_patterns: ["terraform/google/server/app-api/_shared/**", "terraform/google/_shared/**"]
-  - name: server-app-api-prd
-    dir: terraform/google/server/app-api/prd
-    include_patterns: ["terraform/google/server/app-api/_shared/**", "terraform/google/_shared/**"]
+  - name: server-app-bff-api-dev
+    dir: terraform/google/server/app-bff-api/dev
+    include_patterns: ["terraform/google/server/app-bff-api/_shared/**", "terraform/google/_shared/**"]
+  - name: server-app-bff-api-stg
+    dir: terraform/google/server/app-bff-api/stg
+    include_patterns: ["terraform/google/server/app-bff-api/_shared/**", "terraform/google/_shared/**"]
+  - name: server-app-bff-api-prd
+    dir: terraform/google/server/app-bff-api/prd
+    include_patterns: ["terraform/google/server/app-bff-api/_shared/**", "terraform/google/_shared/**"]
   - name: server-build-irregular-notification-job-dev
     dir: terraform/google/server/build-irregular-notification-job/dev
     include_patterns: ["terraform/google/server/build-irregular-notification-job/_shared/**", "terraform/google/_shared/**"]

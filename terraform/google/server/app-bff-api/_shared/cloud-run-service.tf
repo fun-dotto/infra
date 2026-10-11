@@ -1,4 +1,4 @@
-resource "google_cloud_run_v2_service" "admin_api" {
+resource "google_cloud_run_v2_service" "app_bff_api" {
   ingress              = "INGRESS_TRAFFIC_ALL"
   invoker_iam_disabled = true
 
@@ -11,8 +11,7 @@ resource "google_cloud_run_v2_service" "admin_api" {
 
     containers {
       command = [
-        # TODO: BFF廃止後は /bin/admin-api に変更する
-        "/bin/admin-bff-api",
+        "/bin/app-bff-api",
       ]
 
       env {
@@ -66,7 +65,7 @@ resource "google_cloud_run_v2_service" "admin_api" {
       min_instance_count = var.min_instance_count
     }
 
-    service_account = google_service_account.admin_api.email
+    service_account = google_service_account.app_bff_api.email
     timeout         = "300s"
   }
 
