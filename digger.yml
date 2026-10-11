@@ -60,15 +60,6 @@ projects:
   - name: server-build-irregular-notification-job-prd
     dir: terraform/google/server/build-irregular-notification-job/prd
     include_patterns: ["terraform/google/server/build-irregular-notification-job/_shared/**", "terraform/google/_shared/**"]
-  - name: server-funch-service-dev
-    dir: terraform/google/server/funch-service/dev
-    include_patterns: ["terraform/google/server/funch-service/_shared/**", "terraform/google/_shared/**"]
-  - name: server-funch-service-stg
-    dir: terraform/google/server/funch-service/stg
-    include_patterns: ["terraform/google/server/funch-service/_shared/**", "terraform/google/_shared/**"]
-  - name: server-funch-service-prd
-    dir: terraform/google/server/funch-service/prd
-    include_patterns: ["terraform/google/server/funch-service/_shared/**", "terraform/google/_shared/**"]
   - name: server-notify-user-job-dev
     dir: terraform/google/server/notify-user-job/dev
     include_patterns: ["terraform/google/server/notify-user-job/_shared/**", "terraform/google/_shared/**"]
