@@ -78,9 +78,13 @@ mise.local.toml
 **/CLAUDE.md
 .agents/*
 .claude/*
+.cloudflare/*
 .codex/*
 .github/*
 !.github/actions/
 !.github/workflows/
 !.github/PULL_REQUEST_TEMPLATE.md
 .mcp.json
+
+# Bun
+node_modules/
