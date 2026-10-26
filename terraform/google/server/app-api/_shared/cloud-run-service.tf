@@ -2,7 +2,8 @@ data "google_project" "default" {}
 
 resource "google_cloud_run_v2_service" "app_api" {
   # 外部からは cloudflared (Cloudflare Tunnel) 経由でのみ到達させる
-  ingress = "INGRESS_TRAFFIC_INTERNAL_ONLY"
+  # prd は Access をかけず Tunnel も通さないため、Cloudflare プロキシから直接受ける（App Check / ID Token で認証する）
+  ingress = local.environment == "prd" ? "INGRESS_TRAFFIC_ALL" : "INGRESS_TRAFFIC_INTERNAL_ONLY"
   # ID Token を持たない経路 (App Check / Cloudflare Access) からも呼ばれるため IAM 呼び出しチェックは無効化し、アプリ側で認証する
   invoker_iam_disabled = true
 
