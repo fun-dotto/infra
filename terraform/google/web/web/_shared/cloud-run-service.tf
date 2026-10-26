@@ -1,7 +1,7 @@
 resource "google_cloud_run_v2_service" "web" {
-  ingress              = "INGRESS_TRAFFIC_ALL"
+  # 外部からは cloudflared (Cloudflare Tunnel) 経由でのみ到達させる
+  ingress              = "INGRESS_TRAFFIC_INTERNAL_ONLY"
   invoker_iam_disabled = true
-  default_uri_disabled = true
 
   launch_stage = "GA"
   location     = var.google_cloud_region
@@ -9,7 +9,22 @@ resource "google_cloud_run_v2_service" "web" {
 
   template {
     containers {
-      # TODO: 環境変数を定義
+      env {
+        name  = "APP_API_URL"
+        value = local.app_api_url
+      }
+      env {
+        name  = "CF_ACCESS_ENABLED"
+        value = local.environment == "prd" ? "false" : "true"
+      }
+      env {
+        name  = "CF_ACCESS_ISSUER"
+        value = data.terraform_remote_state.cloudflare.outputs.access_issuer
+      }
+      env {
+        name  = "CF_ACCESS_AUD"
+        value = lookup(lookup(data.terraform_remote_state.cloudflare.outputs.access_auds, local.environment, {}), "web", "")
+      }
 
       image = var.image
 
@@ -47,6 +62,16 @@ resource "google_cloud_run_v2_service" "web" {
     scaling {
       max_instance_count = var.max_instance_count
       min_instance_count = var.min_instance_count
+    }
+
+    # internal ingress の API を VPC 経由で呼ぶ
+    vpc_access {
+      egress = "PRIVATE_RANGES_ONLY"
+
+      network_interfaces {
+        network    = data.terraform_remote_state.network.outputs.network_name
+        subnetwork = data.terraform_remote_state.network.outputs.cloud_run_subnetwork_name
+      }
     }
 
     service_account = google_service_account.web.email
