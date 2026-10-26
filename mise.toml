@@ -9,7 +9,8 @@ terraform = "1.16.6"
 
 [tasks.bootstrap]
 run = [
-  { task = "rulesync" }
+  { task = "rulesync" },
+  "bun install",
 ]
 
 [tasks.rulesync]
