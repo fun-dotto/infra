@@ -17,6 +17,9 @@ resource "google_cloud_run_v2_worker_pool" "cloudflared" {
         "--no-autoupdate",
         "--metrics",
         "0.0.0.0:2000",
+        # Cloud Run では UDP の受信バッファが足りず QUIC の接続に失敗するため HTTP/2 を使う
+        "--protocol",
+        "http2",
         "run",
       ]
 
