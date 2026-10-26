@@ -33,6 +33,9 @@ resource "cloudflare_zero_trust_tunnel_cloudflared_config" "default" {
       ],
     )
   }
+
+  # 経路を先に作ると Access なしで公開されるため、Access アプリケーションの作成を待つ
+  depends_on = [cloudflare_zero_trust_access_application.default]
 }
 
 resource "cloudflare_dns_record" "default" {
@@ -44,4 +47,6 @@ resource "cloudflare_dns_record" "default" {
   content = "${cloudflare_zero_trust_tunnel_cloudflared.default.id}.cfargotunnel.com"
   proxied = true
   ttl     = 1
+
+  depends_on = [cloudflare_zero_trust_access_application.default]
 }
