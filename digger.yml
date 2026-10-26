@@ -1,6 +1,8 @@
 projects:
   - name: cloudflare
     dir: terraform/cloudflare
+  - name: cloudflared
+    dir: terraform/google/cloudflared
   - name: modules-artifact-registry
     dir: terraform/google/modules/artifact-registry
   - name: modules-cloud-sql
