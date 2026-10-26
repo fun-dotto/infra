@@ -46,7 +46,7 @@ jobs:
           cache: true
       - name: terraform validate
         run: |
-          find terraform/google -name versions.tf -not -path '*/_shared/*' -print0 |
+          find terraform -name versions.tf -not -path '*/_shared/*' -print0 |
             while IFS= read -r -d '' versions_file; do
               directory="$(dirname "$versions_file")"
               terraform -chdir="$directory" init -backend=false
