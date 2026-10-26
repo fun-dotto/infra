@@ -14,7 +14,9 @@ resource "cloudflare_zero_trust_access_application" "app_launcher" {
   session_duration             = "24h"
   skip_app_launcher_login_page = false
 
-  landing_page_design = {}
+  landing_page_design = {
+    title = "ようこそ、Dotto Accessへ！"
+  }
 
   policies = [
     {
