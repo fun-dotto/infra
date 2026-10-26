@@ -66,13 +66,17 @@ resource "google_cloud_run_v2_service" "web" {
       min_instance_count = var.min_instance_count
     }
 
-    # internal ingress の API を VPC 経由で呼ぶ
-    vpc_access {
-      egress = "PRIVATE_RANGES_ONLY"
+    # internal ingress の API を VPC 経由で呼ぶ（prd の app-api は ingress all のため不要）
+    dynamic "vpc_access" {
+      for_each = local.environment == "prd" ? [] : [1]
 
-      network_interfaces {
-        network    = data.terraform_remote_state.network.outputs.network_name
-        subnetwork = data.terraform_remote_state.network.outputs.cloud_run_subnetwork_name
+      content {
+        egress = "PRIVATE_RANGES_ONLY"
+
+        network_interfaces {
+          network    = data.terraform_remote_state.network.outputs.network_name
+          subnetwork = data.terraform_remote_state.network.outputs.cloud_run_subnetwork_name
+        }
       }
     }
 
