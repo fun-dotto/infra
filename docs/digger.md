@@ -40,6 +40,9 @@ secrets に `CLOUDFLARE_API_TOKEN` を登録する。Token には対象アカウ
 Cloudflare Tunnel・Access（アプリケーション・ポリシー）・Zero Trust の読み取りと、
 `fun-dotto.com` ゾーンの DNS の編集権限を付与する。
 
+Cloudflare Access の GitHub ログインに使う GitHub OAuth App の client secret を
+`CLOUDFLARE_GITHUB_IDP_CLIENT_SECRET` として Repository secrets に登録する。
+
 ## Project の追加
 
 Terraform root（`backend.tf` を持つディレクトリ）を追加した場合は、同じ変更で
