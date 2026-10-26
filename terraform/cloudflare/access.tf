@@ -9,6 +9,10 @@ resource "cloudflare_zero_trust_access_policy" "github_members" {
   name       = "GitHub Members"
   decision   = "allow"
 
+  connection_rules = {
+    rdp = {}
+  }
+
   include = [
     {
       github_organization = {

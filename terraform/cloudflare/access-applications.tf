@@ -14,6 +14,8 @@ resource "cloudflare_zero_trust_access_application" "app_launcher" {
   session_duration             = "24h"
   skip_app_launcher_login_page = false
 
+  landing_page_design = {}
+
   policies = [
     {
       id         = cloudflare_zero_trust_access_policy.github_members.id

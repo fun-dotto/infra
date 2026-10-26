@@ -15,6 +15,10 @@ resource "cloudflare_zero_trust_organization" "default" {
   warp_auth_non_browser_401   = false
   warp_auth_session_duration  = "8h"
 
+  service_token_inactivity = {
+    enabled = false
+  }
+
   deny_unmatched_requests_exempted_zone_names = []
 }
 
