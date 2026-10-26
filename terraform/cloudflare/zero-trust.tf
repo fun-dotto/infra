@@ -15,11 +15,12 @@ resource "cloudflare_zero_trust_organization" "default" {
   warp_auth_non_browser_401   = false
   warp_auth_session_duration  = "8h"
 
-  service_token_inactivity = {
-    enabled = false
-  }
-
   deny_unmatched_requests_exempted_zone_names = []
+
+  lifecycle {
+    # API が返す無効状態の { enabled = false } は action などが必須なため HCL で表現できない
+    ignore_changes = [service_token_inactivity]
+  }
 }
 
 import {
