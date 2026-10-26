@@ -16,7 +16,8 @@ resource "cloudflare_zero_trust_tunnel_cloudflared_config" "default" {
   config = {
     ingress = concat(
       [
-        for k, v in local.services : {
+        # Access をかけるサービスのみ Tunnel 経由にする
+        for k, v in local.access_services : {
           hostname = v.hostname
           service  = "https://${v.origin_host}"
           # Cloud Run は Host ヘッダーでサービスを振り分けるため run.app のホスト名に書き換える
@@ -44,7 +45,8 @@ resource "cloudflare_dns_record" "default" {
   zone_id = data.cloudflare_zone.default.id
   name    = each.value.hostname
   type    = "CNAME"
-  content = "${cloudflare_zero_trust_tunnel_cloudflared.default.id}.cfargotunnel.com"
+  # Access をかけないサービスは run.app に直接向ける（Host ヘッダーは origin-rules.tf で書き換える）
+  content = each.value.access ? "${cloudflare_zero_trust_tunnel_cloudflared.default.id}.cfargotunnel.com" : each.value.origin_host
   proxied = true
   ttl     = 1
 
