@@ -3,14 +3,9 @@ variable "environments" {
   default = ["dev", "stg", "prd"]
 }
 
-variable "access_allowed_email_domains" {
-  description = "Cloudflare Access で許可するメールアドレスのドメイン"
-  type        = list(string)
-  default     = []
-}
-
-variable "access_allowed_emails" {
-  description = "Cloudflare Access で許可するメールアドレス"
-  type        = list(string)
-  default     = []
+# GitHub Actions では Secret の CLOUDFLARE_GITHUB_IDP_CLIENT_SECRET を TF_VAR_ で渡す
+variable "github_identity_provider_client_secret" {
+  description = "Cloudflare Access の GitHub ログインに使う GitHub OAuth App の client secret"
+  type        = string
+  sensitive   = true
 }

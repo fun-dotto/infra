@@ -1,12 +1,23 @@
-resource "cloudflare_zero_trust_access_policy" "members" {
+# 既存の Access アプリケーション（Storybook、Server Docs など）でも使っている再利用ポリシー
+import {
+  to = cloudflare_zero_trust_access_policy.github_members
+  id = "7d5470511ab2e965d404ee16e47831c1/d3380222-a79f-49db-95fc-95a3e688c1df"
+}
+
+resource "cloudflare_zero_trust_access_policy" "github_members" {
   account_id = data.cloudflare_zone.default.account.id
-  name       = "dotto-members"
+  name       = "GitHub Members"
   decision   = "allow"
 
-  include = concat(
-    [for domain in var.access_allowed_email_domains : { email_domain = { domain = domain } }],
-    [for email in var.access_allowed_emails : { email = { email = email } }],
-  )
+  include = [
+    {
+      github_organization = {
+        identity_provider_id = cloudflare_zero_trust_access_identity_provider.github.id
+        name                 = "fun-dotto"
+        team                 = "Members"
+      }
+    },
+  ]
 }
 
 resource "cloudflare_zero_trust_access_application" "default" {
@@ -30,7 +41,7 @@ resource "cloudflare_zero_trust_access_application" "default" {
 
   policies = [
     {
-      id         = cloudflare_zero_trust_access_policy.members.id
+      id         = cloudflare_zero_trust_access_policy.github_members.id
       precedence = 1
     },
   ]
