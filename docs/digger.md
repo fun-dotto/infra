@@ -33,6 +33,13 @@ Provider と `terraform-ci` サービスアカウントを使う。
 権限は環境の運用方針に合わせて IAM で付与する。Pull Request から実行される
 サービスアカウントに project-wide の `roles/owner` は付与しない。
 
+## Cloudflare の設定
+
+`terraform/cloudflare/` の project は Cloudflare API Token を使う。Repository
+secrets に `CLOUDFLARE_API_TOKEN` を登録する。Token には対象アカウントの
+Cloudflare Tunnel・Access（アプリケーション・ポリシー）・Zero Trust の読み取りと、
+`fun-dotto.com` ゾーンの DNS の編集権限を付与する。
+
 ## Project の追加
 
 Terraform root（`backend.tf` を持つディレクトリ）を追加した場合は、同じ変更で
