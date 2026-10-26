@@ -1,6 +1,6 @@
 import {
   to = cloudflare_zero_trust_organization.default
-  id = "accounts/7d5470511ab2e965d404ee16e47831c1"
+  id = "7d5470511ab2e965d404ee16e47831c1"
 }
 
 resource "cloudflare_zero_trust_organization" "default" {
