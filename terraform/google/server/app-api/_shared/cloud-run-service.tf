@@ -20,6 +20,21 @@ resource "google_cloud_run_v2_service" "app_api" {
         "/bin/app-bff-api",
       ]
 
+      # TODO: 仮で BFF のバイナリを動かすためだけに必要。統合後の API には不要なので削除する
+      env {
+        name  = "ACADEMIC_API_URL"
+        value = data.terraform_remote_state.academic_service.outputs.cloud_run_service_uri
+      }
+      # TODO: 仮で BFF のバイナリを動かすためだけに必要。統合後の API には不要なので削除する
+      env {
+        name  = "ANNOUNCEMENT_API_URL"
+        value = data.terraform_remote_state.announcement_service.outputs.cloud_run_service_uri
+      }
+      # TODO: 仮で BFF のバイナリを動かすためだけに必要。統合後の API には不要なので削除する
+      env {
+        name  = "USER_API_URL"
+        value = data.terraform_remote_state.user_service.outputs.cloud_run_service_uri
+      }
       env {
         name  = "CF_ACCESS_ENABLED"
         value = local.environment == "prd" ? "false" : "true"
