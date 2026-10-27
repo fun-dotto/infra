@@ -40,7 +40,7 @@ resource "cloudflare_zero_trust_tunnel_cloudflared_config" "default" {
 }
 
 resource "cloudflare_dns_record" "default" {
-  # Access をかけないサービスの DNS は Cloud Run のドメインマッピングで別途管理する
+  # Access をかけないサービスの DNS は domain-mapping.tf で作る
   for_each = local.access_services
 
   zone_id = data.cloudflare_zone.default.id
