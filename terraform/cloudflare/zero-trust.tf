@@ -1,8 +1,3 @@
-import {
-  to = cloudflare_zero_trust_organization.default
-  id = "7d5470511ab2e965d404ee16e47831c1"
-}
-
 resource "cloudflare_zero_trust_organization" "default" {
   account_id  = data.cloudflare_zone.default.account.id
   name        = "Dotto"
@@ -21,11 +16,6 @@ resource "cloudflare_zero_trust_organization" "default" {
     # API が返す無効状態の { enabled = false } は action などが必須なため HCL で表現できない
     ignore_changes = [service_token_inactivity]
   }
-}
-
-import {
-  to = cloudflare_zero_trust_access_identity_provider.github
-  id = "accounts/7d5470511ab2e965d404ee16e47831c1/aa9b02c5-2e49-4576-81a5-ac03c5baeb99"
 }
 
 resource "cloudflare_zero_trust_access_identity_provider" "github" {
