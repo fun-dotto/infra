@@ -61,6 +61,19 @@ jobs:
         run: |
           merge_state="$(gh pr view "$PR_NUMBER" --json mergeStateStatus --jq '.mergeStateStatus')"
 
+          # 前回の apply 失敗で digger/apply が fail のまま残ると UNSTABLE になり再 apply できなくなるため、それ以外のチェックがすべて通っていれば許可する
+          if [[ "$merge_state" == "UNSTABLE" ]]; then
+            unfinished="$(gh pr view "$PR_NUMBER" --json statusCheckRollup --jq '
+              [.statusCheckRollup[]
+                | select((.context // .name) != "digger/apply")
+                | select(((.conclusion // .state) | IN("SUCCESS", "SKIPPED", "NEUTRAL")) | not)]
+              | length')"
+
+            if [[ "$unfinished" == "0" ]]; then
+              merge_state="CLEAN"
+            fi
+          fi
+
           if [[ "$merge_state" != "CLEAN" ]]; then
             echo "::error::PR does not satisfy branch rules: $merge_state"
             exit 1
