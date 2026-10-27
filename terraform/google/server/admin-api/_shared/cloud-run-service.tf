@@ -6,6 +6,8 @@ resource "google_cloud_run_v2_service" "admin_api" {
   # ID Token を持たない経路 (App Check / Cloudflare Access) からも呼ばれるため IAM 呼び出しチェックは無効化し、アプリ側で認証する
   invoker_iam_disabled = true
 
+  deletion_protection = false
+
   launch_stage = "GA"
   location     = var.google_cloud_region
   name         = var.service_name
