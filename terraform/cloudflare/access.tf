@@ -23,7 +23,7 @@ resource "cloudflare_zero_trust_access_application" "default" {
   for_each = local.access_services
 
   account_id = data.cloudflare_zone.default.account.id
-  name       = "dotto-${each.value.environment}-${replace(each.value.name, "_", "-")}"
+  name       = each.value.display_name
   type       = "self_hosted"
 
   destinations = [
@@ -35,7 +35,7 @@ resource "cloudflare_zero_trust_access_application" "default" {
 
   # 開発用モバイル端末は WARP クライアントで Zero Trust に登録して通す
   allow_authenticate_via_warp = true
-  app_launcher_visible        = true
+  app_launcher_visible        = each.value.app_launcher_visible
   session_duration            = "24h"
 
   policies = [
@@ -44,4 +44,15 @@ resource "cloudflare_zero_trust_access_application" "default" {
       precedence = 1
     },
   ]
+}
+
+resource "cloudflare_zero_trust_access_application" "bookmark" {
+  for_each = local.bookmark_services
+
+  account_id = data.cloudflare_zone.default.account.id
+  name       = each.value.display_name
+  type       = "bookmark"
+  domain     = each.value.hostname
+
+  app_launcher_visible = true
 }
