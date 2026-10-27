@@ -1,6 +1,13 @@
+data "google_project" "default" {}
+
 resource "google_cloud_run_v2_service" "app_api" {
-  ingress              = "INGRESS_TRAFFIC_ALL"
+  # 外部からは cloudflared (Cloudflare Tunnel) 経由でのみ到達させる
+  # prd は Access をかけず Tunnel も通さないため、Cloudflare プロキシから直接受ける（App Check / ID Token で認証する）
+  ingress = local.environment == "prd" ? "INGRESS_TRAFFIC_ALL" : "INGRESS_TRAFFIC_INTERNAL_ONLY"
+  # ID Token を持たない経路 (App Check / Cloudflare Access) からも呼ばれるため IAM 呼び出しチェックは無効化し、アプリ側で認証する
   invoker_iam_disabled = true
+
+  deletion_protection = false
 
   launch_stage = "GA"
   location     = var.google_cloud_region
@@ -11,21 +18,56 @@ resource "google_cloud_run_v2_service" "app_api" {
 
     containers {
       command = [
-        # TODO: BFF廃止後は /bin/app-api に変更する
+        # TODO: app-api のバイナリが用意できたら "/bin/app-api" に戻す
         "/bin/app-bff-api",
       ]
 
+      # TODO: 仮で BFF のバイナリを動かすためだけに必要。統合後の API には不要なので削除する
       env {
         name  = "ACADEMIC_API_URL"
         value = data.terraform_remote_state.academic_service.outputs.cloud_run_service_uri
       }
+      # TODO: 仮で BFF のバイナリを動かすためだけに必要。統合後の API には不要なので削除する
       env {
         name  = "ANNOUNCEMENT_API_URL"
         value = data.terraform_remote_state.announcement_service.outputs.cloud_run_service_uri
       }
+      # TODO: 仮で BFF のバイナリを動かすためだけに必要。統合後の API には不要なので削除する
       env {
         name  = "USER_API_URL"
         value = data.terraform_remote_state.user_service.outputs.cloud_run_service_uri
+      }
+      env {
+        name  = "CF_ACCESS_ENABLED"
+        value = local.environment == "prd" ? "false" : "true"
+      }
+      env {
+        name  = "CF_ACCESS_ISSUER"
+        value = data.terraform_remote_state.cloudflare.outputs.access_issuer
+      }
+      env {
+        name  = "CF_ACCESS_AUD"
+        value = lookup(lookup(data.terraform_remote_state.cloudflare.outputs.access_auds, local.environment, {}), "app_api", "")
+      }
+      env {
+        name  = "ID_TOKEN_AUDIENCE"
+        value = "https://${var.service_name}-${data.google_project.default.number}.${var.google_cloud_region}.run.app"
+      }
+      env {
+        name  = "ID_TOKEN_ALLOWED_SERVICE_ACCOUNTS"
+        value = "${var.id_token_allowed_service_account_id}@${var.google_cloud_project_id}.iam.gserviceaccount.com"
+      }
+      env {
+        name  = "DB_IAM_USER"
+        value = trimsuffix(google_service_account.app_api.email, ".gserviceaccount.com")
+      }
+      env {
+        name  = "DB_NAME"
+        value = var.db_name
+      }
+      env {
+        name  = "INSTANCE_CONNECTION_NAME"
+        value = var.instance_connection_name
       }
 
       image = var.image
