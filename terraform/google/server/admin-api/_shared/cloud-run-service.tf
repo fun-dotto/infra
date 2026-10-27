@@ -39,6 +39,18 @@ resource "google_cloud_run_v2_service" "admin_api" {
         name  = "ID_TOKEN_ALLOWED_SERVICE_ACCOUNTS"
         value = "${var.id_token_allowed_service_account_id}@${var.google_cloud_project_id}.iam.gserviceaccount.com"
       }
+      env {
+        name  = "DB_IAM_USER"
+        value = trimsuffix(google_service_account.admin_api.email, ".gserviceaccount.com")
+      }
+      env {
+        name  = "DB_NAME"
+        value = var.db_name
+      }
+      env {
+        name  = "INSTANCE_CONNECTION_NAME"
+        value = var.instance_connection_name
+      }
 
       image = var.image
 
