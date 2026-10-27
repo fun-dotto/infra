@@ -36,8 +36,8 @@ resource "google_cloud_run_v2_worker_pool" "cloudflared" {
 
       resources {
         limits = {
-          cpu    = "0.25"
-          memory = "256Mi"
+          cpu    = "1"
+          memory = "512Mi"
         }
       }
     }
