@@ -113,15 +113,6 @@ resource "cloudflare_zero_trust_access_application" "server_docs" {
 
 # App Launcher に表示するブックマーク
 
-# admin.dotto.furari.co のブックマークは access.tf の Access アプリケーションに置き換えた
-removed {
-  from = cloudflare_zero_trust_access_application.bookmark_dotto_admin
-
-  lifecycle {
-    destroy = true
-  }
-}
-
 import {
   to = cloudflare_zero_trust_access_application.bookmark_dotto_report
   id = "accounts/7d5470511ab2e965d404ee16e47831c1/792ee84c-94e3-497e-a1e1-7700050a9fb9"
