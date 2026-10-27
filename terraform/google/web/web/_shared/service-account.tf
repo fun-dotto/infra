@@ -5,6 +5,7 @@ resource "google_service_account" "web" {
 
 resource "google_project_iam_member" "web" {
   for_each = toset([
+    "roles/firebaseappcheck.tokenVerifier",
     "roles/logging.logWriter",
   ])
 
