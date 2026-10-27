@@ -2,6 +2,8 @@ resource "google_cloud_run_v2_service" "app_bff_api" {
   ingress              = "INGRESS_TRAFFIC_ALL"
   invoker_iam_disabled = true
 
+  deletion_protection = false
+
   launch_stage = "GA"
   location     = var.google_cloud_region
   name         = var.service_name
