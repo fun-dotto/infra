@@ -1,6 +1,7 @@
 resource "google_cloud_run_v2_service" "web" {
-  # Cloudflare Tunnel (cloudflared) 経由でのみ受け付け、Access の認証を必ず通す
-  ingress              = "INGRESS_TRAFFIC_INTERNAL_ONLY"
+  # dev / stg は Cloudflare Tunnel (cloudflared) 経由でのみ受け付け、Access の認証を必ず通す
+  # prd は Access をかけず Tunnel も通さないため、ドメインマッピングで直接受ける
+  ingress              = endswith(var.service_name, "-dev") || endswith(var.service_name, "-stg") ? "INGRESS_TRAFFIC_INTERNAL_ONLY" : "INGRESS_TRAFFIC_ALL"
   invoker_iam_disabled = true
   default_uri_disabled = false
 

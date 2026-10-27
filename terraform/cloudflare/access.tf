@@ -40,7 +40,7 @@ resource "cloudflare_zero_trust_access_application" "default" {
 
   # 開発用モバイル端末は WARP クライアントで Zero Trust に登録して通す
   allow_authenticate_via_warp = true
-  app_launcher_visible        = false
+  app_launcher_visible        = true
   session_duration            = "24h"
 
   policies = [
