@@ -19,3 +19,6 @@ variable "max_instance_count" {
 variable "min_instance_count" {
   type = number
 }
+
+# ID Token での呼び出しを許可する Web の Service Account ID
+variable "id_token_allowed_service_account_id" {}

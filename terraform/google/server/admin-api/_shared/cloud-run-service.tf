@@ -36,7 +36,7 @@ resource "google_cloud_run_v2_service" "admin_api" {
       }
       env {
         name  = "ID_TOKEN_ALLOWED_SERVICE_ACCOUNTS"
-        value = data.terraform_remote_state.admin_web.outputs.service_account_email
+        value = "${var.id_token_allowed_service_account_id}@${var.google_cloud_project_id}.iam.gserviceaccount.com"
       }
 
       image = var.image
