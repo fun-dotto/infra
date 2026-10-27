@@ -42,9 +42,10 @@ resource "google_cloud_run_v2_worker_pool" "cloudflared" {
       }
     }
 
-    # *.run.app 宛てを VPC (Private Google Access) 経由にして internal ingress の Cloud Run に届かせる
+    # internal ingress の Cloud Run に届かせるため全トラフィックを VPC 経由にする
+    # (*.run.app は private.googleapis.com に解決され、Cloudflare 宛ては Cloud NAT から出る)
     vpc_access {
-      egress = "PRIVATE_RANGES_ONLY"
+      egress = "ALL_TRAFFIC"
 
       network_interfaces {
         network    = data.terraform_remote_state.network.outputs.network_name

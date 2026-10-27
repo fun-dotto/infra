@@ -1,9 +1,4 @@
 # 既存の Access アプリケーション（Storybook、Server Docs など）でも使っている再利用ポリシー
-import {
-  to = cloudflare_zero_trust_access_policy.github_members
-  id = "7d5470511ab2e965d404ee16e47831c1/d3380222-a79f-49db-95fc-95a3e688c1df"
-}
-
 resource "cloudflare_zero_trust_access_policy" "github_members" {
   account_id = data.cloudflare_zone.default.account.id
   name       = "GitHub Members"
@@ -40,7 +35,7 @@ resource "cloudflare_zero_trust_access_application" "default" {
 
   # 開発用モバイル端末は WARP クライアントで Zero Trust に登録して通す
   allow_authenticate_via_warp = true
-  app_launcher_visible        = false
+  app_launcher_visible        = true
   session_duration            = "24h"
 
   policies = [

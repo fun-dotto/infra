@@ -1,7 +1,8 @@
 resource "google_cloud_run_v2_service" "admin_web" {
-  ingress              = "INGRESS_TRAFFIC_ALL"
+  # Cloudflare Tunnel (cloudflared) 経由でのみ受け付け、Access の認証を必ず通す
+  ingress              = "INGRESS_TRAFFIC_INTERNAL_ONLY"
   invoker_iam_disabled = true
-  default_uri_disabled = true
+  default_uri_disabled = false
 
   launch_stage = "GA"
   location     = var.google_cloud_region

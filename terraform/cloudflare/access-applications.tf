@@ -1,10 +1,5 @@
 # Terraform 管理前から存在する Access アプリケーション
 
-import {
-  to = cloudflare_zero_trust_access_application.app_launcher
-  id = "accounts/7d5470511ab2e965d404ee16e47831c1/bbdbe598-2bc7-4d3b-8d84-aeef966ae7d6"
-}
-
 resource "cloudflare_zero_trust_access_application" "app_launcher" {
   account_id = data.cloudflare_zone.default.account.id
   name       = "App Launcher"
@@ -26,11 +21,6 @@ resource "cloudflare_zero_trust_access_application" "app_launcher" {
   ]
 }
 
-import {
-  to = cloudflare_zero_trust_access_application.warp_login
-  id = "accounts/7d5470511ab2e965d404ee16e47831c1/867b0b02-1f9b-4f69-aa1c-95c263af552c"
-}
-
 resource "cloudflare_zero_trust_access_application" "warp_login" {
   account_id = data.cloudflare_zone.default.account.id
   name       = "Warp Login App"
@@ -45,11 +35,6 @@ resource "cloudflare_zero_trust_access_application" "warp_login" {
       precedence = 1
     },
   ]
-}
-
-import {
-  to = cloudflare_zero_trust_access_application.web_storybook
-  id = "accounts/7d5470511ab2e965d404ee16e47831c1/17573825-c795-4d79-945d-9e90561e82e6"
 }
 
 resource "cloudflare_zero_trust_access_application" "web_storybook" {
@@ -77,11 +62,6 @@ resource "cloudflare_zero_trust_access_application" "web_storybook" {
       precedence = 1
     },
   ]
-}
-
-import {
-  to = cloudflare_zero_trust_access_application.server_docs
-  id = "accounts/7d5470511ab2e965d404ee16e47831c1/057aca26-6bd9-4e19-b907-623fc08225d2"
 }
 
 resource "cloudflare_zero_trust_access_application" "server_docs" {
@@ -113,31 +93,6 @@ resource "cloudflare_zero_trust_access_application" "server_docs" {
 
 # App Launcher に表示するブックマーク
 
-import {
-  to = cloudflare_zero_trust_access_application.bookmark_dotto_admin
-  id = "accounts/7d5470511ab2e965d404ee16e47831c1/345856e2-512c-4d64-9a5a-2b44583c4867"
-}
-
-resource "cloudflare_zero_trust_access_application" "bookmark_dotto_admin" {
-  account_id           = data.cloudflare_zone.default.account.id
-  name                 = "Dotto Admin"
-  type                 = "bookmark"
-  domain               = "https://admin.dotto.furari.co"
-  app_launcher_visible = true
-
-  policies = [
-    {
-      id         = cloudflare_zero_trust_access_policy.github_members.id
-      precedence = 1
-    },
-  ]
-}
-
-import {
-  to = cloudflare_zero_trust_access_application.bookmark_dotto_report
-  id = "accounts/7d5470511ab2e965d404ee16e47831c1/792ee84c-94e3-497e-a1e1-7700050a9fb9"
-}
-
 resource "cloudflare_zero_trust_access_application" "bookmark_dotto_report" {
   account_id           = data.cloudflare_zone.default.account.id
   name                 = "Dotto Report"
@@ -151,11 +106,6 @@ resource "cloudflare_zero_trust_access_application" "bookmark_dotto_report" {
       precedence = 1
     },
   ]
-}
-
-import {
-  to = cloudflare_zero_trust_access_application.bookmark_github
-  id = "accounts/7d5470511ab2e965d404ee16e47831c1/31364e87-62bb-4fb0-81ab-fec96d075931"
 }
 
 resource "cloudflare_zero_trust_access_application" "bookmark_github" {
