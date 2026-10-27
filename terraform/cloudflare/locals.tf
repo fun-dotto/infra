@@ -33,6 +33,9 @@ locals {
 
   access_services = { for k, v in local.services : k => v if v.access }
 
+  # Access をかけないサービスは Cloud Run のドメインマッピングで直接公開する
+  direct_services = { for k, v in local.services : k => v if !v.access }
+
   # Access をかけないが App Launcher に表示するサービスはブックマークとして登録する
   bookmark_services = { for k, v in local.services : k => v if !v.access && v.app_launcher_visible }
 }
