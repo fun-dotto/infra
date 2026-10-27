@@ -113,24 +113,13 @@ resource "cloudflare_zero_trust_access_application" "server_docs" {
 
 # App Launcher に表示するブックマーク
 
-import {
-  to = cloudflare_zero_trust_access_application.bookmark_dotto_admin
-  id = "accounts/7d5470511ab2e965d404ee16e47831c1/345856e2-512c-4d64-9a5a-2b44583c4867"
-}
+# admin.dotto.furari.co のブックマークは cloud-run-apps.tf の Access アプリに置き換えた
+removed {
+  from = cloudflare_zero_trust_access_application.bookmark_dotto_admin
 
-resource "cloudflare_zero_trust_access_application" "bookmark_dotto_admin" {
-  account_id           = data.cloudflare_zone.default.account.id
-  name                 = "Dotto Admin"
-  type                 = "bookmark"
-  domain               = "https://admin.dotto.furari.co"
-  app_launcher_visible = true
-
-  policies = [
-    {
-      id         = cloudflare_zero_trust_access_policy.github_members.id
-      precedence = 1
-    },
-  ]
+  lifecycle {
+    destroy = true
+  }
 }
 
 import {

@@ -9,3 +9,7 @@ variable "github_identity_provider_client_secret" {
   type        = string
   sensitive   = true
 }
+
+variable "tfstate_bucket" {
+  default = "swift2023groupc-tfstate"
+}
