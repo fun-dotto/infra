@@ -3,8 +3,6 @@ resource "google_cloud_run_v2_service" "admin_web" {
   invoker_iam_disabled = true
   default_uri_disabled = true
 
-  deletion_protection = false
-
   launch_stage = "GA"
   location     = var.google_cloud_region
   name         = var.service_name
