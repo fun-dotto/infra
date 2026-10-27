@@ -15,7 +15,8 @@ resource "google_cloud_run_v2_service" "admin_api" {
 
     containers {
       command = [
-        "/bin/admin-api",
+        # TODO: admin-api のバイナリが用意できたら "/bin/admin-api" に戻す
+        "/bin/admin-bff-api",
       ]
 
       env {

@@ -16,7 +16,8 @@ resource "google_cloud_run_v2_service" "app_api" {
 
     containers {
       command = [
-        "/bin/app-api",
+        # TODO: app-api のバイナリが用意できたら "/bin/app-api" に戻す
+        "/bin/app-bff-api",
       ]
 
       env {
