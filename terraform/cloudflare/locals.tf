@@ -1,6 +1,6 @@
 locals {
   # access_in_prd: prd で Cloudflare Access をかけるか（prd の web / app-api はかけず App Check で保護する）
-  # Access をかけないサービスは Tunnel も通さず、Cloudflare プロキシから直接 Cloud Run (ingress all) に向ける
+  # Access をかけないサービスは Tunnel を通さず、Cloud Run のドメインマッピングで直接公開する
   service_definitions = {
     web       = { subdomain = "", cloud_run_service = "web", access_in_prd = false }
     admin_web = { subdomain = "admin", cloud_run_service = "admin-web", access_in_prd = true }
@@ -27,5 +27,4 @@ locals {
   ]...)
 
   access_services = { for k, v in local.services : k => v if v.access }
-  direct_services = { for k, v in local.services : k => v if !v.access }
 }

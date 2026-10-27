@@ -40,13 +40,13 @@ resource "cloudflare_zero_trust_tunnel_cloudflared_config" "default" {
 }
 
 resource "cloudflare_dns_record" "default" {
-  for_each = local.services
+  # Access をかけないサービスの DNS は Cloud Run のドメインマッピングで別途管理する
+  for_each = local.access_services
 
   zone_id = data.cloudflare_zone.default.id
   name    = each.value.hostname
   type    = "CNAME"
-  # Access をかけないサービスは run.app に直接向ける（Host ヘッダーは origin-rules.tf で書き換える）
-  content = each.value.access ? "${cloudflare_zero_trust_tunnel_cloudflared.default.id}.cfargotunnel.com" : each.value.origin_host
+  content = "${cloudflare_zero_trust_tunnel_cloudflared.default.id}.cfargotunnel.com"
   proxied = true
   ttl     = 1
 
