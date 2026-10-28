@@ -2,10 +2,10 @@
 minimum_release_age = "7d"
 
 [tools]
-bun = "1.4.3"
-gcloud = "589.0.0"
-"npm:rulesync" = "38.0.0"
-terraform = "1.16.6"
+bun = "1.4.4"
+gcloud = "590.0.1"
+"npm:rulesync" = "43.1.2"
+terraform = "1.17.0"
 
 [tasks.bootstrap]
 run = [
