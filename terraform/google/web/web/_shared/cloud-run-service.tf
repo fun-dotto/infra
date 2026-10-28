@@ -12,6 +12,10 @@ resource "google_cloud_run_v2_service" "web" {
   template {
     containers {
       env {
+        name  = "API_BASE_URL"
+        value = data.terraform_remote_state.app_bff_api.outputs.cloud_run_service_uri
+      }
+      env {
         name  = "APP_API_URL"
         value = local.app_api_url
       }
