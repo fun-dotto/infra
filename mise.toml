@@ -2,7 +2,7 @@
 minimum_release_age = "7d"
 
 [plugins]
-gcloud = "https://github.com/jdx/vfox-gcloud.git#8bc2e33"
+gcloud = "https://github.com/jdx/vfox-gcloud.git#8bc2e33aa741c0935f219e0d5791f0dc92569ed9"
 
 [tools]
 bun = "1.4.4"
