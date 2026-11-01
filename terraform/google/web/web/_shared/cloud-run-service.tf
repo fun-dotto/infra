@@ -1,7 +1,7 @@
 resource "google_cloud_run_v2_service" "web" {
   # dev / stg は Cloudflare Tunnel (cloudflared) 経由でのみ受け付け、Access の認証を必ず通す
   # prd は Access をかけず Tunnel も通さないため、ドメインマッピングで直接受ける
-  ingress              = endswith(var.service_name, "-dev") || endswith(var.service_name, "-stg") ? "INGRESS_TRAFFIC_INTERNAL_ONLY" : "INGRESS_TRAFFIC_ALL"
+  ingress              = var.environment == "prd" ? "INGRESS_TRAFFIC_ALL" : "INGRESS_TRAFFIC_INTERNAL_ONLY"
   invoker_iam_disabled = true
   default_uri_disabled = false
 
@@ -21,7 +21,7 @@ resource "google_cloud_run_v2_service" "web" {
       }
       env {
         name  = "CF_ACCESS_ENABLED"
-        value = local.environment == "prd" ? "false" : "true"
+        value = var.environment == "prd" ? "false" : "true"
       }
       env {
         name  = "CF_ACCESS_ISSUER"
@@ -29,7 +29,7 @@ resource "google_cloud_run_v2_service" "web" {
       }
       env {
         name  = "CF_ACCESS_AUD"
-        value = lookup(lookup(data.terraform_remote_state.cloudflare.outputs.access_auds, local.environment, {}), "web", "")
+        value = lookup(lookup(data.terraform_remote_state.cloudflare.outputs.access_auds, var.environment, {}), "web", "")
       }
       env {
         name = "NOTION_TOKEN"
@@ -85,7 +85,7 @@ resource "google_cloud_run_v2_service" "web" {
 
     # internal ingress の API を VPC 経由で呼ぶ（prd の app-api は ingress all のため不要）
     dynamic "vpc_access" {
-      for_each = local.environment == "prd" ? [] : [1]
+      for_each = var.environment == "prd" ? [] : [1]
 
       content {
         egress = "PRIVATE_RANGES_ONLY"

@@ -3,7 +3,7 @@ data "google_project" "default" {}
 resource "google_cloud_run_v2_service" "app_api" {
   # 外部からは cloudflared (Cloudflare Tunnel) 経由でのみ到達させる
   # prd は Access をかけず Tunnel も通さないため、Cloudflare プロキシから直接受ける（App Check / ID Token で認証する）
-  ingress = local.environment == "prd" ? "INGRESS_TRAFFIC_ALL" : "INGRESS_TRAFFIC_INTERNAL_ONLY"
+  ingress = var.environment == "prd" ? "INGRESS_TRAFFIC_ALL" : "INGRESS_TRAFFIC_INTERNAL_ONLY"
   # ID Token を持たない経路 (App Check / Cloudflare Access) からも呼ばれるため IAM 呼び出しチェックは無効化し、アプリ側で認証する
   invoker_iam_disabled = true
 
@@ -39,7 +39,7 @@ resource "google_cloud_run_v2_service" "app_api" {
       }
       env {
         name  = "CF_ACCESS_ENABLED"
-        value = local.environment == "prd" ? "false" : "true"
+        value = var.environment == "prd" ? "false" : "true"
       }
       env {
         name  = "CF_ACCESS_ISSUER"
@@ -47,7 +47,7 @@ resource "google_cloud_run_v2_service" "app_api" {
       }
       env {
         name  = "CF_ACCESS_AUD"
-        value = lookup(lookup(data.terraform_remote_state.cloudflare.outputs.access_auds, local.environment, {}), "app_api", "")
+        value = lookup(lookup(data.terraform_remote_state.cloudflare.outputs.access_auds, var.environment, {}), "app_api", "")
       }
       env {
         name  = "ID_TOKEN_AUDIENCE"

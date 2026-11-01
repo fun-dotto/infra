@@ -1,8 +1,6 @@
 # TODO: もっとマシな方法を考える
 
 locals {
-  environment = endswith(var.service_name, "-dev") ? "dev" : endswith(var.service_name, "-stg") ? "stg" : "prd"
-
   server_state_prefixes = {
     dev = {
       academic_service     = "server/academic-service-dev"
@@ -27,7 +25,7 @@ data "terraform_remote_state" "academic_service" {
 
   config = {
     bucket = var.tfstate_bucket
-    prefix = local.server_state_prefixes[local.environment].academic_service
+    prefix = local.server_state_prefixes[var.environment].academic_service
   }
 }
 
@@ -36,7 +34,7 @@ data "terraform_remote_state" "announcement_service" {
 
   config = {
     bucket = var.tfstate_bucket
-    prefix = local.server_state_prefixes[local.environment].announcement_service
+    prefix = local.server_state_prefixes[var.environment].announcement_service
   }
 }
 
@@ -45,6 +43,6 @@ data "terraform_remote_state" "user_service" {
 
   config = {
     bucket = var.tfstate_bucket
-    prefix = local.server_state_prefixes[local.environment].user_service
+    prefix = local.server_state_prefixes[var.environment].user_service
   }
 }

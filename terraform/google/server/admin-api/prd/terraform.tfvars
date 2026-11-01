@@ -1,3 +1,4 @@
+environment                         = "prd"
 service_account_id                  = "admin-api"
 service_account_display_name        = "Admin API"
 db_name                             = "dotto"

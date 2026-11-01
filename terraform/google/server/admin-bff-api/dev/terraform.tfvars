@@ -1,3 +1,4 @@
+environment                  = "dev"
 service_account_id           = "admin-bff-api-dev"
 service_account_display_name = "Admin BFF API (Dev)"
 service_name                 = "admin-bff-api-dev"
