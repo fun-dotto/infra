@@ -62,6 +62,7 @@ resource "cloudflare_zero_trust_access_application" "default" {
   # 開発用モバイル端末は WARP クライアントで Zero Trust に登録して通す
   allow_authenticate_via_warp = true
   app_launcher_visible        = each.value.app_launcher_visible
+  logo_url                    = each.value.app_launcher_visible ? "https://${each.value.hostname}/favicon.ico" : null
   session_duration            = "24h"
 
   policies = concat(
@@ -89,4 +90,5 @@ resource "cloudflare_zero_trust_access_application" "bookmark" {
   domain     = each.value.hostname
 
   app_launcher_visible = true
+  logo_url             = "https://${each.value.hostname}/favicon.ico"
 }
