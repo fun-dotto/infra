@@ -104,13 +104,13 @@ projects:
     include_patterns: ["terraform/google/server/notify-user-job/_shared/**", "terraform/google/_shared/**"]
   - name: server-user-service-dev
     dir: terraform/google/server/user-service/dev
-    include_patterns: ["terraform/google/server/user-service/_shared/**", "terraform/google/_shared/**"]
+    include_patterns: ["terraform/modules/cloud-run-service/**"]
   - name: server-user-service-stg
     dir: terraform/google/server/user-service/stg
-    include_patterns: ["terraform/google/server/user-service/_shared/**", "terraform/google/_shared/**"]
+    include_patterns: ["terraform/modules/cloud-run-service/**"]
   - name: server-user-service-prd
     dir: terraform/google/server/user-service/prd
-    include_patterns: ["terraform/google/server/user-service/_shared/**", "terraform/google/_shared/**"]
+    include_patterns: ["terraform/modules/cloud-run-service/**"]
   - name: web-admin-web-dev
     dir: terraform/google/web/admin-web/dev
     include_patterns: ["terraform/google/web/admin-web/_shared/**", "terraform/google/_shared/**"]
