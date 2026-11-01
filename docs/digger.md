@@ -24,14 +24,19 @@ required status checks、必須レビューなど、対象ブランチのルー�
 GitHub Actions はサービスアカウントキーを使わず、既存の Workload Identity
 Provider と `terraform-ci` サービスアカウントを使う。
 
-`terraform-ci` には、管理対象リソースに必要な最小権限に加えて、次の GCS
-オブジェクト操作権限が必要になる。
+`terraform-ci` のロールは
+`terraform/google/modules/iam-workload-identity/service_account_terraform-ci.tf` で
+管理する。新しい種類のリソースを Terraform で管理する場合は、必要なロールを先に
+追加する。Pull Request から実行されるサービスアカウントに project-wide の
+`roles/owner` は付与しない。
+
+GCS については次の操作権限が必要になる。
 
 - Terraform state の読み書き
 - `swift2023groupc-tfstate` バケットに保存する Digger の PR lock の作成、参照、削除
 
-権限は環境の運用方針に合わせて IAM で付与する。Pull Request から実行される
-サービスアカウントに project-wide の `roles/owner` は付与しない。
+Direct Workload Identity Federation は使わない。プロジェクトの `SetIamPolicy`、
+Firebase、Cloud Run のドメインマッピングの API が federated token を受け付けないため。
 
 ## Cloudflare の設定
 
