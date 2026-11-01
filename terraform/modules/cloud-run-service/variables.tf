@@ -35,6 +35,11 @@ variable "ingress" {
   type = string
 }
 
+variable "invoker_iam_disabled" {
+  type    = bool
+  default = null
+}
+
 variable "deletion_protection" {
   type = bool
 }
@@ -45,6 +50,16 @@ variable "cloud_sql" {
     db_name                  = string
     instance_connection_name = string
   })
+  default = null
+}
+
+variable "env" {
+  description = "Environment variables exposed to the container, placed before the Cloud SQL settings."
+  type = list(object({
+    name  = string
+    value = string
+  }))
+  default = []
 }
 
 variable "max_instance_count" {
