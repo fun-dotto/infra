@@ -24,7 +24,8 @@ variable "project_roles" {
 }
 
 variable "command" {
-  type = list(string)
+  type    = list(string)
+  default = null
 }
 
 variable "image" {
@@ -36,6 +37,11 @@ variable "ingress" {
 }
 
 variable "invoker_iam_disabled" {
+  type    = bool
+  default = null
+}
+
+variable "default_uri_disabled" {
   type    = bool
   default = null
 }
@@ -60,6 +66,16 @@ variable "env" {
     value = string
   }))
   default = []
+}
+
+variable "vpc_access" {
+  description = "VPC network the service sends egress traffic through."
+  type = object({
+    egress     = string
+    network    = string
+    subnetwork = string
+  })
+  default = null
 }
 
 variable "max_instance_count" {
