@@ -53,18 +53,3 @@ resource "google_cloud_run_v2_service_iam_member" "user_service_invoker" {
   role   = "roles/run.invoker"
   member = "serviceAccount:${module.service.service_account_email}"
 }
-
-moved {
-  from = google_service_account.admin_bff_api
-  to   = module.service.google_service_account.this
-}
-
-moved {
-  from = google_project_iam_member.admin_bff_api
-  to   = module.service.google_project_iam_member.this
-}
-
-moved {
-  from = google_cloud_run_v2_service.admin_bff_api
-  to   = module.service.google_cloud_run_v2_service.this
-}

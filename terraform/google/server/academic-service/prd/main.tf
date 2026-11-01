@@ -26,18 +26,3 @@ module "service" {
   max_instance_count = 10
   min_instance_count = 1
 }
-
-moved {
-  from = google_service_account.academic_service
-  to   = module.service.google_service_account.this
-}
-
-moved {
-  from = google_project_iam_member.academic_service
-  to   = module.service.google_project_iam_member.this
-}
-
-moved {
-  from = google_cloud_run_v2_service.academic_service
-  to   = module.service.google_cloud_run_v2_service.this
-}

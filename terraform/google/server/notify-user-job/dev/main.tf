@@ -26,33 +26,3 @@ module "job" {
   schedule = "30 16 * * *"
   timezone = "Asia/Tokyo"
 }
-
-moved {
-  from = google_service_account.notify_user_job
-  to   = module.job.google_service_account.this
-}
-
-moved {
-  from = google_project_iam_member.notify_user_job
-  to   = module.job.google_project_iam_member.this
-}
-
-moved {
-  from = google_service_account.notify_user_job_scheduler
-  to   = module.job.google_service_account.scheduler
-}
-
-moved {
-  from = google_cloud_run_v2_job_iam_member.notify_user_job_invoker
-  to   = module.job.google_cloud_run_v2_job_iam_member.invoker
-}
-
-moved {
-  from = google_cloud_run_v2_job.notify_user_job
-  to   = module.job.google_cloud_run_v2_job.this
-}
-
-moved {
-  from = google_cloud_scheduler_job.notify_user_job_trigger
-  to   = module.job.google_cloud_scheduler_job.trigger
-}

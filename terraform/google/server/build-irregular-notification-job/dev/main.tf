@@ -26,33 +26,3 @@ module "job" {
   schedule = "0 16 * * *"
   timezone = "Asia/Tokyo"
 }
-
-moved {
-  from = google_service_account.build_irregular_notification_job
-  to   = module.job.google_service_account.this
-}
-
-moved {
-  from = google_project_iam_member.build_irregular_notification_job
-  to   = module.job.google_project_iam_member.this
-}
-
-moved {
-  from = google_service_account.build_irregular_notification_job_scheduler
-  to   = module.job.google_service_account.scheduler
-}
-
-moved {
-  from = google_cloud_run_v2_job_iam_member.build_irregular_notification_job_invoker
-  to   = module.job.google_cloud_run_v2_job_iam_member.invoker
-}
-
-moved {
-  from = google_cloud_run_v2_job.build_irregular_notification_job
-  to   = module.job.google_cloud_run_v2_job.this
-}
-
-moved {
-  from = google_cloud_scheduler_job.build_irregular_notification_job_trigger
-  to   = module.job.google_cloud_scheduler_job.trigger
-}
