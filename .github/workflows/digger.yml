@@ -35,6 +35,7 @@ env:
   TF_IN_AUTOMATION: "true"
   TF_INPUT: "false"
   WORKLOAD_IDENTITY_PROVIDER: "projects/107577467292/locations/global/workloadIdentityPools/dotto/providers/github"
+  SERVICE_ACCOUNT: "terraform-ci@swift2023groupc.iam.gserviceaccount.com"
   DIGGER_LOCK_BUCKET: "swift2023groupc-tfstate"
 
 jobs:
@@ -48,10 +49,7 @@ jobs:
       github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     steps:
-      # Digger の checkout を無効にしているため、issue_comment でも Pull Request のマージ結果を取得する
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          ref: ${{ github.event_name == 'issue_comment' && format('refs/pull/{0}/merge', github.event.issue.number) || github.ref }}
 
       - name: Verify PR satisfies branch rules before apply
         if: >-
@@ -81,26 +79,18 @@ jobs:
             exit 1
           fi
 
-      # Digger Action の認証は Service Account を必須とするため、自前のステップで認証する
-      - name: Authenticate to Google Cloud
-        uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3.0.0
-        with:
-          workload_identity_provider: ${{ env.WORKLOAD_IDENTITY_PROVIDER }}
-
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@aa5489c8933f4cc7a4f7d45035b3b1440c9c10db # v3.0.1
-
       - name: Run Digger
         uses: diggerhq/digger@853f6abf3f7ad9d2fa20b8956e5a758441ddca1e # v0.6.154
         with:
           cache-dependencies: true
-          configure-checkout: false
           digger-version: v0.6.147
           google-lock-bucket: ${{ env.DIGGER_LOCK_BUCKET }}
+          google-service-account: ${{ env.SERVICE_ACCOUNT }}
+          google-workload-identity-provider: ${{ env.WORKLOAD_IDENTITY_PROVIDER }}
           no-backend: true
           post-plans-as-one-comment: true
           reporting-strategy: latest_run_comment
-          setup-google-cloud: false
+          setup-google-cloud: true
           setup-terraform: true
           terraform-version: 1.15.5
         env:
