@@ -1,3 +1,4 @@
+environment                  = "prd"
 service_account_id           = "web-prd"
 service_account_display_name = "Web"
 service_name                 = "web"

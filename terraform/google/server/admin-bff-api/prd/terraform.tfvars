@@ -1,3 +1,4 @@
+environment                  = "prd"
 service_account_id           = "admin-bff-api"
 service_account_display_name = "Admin BFF API"
 service_name                 = "admin-bff-api"

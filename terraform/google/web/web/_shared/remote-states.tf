@@ -1,8 +1,6 @@
 locals {
-  environment = endswith(var.service_name, "-dev") ? "dev" : endswith(var.service_name, "-stg") ? "stg" : "prd"
-
   # app-api は本サービスのサービスアカウントを参照するため、remote state ではなく URI を組み立てて循環を避ける
-  app_api_service_name = local.environment == "prd" ? "app-api" : "app-api-${local.environment}"
+  app_api_service_name = var.environment == "prd" ? "app-api" : "app-api-${var.environment}"
   app_api_url          = "https://${local.app_api_service_name}-${data.google_project.default.number}.${var.google_cloud_region}.run.app"
 }
 
@@ -31,6 +29,6 @@ data "terraform_remote_state" "app_bff_api" {
 
   config = {
     bucket = var.tfstate_bucket
-    prefix = "server/app-bff-api-${local.environment}"
+    prefix = "server/app-bff-api-${var.environment}"
   }
 }

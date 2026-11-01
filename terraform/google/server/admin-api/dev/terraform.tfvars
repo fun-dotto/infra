@@ -1,3 +1,4 @@
+environment                         = "dev"
 service_account_id                  = "admin-api-dev"
 service_account_display_name        = "Admin API (Dev)"
 db_name                             = "dotto_dev"

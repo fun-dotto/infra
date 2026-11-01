@@ -1,3 +1,4 @@
+environment                         = "stg"
 service_account_id                  = "admin-api-stg"
 service_account_display_name        = "Admin API (Stg)"
 db_name                             = "dotto_stg"
