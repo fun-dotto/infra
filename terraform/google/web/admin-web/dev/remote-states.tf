@@ -1,5 +1,3 @@
-data "google_project" "default" {}
-
 data "terraform_remote_state" "network" {
   backend = "gcs"
 

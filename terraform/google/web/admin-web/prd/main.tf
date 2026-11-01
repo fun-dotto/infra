@@ -20,9 +20,17 @@ module "service" {
 
   env = [
     {
-      # admin-api は本サービスのサービスアカウントを参照するため、remote state ではなく URI を組み立てて循環を避ける
+      # Access の Service Token で認証するため、Cloudflare 経由の公開ホスト名で呼ぶ
       name  = "ADMIN_API_URL"
-      value = "https://admin-api-${data.google_project.default.number}.asia-northeast1.run.app"
+      value = "https://${data.terraform_remote_state.cloudflare.outputs.hostnames["prd/admin_api"]}"
+    },
+    {
+      name  = "CF_ACCESS_CLIENT_ID"
+      value = data.terraform_remote_state.cloudflare.outputs.admin_web_service_token_client_ids["prd"]
+    },
+    {
+      name      = "CF_ACCESS_CLIENT_SECRET"
+      secret_id = google_secret_manager_secret.cf_access_client_secret.secret_id
     },
     {
       name  = "CF_ACCESS_ENABLED"
@@ -47,4 +55,7 @@ module "service" {
 
   max_instance_count = 10
   min_instance_count = 0
+
+  # Secret のバージョンがないとリビジョンを起動できない
+  depends_on = [google_secret_manager_secret_version.cf_access_client_secret]
 }

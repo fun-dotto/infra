@@ -27,3 +27,14 @@ output "hostnames" {
   description = "The public hostnames of the services."
   value       = { for k, v in local.services : k => v.hostname }
 }
+
+output "admin_web_service_token_client_ids" {
+  description = "The client IDs of the Service Tokens admin-web uses to call admin-api, by environment."
+  value       = { for env, token in cloudflare_zero_trust_access_service_token.admin_web : env => token.client_id }
+}
+
+output "admin_web_service_token_client_secrets" {
+  description = "The client secrets of the Service Tokens admin-web uses to call admin-api, by environment."
+  value       = { for env, token in cloudflare_zero_trust_access_service_token.admin_web : env => token.client_secret }
+  sensitive   = true
+}
