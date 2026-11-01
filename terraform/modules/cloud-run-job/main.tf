@@ -11,6 +11,14 @@ resource "google_project_iam_member" "this" {
   member  = "serviceAccount:${google_service_account.this.email}"
 }
 
+resource "google_secret_manager_secret_iam_member" "secret_env" {
+  for_each = { for env in var.secret_env : env.name => env.secret_id }
+
+  secret_id = each.value
+  role      = "roles/secretmanager.secretAccessor"
+  member    = "serviceAccount:${google_service_account.this.email}"
+}
+
 resource "google_service_account" "scheduler" {
   account_id   = "${var.service_account_id}-scheduler"
   display_name = "${var.service_account_display_name} Scheduler"
@@ -47,6 +55,20 @@ resource "google_cloud_run_v2_job" "this" {
           value = var.cloud_sql.instance_connection_name
         }
 
+        dynamic "env" {
+          for_each = var.secret_env
+
+          content {
+            name = env.value.name
+            value_source {
+              secret_key_ref {
+                secret  = env.value.secret_id
+                version = "latest"
+              }
+            }
+          }
+        }
+
         image = var.image
 
         resources {
@@ -63,6 +85,10 @@ resource "google_cloud_run_v2_job" "this" {
       timeout         = "900s"
     }
   }
+
+  depends_on = [
+    google_secret_manager_secret_iam_member.secret_env,
+  ]
 
   lifecycle {
     ignore_changes = [
