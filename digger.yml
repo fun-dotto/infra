@@ -1,26 +1,26 @@
 projects:
   - name: cloudflare
     dir: terraform/cloudflare
-  - name: cloudflared
-    dir: terraform/google/cloudflared
-  - name: modules-artifact-registry
-    dir: terraform/google/modules/artifact-registry
-  - name: modules-cloud-sql
-    dir: terraform/google/modules/cloud-sql
-  - name: modules-cloud-storage
-    dir: terraform/google/modules/cloud-storage
-  - name: modules-firebase-remote-config
-    dir: terraform/google/modules/firebase-remote-config
-  - name: modules-iam-workload-identity
-    dir: terraform/google/modules/iam-workload-identity
-  - name: modules-monitoring
-    dir: terraform/google/modules/monitoring
-  - name: modules-network
-    dir: terraform/google/modules/network
-  - name: modules-project
-    dir: terraform/google/modules/project
-  - name: modules-secret-manager
-    dir: terraform/google/modules/secret-manager
+  - name: foundation-artifact-registry
+    dir: terraform/google/foundation/artifact-registry
+  - name: foundation-cloud-sql
+    dir: terraform/google/foundation/cloud-sql
+  - name: foundation-cloud-storage
+    dir: terraform/google/foundation/cloud-storage
+  - name: foundation-cloudflared
+    dir: terraform/google/foundation/cloudflared
+  - name: foundation-firebase-remote-config
+    dir: terraform/google/foundation/firebase-remote-config
+  - name: foundation-iam-workload-identity
+    dir: terraform/google/foundation/iam-workload-identity
+  - name: foundation-monitoring
+    dir: terraform/google/foundation/monitoring
+  - name: foundation-network
+    dir: terraform/google/foundation/network
+  - name: foundation-project
+    dir: terraform/google/foundation/project
+  - name: foundation-secret-manager
+    dir: terraform/google/foundation/secret-manager
   - name: server-academic-service-dev
     dir: terraform/google/server/academic-service/dev
     include_patterns: ["terraform/google/server/academic-service/_shared/**", "terraform/google/_shared/**"]
