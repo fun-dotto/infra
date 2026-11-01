@@ -16,7 +16,6 @@ env:
   TF_IN_AUTOMATION: "true"
   TF_INPUT: "false"
   WORKLOAD_IDENTITY_PROVIDER: "projects/107577467292/locations/global/workloadIdentityPools/dotto/providers/github"
-  SERVICE_ACCOUNT: "terraform-ci@swift2023groupc.iam.gserviceaccount.com"
 
 jobs:
   projects:
@@ -48,7 +47,6 @@ jobs:
 
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
-          service_account: ${{ env.SERVICE_ACCOUNT }}
           workload_identity_provider: ${{ env.WORKLOAD_IDENTITY_PROVIDER }}
 
       # terraform の終了コードをそのまま判定するため wrapper を無効にする。バージョンは apply を行う Digger に揃える

@@ -21,17 +21,31 @@ required status checks、必須レビューなど、対象ブランチのルー�
 
 ## Google Cloud の設定
 
-GitHub Actions はサービスアカウントキーを使わず、既存の Workload Identity
-Provider と `terraform-ci` サービスアカウントを使う。
+GitHub Actions はサービスアカウントキーもサービスアカウントの借用も使わず、
+Direct Workload Identity Federation で認証する。IAM ロールは
+`principal://iam.googleapis.com/.../subject/fun-dotto/infra` に直接付与する。
 
-`terraform-ci` には、管理対象リソースに必要な最小権限に加えて、次の GCS
-オブジェクト操作権限が必要になる。
+ロールは `terraform/google/modules/iam-workload-identity/principal_infra.tf` で
+管理する。新しい種類のリソースを Terraform で管理する場合は、必要なロールを先に
+追加する。Federated Identity には `roles/owner` を付与できない。
+
+Firebase の API は Federated Identity のトークンを受け付けないため、
+`modules-project` と `modules-firebase-remote-config` の Firebase リソースのみ、
+`providers.firebase.tf` の provider で `terraform-firebase` サービスアカウントを
+借用する。
+
+GCS については次の操作権限が必要になる。
 
 - Terraform state の読み書き
 - `swift2023groupc-tfstate` バケットに保存する Digger の PR lock の作成、参照、削除
 
-権限は環境の運用方針に合わせて IAM で付与する。Pull Request から実行される
-サービスアカウントに project-wide の `roles/owner` は付与しない。
+Digger Action の認証は Service Account を必須とするため、`setup-google-cloud` は
+`false` にして、Digger の前に `google-github-actions/auth` と `setup-gcloud` を
+実行する。認証情報ファイルを残すため `configure-checkout` も `false` にし、
+checkout はワークフロー側で行う。
+
+`issue_comment` は常に `main` のワークフローで実行される。そのため、ワークフローの
+変更は、マージするまで `digger plan` / `digger apply` のコメントには反映されない。
 
 ## Cloudflare の設定
 
