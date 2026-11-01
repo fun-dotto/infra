@@ -62,7 +62,6 @@ resource "cloudflare_zero_trust_access_application" "default" {
   # 開発用モバイル端末は WARP クライアントで Zero Trust に登録して通す
   allow_authenticate_via_warp = true
   app_launcher_visible        = each.value.app_launcher_visible
-  # App Launcher のアイコンには各環境の favicon を使う
   logo_url                    = each.value.app_launcher_visible ? "https://${each.value.hostname}/favicon.ico" : null
   session_duration            = "24h"
 
