@@ -95,13 +95,13 @@ projects:
     include_patterns: ["terraform/google/server/import-gtfs-job/_shared/**", "terraform/google/_shared/**"]
   - name: server-notify-user-job-dev
     dir: terraform/google/server/notify-user-job/dev
-    include_patterns: ["terraform/google/server/notify-user-job/_shared/**", "terraform/google/_shared/**"]
+    include_patterns: ["terraform/modules/cloud-run-job/**"]
   - name: server-notify-user-job-stg
     dir: terraform/google/server/notify-user-job/stg
-    include_patterns: ["terraform/google/server/notify-user-job/_shared/**", "terraform/google/_shared/**"]
+    include_patterns: ["terraform/modules/cloud-run-job/**"]
   - name: server-notify-user-job-prd
     dir: terraform/google/server/notify-user-job/prd
-    include_patterns: ["terraform/google/server/notify-user-job/_shared/**", "terraform/google/_shared/**"]
+    include_patterns: ["terraform/modules/cloud-run-job/**"]
   - name: server-user-service-dev
     dir: terraform/google/server/user-service/dev
     include_patterns: ["terraform/modules/cloud-run-service/**"]
