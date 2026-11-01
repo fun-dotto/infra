@@ -1,0 +1,32 @@
+name: 改善・追加
+description: インフラや運用の改善、リソースの追加を提案する
+labels:
+  - enhancement
+body:
+  - type: textarea
+    id: background
+    attributes:
+      label: 背景
+      description: 現状と、なぜ変更が必要なのかを書く
+    validations:
+      required: true
+  - type: textarea
+    id: tasks
+    attributes:
+      label: やること
+      description: 実施する内容を書く
+    validations:
+      required: true
+  - type: textarea
+    id: considerations
+    attributes:
+      label: 検討事項
+      description: 未決定の点、権限や Secrets、コストなどの懸念を書く
+  - type: textarea
+    id: acceptance-criteria
+    attributes:
+      label: 完了条件
+      value: |
+        - [ ]
+    validations:
+      required: true

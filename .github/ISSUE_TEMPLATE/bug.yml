@@ -1,0 +1,27 @@
+name: 不具合
+description: インフラや CI の不具合を報告する
+labels:
+  - bug
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: 発生している事象
+      description: 何が起きていて、本来どうなるべきかを書く
+    validations:
+      required: true
+  - type: input
+    id: target
+    attributes:
+      label: 対象
+      description: digger.yml の project 名、ワークフロー名など
+      placeholder: server-app-api-prd
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: 再現手順・発生条件
+  - type: textarea
+    id: logs
+    attributes:
+      label: ログ・関連リンク
+      description: Actions の実行、PR へのリンクなど。Secrets や state の値が含まれていないことを確認する
