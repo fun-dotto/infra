@@ -32,13 +32,13 @@ projects:
     include_patterns: ["terraform/modules/cloud-run-service/**"]
   - name: server-admin-api-dev
     dir: terraform/google/server/admin-api/dev
-    include_patterns: ["terraform/google/server/admin-api/_shared/**", "terraform/google/_shared/**"]
+    include_patterns: ["terraform/modules/cloud-run-service/**"]
   - name: server-admin-api-stg
     dir: terraform/google/server/admin-api/stg
-    include_patterns: ["terraform/google/server/admin-api/_shared/**", "terraform/google/_shared/**"]
+    include_patterns: ["terraform/modules/cloud-run-service/**"]
   - name: server-admin-api-prd
     dir: terraform/google/server/admin-api/prd
-    include_patterns: ["terraform/google/server/admin-api/_shared/**", "terraform/google/_shared/**"]
+    include_patterns: ["terraform/modules/cloud-run-service/**"]
   - name: server-admin-bff-api-dev
     dir: terraform/google/server/admin-bff-api/dev
     include_patterns: ["terraform/modules/cloud-run-service/**"]
