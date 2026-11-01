@@ -1,4 +1,6 @@
 resource "google_cloud_run_v2_job" "import_gtfs_job" {
+  deletion_protection = false
+
   launch_stage = "GA"
   location     = var.google_cloud_region
   name         = var.service_name
@@ -48,6 +50,10 @@ resource "google_cloud_run_v2_job" "import_gtfs_job" {
       timeout         = "900s"
     }
   }
+
+  depends_on = [
+    google_secret_manager_secret_iam_member.import_gtfs_job_gtfs_schedule_url,
+  ]
 
   lifecycle {
     ignore_changes = [
