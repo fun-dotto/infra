@@ -4,4 +4,3 @@ db_name                      = "dotto_dev"
 service_name                 = "academic-api-dev"
 max_instance_count           = 10
 min_instance_count           = 0
-# Direct WIF の検証用（マージ前に削除する）
