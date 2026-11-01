@@ -8,7 +8,7 @@ resource "google_service_account" "terraform_firebase" {
 resource "google_project_iam_member" "terraform_firebase" {
   for_each = toset([
     "roles/firebase.viewer",
-    "roles/firebaseremoteconfig.admin",
+    "roles/cloudconfig.admin",
     "roles/serviceusage.serviceUsageConsumer", # user_project_override のため
   ])
 
