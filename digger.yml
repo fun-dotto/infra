@@ -59,13 +59,13 @@ projects:
     include_patterns: ["terraform/modules/cloud-run-service/**"]
   - name: server-app-api-dev
     dir: terraform/google/server/app-api/dev
-    include_patterns: ["terraform/google/server/app-api/_shared/**", "terraform/google/_shared/**"]
+    include_patterns: ["terraform/modules/cloud-run-service/**"]
   - name: server-app-api-stg
     dir: terraform/google/server/app-api/stg
-    include_patterns: ["terraform/google/server/app-api/_shared/**", "terraform/google/_shared/**"]
+    include_patterns: ["terraform/modules/cloud-run-service/**"]
   - name: server-app-api-prd
     dir: terraform/google/server/app-api/prd
-    include_patterns: ["terraform/google/server/app-api/_shared/**", "terraform/google/_shared/**"]
+    include_patterns: ["terraform/modules/cloud-run-service/**"]
   - name: server-app-bff-api-dev
     dir: terraform/google/server/app-bff-api/dev
     include_patterns: ["terraform/modules/cloud-run-service/**"]
