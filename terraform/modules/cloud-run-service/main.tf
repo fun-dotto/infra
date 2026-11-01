@@ -1,3 +1,21 @@
+locals {
+  # Cloud Run の env は順序を持つため、順序を変えると新しいリビジョンが作られる
+  env = concat(var.env, var.cloud_sql == null ? [] : [
+    {
+      name  = "DB_IAM_USER"
+      value = trimsuffix(google_service_account.this.email, ".gserviceaccount.com")
+    },
+    {
+      name  = "DB_NAME"
+      value = var.cloud_sql.db_name
+    },
+    {
+      name  = "INSTANCE_CONNECTION_NAME"
+      value = var.cloud_sql.instance_connection_name
+    },
+  ])
+}
+
 resource "google_service_account" "this" {
   account_id   = var.service_account_id
   display_name = var.service_account_display_name
@@ -12,7 +30,8 @@ resource "google_project_iam_member" "this" {
 }
 
 resource "google_cloud_run_v2_service" "this" {
-  ingress = var.ingress
+  ingress              = var.ingress
+  invoker_iam_disabled = var.invoker_iam_disabled
 
   deletion_protection = var.deletion_protection
 
@@ -26,17 +45,13 @@ resource "google_cloud_run_v2_service" "this" {
     containers {
       command = var.command
 
-      env {
-        name  = "DB_IAM_USER"
-        value = trimsuffix(google_service_account.this.email, ".gserviceaccount.com")
-      }
-      env {
-        name  = "DB_NAME"
-        value = var.cloud_sql.db_name
-      }
-      env {
-        name  = "INSTANCE_CONNECTION_NAME"
-        value = var.cloud_sql.instance_connection_name
+      dynamic "env" {
+        for_each = local.env
+
+        content {
+          name  = env.value.name
+          value = env.value.value
+        }
       }
 
       image = var.image
@@ -90,6 +105,7 @@ resource "google_cloud_run_v2_service" "this" {
     ignore_changes = [
       client,
       client_version,
+      labels,
       template[0].labels,
       template[0].containers[0].image,
     ]
