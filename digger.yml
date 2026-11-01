@@ -23,13 +23,13 @@ projects:
     dir: terraform/google/foundation/secret-manager
   - name: server-academic-service-dev
     dir: terraform/google/server/academic-service/dev
-    include_patterns: ["terraform/google/server/academic-service/_shared/**", "terraform/google/_shared/**"]
+    include_patterns: ["terraform/modules/cloud-run-service/**"]
   - name: server-academic-service-stg
     dir: terraform/google/server/academic-service/stg
-    include_patterns: ["terraform/google/server/academic-service/_shared/**", "terraform/google/_shared/**"]
+    include_patterns: ["terraform/modules/cloud-run-service/**"]
   - name: server-academic-service-prd
     dir: terraform/google/server/academic-service/prd
-    include_patterns: ["terraform/google/server/academic-service/_shared/**", "terraform/google/_shared/**"]
+    include_patterns: ["terraform/modules/cloud-run-service/**"]
   - name: server-admin-api-dev
     dir: terraform/google/server/admin-api/dev
     include_patterns: ["terraform/google/server/admin-api/_shared/**", "terraform/google/_shared/**"]
