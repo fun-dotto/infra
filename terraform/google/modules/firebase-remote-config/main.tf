@@ -1,6 +1,4 @@
 resource "google_firebase_remote_config_remote_config" "basic" {
-  provider = google.firebase
-
   conditions {
     expression = "app.id == '1:107577467292:ios:f2e02b1b0cf3bdea06e859'"
     name       = "iOS"
