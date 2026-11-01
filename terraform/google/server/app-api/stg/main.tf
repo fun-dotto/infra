@@ -71,18 +71,3 @@ module "service" {
   max_instance_count = 10
   min_instance_count = 0
 }
-
-moved {
-  from = google_service_account.app_api
-  to   = module.service.google_service_account.this
-}
-
-moved {
-  from = google_project_iam_member.app_api
-  to   = module.service.google_project_iam_member.this
-}
-
-moved {
-  from = google_cloud_run_v2_service.app_api
-  to   = module.service.google_cloud_run_v2_service.this
-}
