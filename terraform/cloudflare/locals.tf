@@ -1,12 +1,15 @@
 locals {
+  dotto_logo_url = "https://${var.cloudflare_zone_name}/favicon.ico"
+
   # access_in_prd: prd で Cloudflare Access をかけるか（prd の web / app-api はかけず App Check で保護する）
   # app_launcher_visible: Cloudflare Access の App Launcher に表示するか
+  # logo_url: App Launcher に表示するアイコン。Access 配下の URL は未認証で取得できないため、公開されている prd の Dotto Web の favicon を使う
   # Access をかけないサービスは Tunnel を通さず、Cloud Run (ingress all) のドメインマッピングで直接公開する
   service_definitions = {
-    web       = { subdomain = "", cloud_run_service = "web", access_in_prd = false, display_name = "Dotto Web", app_launcher_visible = true }
-    admin_web = { subdomain = "admin", cloud_run_service = "admin-web", access_in_prd = true, display_name = "Dotto Admin Web", app_launcher_visible = true }
-    app_api   = { subdomain = "api", cloud_run_service = "app-api", access_in_prd = false, display_name = "Dotto App API", app_launcher_visible = false }
-    admin_api = { subdomain = "admin-api", cloud_run_service = "admin-api", access_in_prd = true, display_name = "Dotto Admin API", app_launcher_visible = false }
+    web       = { subdomain = "", cloud_run_service = "web", access_in_prd = false, display_name = "Dotto Web", app_launcher_visible = true, logo_url = local.dotto_logo_url }
+    admin_web = { subdomain = "admin", cloud_run_service = "admin-web", access_in_prd = true, display_name = "Dotto Admin Web", app_launcher_visible = true, logo_url = local.dotto_logo_url }
+    app_api   = { subdomain = "api", cloud_run_service = "app-api", access_in_prd = false, display_name = "Dotto App API", app_launcher_visible = false, logo_url = null }
+    admin_api = { subdomain = "admin-api", cloud_run_service = "admin-api", access_in_prd = true, display_name = "Dotto Admin API", app_launcher_visible = false, logo_url = null }
   }
 
   # key: "<環境>/<サービス>"
@@ -27,6 +30,7 @@ locals {
         # 例: Dotto Web (prd)
         display_name         = "${def.display_name} (${env})"
         app_launcher_visible = def.app_launcher_visible
+        logo_url             = def.logo_url
       }
     }
   ]...)
