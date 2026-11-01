@@ -7,6 +7,24 @@ resource "google_service_account" "terraform_ci" {
 resource "google_project_iam_member" "terraform_ci" {
   for_each = toset([
     "roles/owner", # 全リソースを管理するため、オーナーロールを付与する。
+    "roles/artifactregistry.admin",
+    "roles/browser",
+    "roles/cloudconfig.admin",
+    "roles/cloudscheduler.admin",
+    "roles/cloudsql.admin",
+    "roles/compute.networkAdmin",
+    "roles/dns.admin",
+    "roles/firebase.admin",
+    "roles/iam.serviceAccountAdmin",
+    "roles/iam.serviceAccountUser",
+    "roles/iam.workloadIdentityPoolAdmin",
+    "roles/monitoring.alertPolicyEditor",
+    "roles/monitoring.notificationChannelEditor",
+    "roles/resourcemanager.projectIamAdmin",
+    "roles/run.admin",
+    "roles/secretmanager.admin",
+    "roles/serviceusage.serviceUsageConsumer",
+    "roles/storage.admin",
   ])
 
   project = var.google_cloud_project_id
