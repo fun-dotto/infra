@@ -3,11 +3,11 @@ locals {
 
   # access_in_prd: prd で Cloudflare Access をかけるか（prd の web / app-api はかけず App Check で保護する）
   # app_launcher_visible: Cloudflare Access の App Launcher に表示するか
-  # logo_url: App Launcher に表示するアイコン。Access 配下の URL は未認証で取得できないため、公開されている prd の Dotto Web の favicon を使う
+  # logo_url: App Launcher に表示するアイコン。Admin Web は Access 配下の prd の favicon を使う（App Launcher にログイン済みのブラウザで取得される想定）
   # Access をかけないサービスは Tunnel を通さず、Cloud Run (ingress all) のドメインマッピングで直接公開する
   service_definitions = {
     web       = { subdomain = "", cloud_run_service = "web", access_in_prd = false, display_name = "Dotto Web", app_launcher_visible = true, logo_url = local.dotto_logo_url }
-    admin_web = { subdomain = "admin", cloud_run_service = "admin-web", access_in_prd = true, display_name = "Dotto Admin Web", app_launcher_visible = true, logo_url = local.dotto_logo_url }
+    admin_web = { subdomain = "admin", cloud_run_service = "admin-web", access_in_prd = true, display_name = "Dotto Admin Web", app_launcher_visible = true, logo_url = "https://admin.${var.cloudflare_zone_name}/favicon.ico" }
     app_api   = { subdomain = "api", cloud_run_service = "app-api", access_in_prd = false, display_name = "Dotto App API", app_launcher_visible = false, logo_url = null }
     admin_api = { subdomain = "admin-api", cloud_run_service = "admin-api", access_in_prd = true, display_name = "Dotto Admin API", app_launcher_visible = false, logo_url = null }
   }
