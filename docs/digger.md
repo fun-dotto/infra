@@ -25,12 +25,12 @@ GitHub Actions はサービスアカウントキーもサービスアカウン�
 Direct Workload Identity Federation で認証する。IAM ロールは
 `principal://iam.googleapis.com/.../subject/fun-dotto/infra` に直接付与する。
 
-ロールは `terraform/google/modules/iam-workload-identity/principal_infra.tf` で
+ロールは `terraform/google/foundation/iam-workload-identity/principal_infra.tf` で
 管理する。新しい種類のリソースを Terraform で管理する場合は、必要なロールを先に
 追加する。Federated Identity には `roles/owner` を付与できない。
 
 Firebase の API は Federated Identity のトークンを受け付けないため、
-`modules-project` と `modules-firebase-remote-config` の Firebase リソースのみ、
+`foundation-project` と `foundation-firebase-remote-config` の Firebase リソースのみ、
 `providers.firebase.tf` の provider で `terraform-firebase` サービスアカウントを
 借用する。
 
