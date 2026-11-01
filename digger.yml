@@ -113,13 +113,13 @@ projects:
     include_patterns: ["terraform/modules/cloud-run-service/**"]
   - name: web-admin-web-dev
     dir: terraform/google/web/admin-web/dev
-    include_patterns: ["terraform/google/web/admin-web/_shared/**", "terraform/google/_shared/**"]
+    include_patterns: ["terraform/modules/cloud-run-service/**"]
   - name: web-admin-web-stg
     dir: terraform/google/web/admin-web/stg
-    include_patterns: ["terraform/google/web/admin-web/_shared/**", "terraform/google/_shared/**"]
+    include_patterns: ["terraform/modules/cloud-run-service/**"]
   - name: web-admin-web-prd
     dir: terraform/google/web/admin-web/prd
-    include_patterns: ["terraform/google/web/admin-web/_shared/**", "terraform/google/_shared/**"]
+    include_patterns: ["terraform/modules/cloud-run-service/**"]
   - name: web-web-dev
     dir: terraform/google/web/web/dev
     include_patterns: ["terraform/google/web/web/_shared/**", "terraform/google/_shared/**"]

@@ -32,6 +32,7 @@ resource "google_project_iam_member" "this" {
 resource "google_cloud_run_v2_service" "this" {
   ingress              = var.ingress
   invoker_iam_disabled = var.invoker_iam_disabled
+  default_uri_disabled = var.default_uri_disabled
 
   deletion_protection = var.deletion_protection
 
@@ -90,6 +91,19 @@ resource "google_cloud_run_v2_service" "this" {
     scaling {
       max_instance_count = var.max_instance_count
       min_instance_count = var.min_instance_count
+    }
+
+    dynamic "vpc_access" {
+      for_each = var.vpc_access == null ? [] : [var.vpc_access]
+
+      content {
+        egress = vpc_access.value.egress
+
+        network_interfaces {
+          network    = vpc_access.value.network
+          subnetwork = vpc_access.value.subnetwork
+        }
+      }
     }
 
     service_account = google_service_account.this.email
