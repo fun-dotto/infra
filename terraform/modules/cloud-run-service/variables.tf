@@ -60,10 +60,11 @@ variable "cloud_sql" {
 }
 
 variable "env" {
-  description = "Environment variables exposed to the container, placed before the Cloud SQL settings."
+  description = "Environment variables exposed to the container, placed before the Cloud SQL settings. Set either value or secret_id; the service account is granted access to the secret."
   type = list(object({
-    name  = string
-    value = string
+    name      = string
+    value     = optional(string)
+    secret_id = optional(string)
   }))
   default = []
 }

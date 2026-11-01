@@ -122,10 +122,10 @@ projects:
     include_patterns: ["terraform/modules/cloud-run-service/**"]
   - name: web-web-dev
     dir: terraform/google/web/web/dev
-    include_patterns: ["terraform/google/web/web/_shared/**", "terraform/google/_shared/**"]
+    include_patterns: ["terraform/modules/cloud-run-service/**"]
   - name: web-web-stg
     dir: terraform/google/web/web/stg
-    include_patterns: ["terraform/google/web/web/_shared/**", "terraform/google/_shared/**"]
+    include_patterns: ["terraform/modules/cloud-run-service/**"]
   - name: web-web-prd
     dir: terraform/google/web/web/prd
-    include_patterns: ["terraform/google/web/web/_shared/**", "terraform/google/_shared/**"]
+    include_patterns: ["terraform/modules/cloud-run-service/**"]

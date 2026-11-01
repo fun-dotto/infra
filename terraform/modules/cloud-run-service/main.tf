@@ -2,16 +2,19 @@ locals {
   # Cloud Run の env は順序を持つため、順序を変えると新しいリビジョンが作られる
   env = concat(var.env, var.cloud_sql == null ? [] : [
     {
-      name  = "DB_IAM_USER"
-      value = trimsuffix(google_service_account.this.email, ".gserviceaccount.com")
+      name      = "DB_IAM_USER"
+      value     = trimsuffix(google_service_account.this.email, ".gserviceaccount.com")
+      secret_id = null
     },
     {
-      name  = "DB_NAME"
-      value = var.cloud_sql.db_name
+      name      = "DB_NAME"
+      value     = var.cloud_sql.db_name
+      secret_id = null
     },
     {
-      name  = "INSTANCE_CONNECTION_NAME"
-      value = var.cloud_sql.instance_connection_name
+      name      = "INSTANCE_CONNECTION_NAME"
+      value     = var.cloud_sql.instance_connection_name
+      secret_id = null
     },
   ])
 }
@@ -27,6 +30,14 @@ resource "google_project_iam_member" "this" {
   project = var.project_id
   role    = each.value
   member  = "serviceAccount:${google_service_account.this.email}"
+}
+
+resource "google_secret_manager_secret_iam_member" "env" {
+  for_each = { for env in var.env : env.name => env.secret_id if env.secret_id != null }
+
+  secret_id = "projects/${var.project_id}/secrets/${each.value}"
+  role      = "roles/secretmanager.secretAccessor"
+  member    = "serviceAccount:${google_service_account.this.email}"
 }
 
 resource "google_cloud_run_v2_service" "this" {
@@ -52,6 +63,17 @@ resource "google_cloud_run_v2_service" "this" {
         content {
           name  = env.value.name
           value = env.value.value
+
+          dynamic "value_source" {
+            for_each = env.value.secret_id == null ? [] : [env.value.secret_id]
+
+            content {
+              secret_key_ref {
+                secret  = value_source.value
+                version = "latest"
+              }
+            }
+          }
         }
       }
 
@@ -114,6 +136,10 @@ resource "google_cloud_run_v2_service" "this" {
     percent = 100
     type    = "TRAFFIC_TARGET_ALLOCATION_TYPE_LATEST"
   }
+
+  depends_on = [
+    google_secret_manager_secret_iam_member.env,
+  ]
 
   lifecycle {
     ignore_changes = [
