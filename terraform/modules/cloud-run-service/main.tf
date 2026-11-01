@@ -1,31 +1,42 @@
-resource "google_cloud_run_v2_service" "announcement_service" {
-  ingress = "INGRESS_TRAFFIC_ALL"
+resource "google_service_account" "this" {
+  account_id   = var.service_account_id
+  display_name = var.service_account_display_name
+}
 
-  deletion_protection = false
+resource "google_project_iam_member" "this" {
+  for_each = var.project_roles
+
+  project = var.project_id
+  role    = each.value
+  member  = "serviceAccount:${google_service_account.this.email}"
+}
+
+resource "google_cloud_run_v2_service" "this" {
+  ingress = var.ingress
+
+  deletion_protection = var.deletion_protection
 
   launch_stage = "GA"
-  location     = var.google_cloud_region
+  location     = var.location
   name         = var.service_name
 
   template {
     execution_environment = null
 
     containers {
-      command = [
-        "/bin/announcement-api",
-      ]
+      command = var.command
 
       env {
         name  = "DB_IAM_USER"
-        value = trimsuffix(google_service_account.announcement_service.email, ".gserviceaccount.com")
+        value = trimsuffix(google_service_account.this.email, ".gserviceaccount.com")
       }
       env {
         name  = "DB_NAME"
-        value = var.db_name
+        value = var.cloud_sql.db_name
       }
       env {
         name  = "INSTANCE_CONNECTION_NAME"
-        value = var.instance_connection_name
+        value = var.cloud_sql.instance_connection_name
       }
 
       image = var.image
@@ -66,7 +77,7 @@ resource "google_cloud_run_v2_service" "announcement_service" {
       min_instance_count = var.min_instance_count
     }
 
-    service_account = google_service_account.announcement_service.email
+    service_account = google_service_account.this.email
     timeout         = "300s"
   }
 

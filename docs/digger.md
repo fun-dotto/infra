@@ -53,6 +53,8 @@ Cloudflare Access の GitHub ログインに使う GitHub OAuth App の client s
 Terraform root（`backend.tf` を持つディレクトリ）を追加した場合は、同じ変更で
 `digger.yml` に project を追加する。共有ファイルを symlink している project は、
 対応する `_shared` ディレクトリを `include_patterns` に含める。
+`terraform/modules/` の module を参照する project は、その module のディレクトリを
+`include_patterns` に含める。
 
 ## ドリフト検知
 

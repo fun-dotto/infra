@@ -50,13 +50,13 @@ projects:
     include_patterns: ["terraform/google/server/admin-bff-api/_shared/**", "terraform/google/_shared/**"]
   - name: server-announcement-service-dev
     dir: terraform/google/server/announcement-service/dev
-    include_patterns: ["terraform/google/server/announcement-service/_shared/**", "terraform/google/_shared/**"]
+    include_patterns: ["terraform/modules/cloud-run-service/**"]
   - name: server-announcement-service-stg
     dir: terraform/google/server/announcement-service/stg
-    include_patterns: ["terraform/google/server/announcement-service/_shared/**", "terraform/google/_shared/**"]
+    include_patterns: ["terraform/modules/cloud-run-service/**"]
   - name: server-announcement-service-prd
     dir: terraform/google/server/announcement-service/prd
-    include_patterns: ["terraform/google/server/announcement-service/_shared/**", "terraform/google/_shared/**"]
+    include_patterns: ["terraform/modules/cloud-run-service/**"]
   - name: server-app-api-dev
     dir: terraform/google/server/app-api/dev
     include_patterns: ["terraform/google/server/app-api/_shared/**", "terraform/google/_shared/**"]
