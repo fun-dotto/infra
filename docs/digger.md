@@ -48,3 +48,23 @@ Cloudflare Access の GitHub ログインに使う GitHub OAuth App の client s
 Terraform root（`backend.tf` を持つディレクトリ）を追加した場合は、同じ変更で
 `digger.yml` に project を追加する。共有ファイルを symlink している project は、
 対応する `_shared` ディレクトリを `include_patterns` に含める。
+
+## ドリフト検知
+
+`.github/workflows/drift-detection.yml` が毎日 06:00 JST に、`digger.yml` の全
+project で `terraform plan -lock=false -detailed-exitcode` を実行する。対象は
+`digger.yml` から読むため、project を追加すると自動で含まれる。apply は行わない。
+Actions タブの `Run workflow` から手動でも実行できる。
+
+差分または plan の失敗があると、`drift` ラベルの Issue を作成して該当 project を
+「差分あり」「plan 失敗」に分けて記載する。Issue は 1 件にまとめて更新し、対象が
+変わったときだけコメントする。すべて解消すると自動で閉じる。
+
+公開リポジトリのログに残さないよう、差分の内容は出力しない。次の手順で対応する。
+
+1. 「差分あり」の project で `terraform plan` をローカルで実行し、内容を確認する。
+2. コンソールでの変更を残すならコードに反映する PR を、取り消すなら `digger plan`
+   で差分を確認したうえで `digger apply` する PR を作る。
+3. 「plan 失敗」の project は、Issue の実行ログで原因を確認する。認証や Secret の
+   問題であれば、ドリフトの有無は判定できていない。
+4. 次回の定期実行、または手動実行で解消を確認する。

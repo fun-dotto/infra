@@ -25,3 +25,12 @@ data "terraform_remote_state" "cloudflare" {
     prefix = "cloudflare"
   }
 }
+
+data "terraform_remote_state" "app_bff_api" {
+  backend = "gcs"
+
+  config = {
+    bucket = var.tfstate_bucket
+    prefix = "server/app-bff-api-${local.environment}"
+  }
+}

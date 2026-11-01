@@ -19,3 +19,7 @@ variable "min_instance_count" {
 variable "tfstate_bucket" {
   default = "swift2023groupc-tfstate"
 }
+
+variable "notion_mac_database_id" {
+  type = string
+}

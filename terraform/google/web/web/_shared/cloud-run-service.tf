@@ -12,6 +12,10 @@ resource "google_cloud_run_v2_service" "web" {
   template {
     containers {
       env {
+        name  = "API_BASE_URL"
+        value = data.terraform_remote_state.app_bff_api.outputs.cloud_run_service_uri
+      }
+      env {
         name  = "APP_API_URL"
         value = local.app_api_url
       }
@@ -26,6 +30,19 @@ resource "google_cloud_run_v2_service" "web" {
       env {
         name  = "CF_ACCESS_AUD"
         value = lookup(lookup(data.terraform_remote_state.cloudflare.outputs.access_auds, local.environment, {}), "web", "")
+      }
+      env {
+        name = "NOTION_TOKEN"
+        value_source {
+          secret_key_ref {
+            secret  = google_secret_manager_secret.notion_token.secret_id
+            version = "latest"
+          }
+        }
+      }
+      env {
+        name  = "NOTION_MAC_DATABASE_ID"
+        value = var.notion_mac_database_id
       }
 
       image = var.image
@@ -98,4 +115,8 @@ resource "google_cloud_run_v2_service" "web" {
       template[0].containers[0].image,
     ]
   }
+
+  depends_on = [
+    google_secret_manager_secret_iam_member.notion_token,
+  ]
 }
