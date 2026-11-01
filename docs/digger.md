@@ -25,7 +25,7 @@ GitHub Actions はサービスアカウントキーを使わず、既存の Work
 Provider と `terraform-ci` サービスアカウントを使う。
 
 `terraform-ci` のロールは
-`terraform/google/modules/iam-workload-identity/service_account_terraform-ci.tf` で
+`terraform/google/foundation/iam-workload-identity/service_account_terraform-ci.tf` で
 管理する。新しい種類のリソースを Terraform で管理する場合は、必要なロールを先に
 追加する。Pull Request から実行されるサービスアカウントに project-wide の
 `roles/owner` は付与しない。
