@@ -1,3 +1,12 @@
+variable "environment" {
+  type = string
+
+  validation {
+    condition     = contains(["dev", "stg", "prd"], var.environment)
+    error_message = "environment must be one of: dev, stg, prd."
+  }
+}
+
 variable "service_account_id" {}
 
 variable "service_account_display_name" {}

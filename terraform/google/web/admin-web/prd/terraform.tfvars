@@ -1,3 +1,4 @@
+environment                  = "prd"
 service_account_id           = "admin-web"
 service_account_display_name = "Admin Web"
 service_name                 = "admin-web"

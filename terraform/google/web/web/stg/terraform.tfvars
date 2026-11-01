@@ -1,3 +1,4 @@
+environment                  = "stg"
 service_account_id           = "web-stg"
 service_account_display_name = "Web (Stg)"
 service_name                 = "web-stg"

@@ -46,7 +46,7 @@ resource "google_cloud_run_v2_service" "admin_api" {
       }
       env {
         name  = "CF_ACCESS_AUD"
-        value = lookup(lookup(data.terraform_remote_state.cloudflare.outputs.access_auds, local.environment, {}), "admin_api", "")
+        value = lookup(lookup(data.terraform_remote_state.cloudflare.outputs.access_auds, var.environment, {}), "admin_api", "")
       }
       env {
         name  = "ID_TOKEN_AUDIENCE"
