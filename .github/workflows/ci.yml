@@ -44,11 +44,29 @@ jobs:
         with:
           github_token: ${{ github.token }}
           cache: true
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.terraform.d/plugin-cache
+          key: terraform-providers-${{ runner.os }}-${{ hashFiles('terraform/**/.terraform.lock.hcl') }}
+          restore-keys: terraform-providers-${{ runner.os }}-
       - name: terraform validate
         run: |
-          find terraform -name versions.tf -not -path '*/_shared/*' -print0 |
-            while IFS= read -r -d '' versions_file; do
-              directory="$(dirname "$versions_file")"
-              terraform -chdir="$directory" init -backend=false
-              terraform -chdir="$directory" validate
-            done
+          export TF_PLUGIN_CACHE_DIR="$HOME/.terraform.d/plugin-cache"
+          mkdir -p "$TF_PLUGIN_CACHE_DIR"
+
+          mapfile -d '' directories < <(find terraform -name versions.tf -not -path '*/_shared/*' -printf '%h\0')
+
+          # plugin cache は並行書き込みに対応していないため、init は直列で実行する
+          for directory in "${directories[@]}"; do
+            terraform -chdir="$directory" init -backend=false >/dev/null
+          done
+
+          printf '%s\0' "${directories[@]}" |
+            xargs -0 -n 1 -P "$(nproc)" bash -c '
+              if output="$(terraform -chdir="$1" validate 2>&1)"; then
+                echo "ok: $1"
+              else
+                printf "failed: %s\n%s\n" "$1" "$output"
+                exit 1
+              fi
+            ' _
