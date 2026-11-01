@@ -1,7 +1,9 @@
 resource "google_cloud_run_v2_service" "web" {
-  ingress              = "INGRESS_TRAFFIC_ALL"
+  # dev / stg は Cloudflare Tunnel (cloudflared) 経由でのみ受け付け、Access の認証を必ず通す
+  # prd は Access をかけず Tunnel も通さないため、ドメインマッピングで直接受ける
+  ingress              = endswith(var.service_name, "-dev") || endswith(var.service_name, "-stg") ? "INGRESS_TRAFFIC_INTERNAL_ONLY" : "INGRESS_TRAFFIC_ALL"
   invoker_iam_disabled = true
-  default_uri_disabled = true
+  default_uri_disabled = false
 
   launch_stage = "GA"
   location     = var.google_cloud_region
@@ -9,7 +11,39 @@ resource "google_cloud_run_v2_service" "web" {
 
   template {
     containers {
-      # TODO: 環境変数を定義
+      env {
+        name  = "API_BASE_URL"
+        value = data.terraform_remote_state.app_bff_api.outputs.cloud_run_service_uri
+      }
+      env {
+        name  = "APP_API_URL"
+        value = local.app_api_url
+      }
+      env {
+        name  = "CF_ACCESS_ENABLED"
+        value = local.environment == "prd" ? "false" : "true"
+      }
+      env {
+        name  = "CF_ACCESS_ISSUER"
+        value = data.terraform_remote_state.cloudflare.outputs.access_issuer
+      }
+      env {
+        name  = "CF_ACCESS_AUD"
+        value = lookup(lookup(data.terraform_remote_state.cloudflare.outputs.access_auds, local.environment, {}), "web", "")
+      }
+      env {
+        name = "NOTION_TOKEN"
+        value_source {
+          secret_key_ref {
+            secret  = google_secret_manager_secret.notion_token.secret_id
+            version = "latest"
+          }
+        }
+      }
+      env {
+        name  = "NOTION_MAC_DATABASE_ID"
+        value = var.notion_mac_database_id
+      }
 
       image = var.image
 
@@ -49,6 +83,20 @@ resource "google_cloud_run_v2_service" "web" {
       min_instance_count = var.min_instance_count
     }
 
+    # internal ingress の API を VPC 経由で呼ぶ（prd の app-api は ingress all のため不要）
+    dynamic "vpc_access" {
+      for_each = local.environment == "prd" ? [] : [1]
+
+      content {
+        egress = "PRIVATE_RANGES_ONLY"
+
+        network_interfaces {
+          network    = data.terraform_remote_state.network.outputs.network_name
+          subnetwork = data.terraform_remote_state.network.outputs.cloud_run_subnetwork_name
+        }
+      }
+    }
+
     service_account = google_service_account.web.email
     timeout         = "300s"
   }
@@ -67,4 +115,8 @@ resource "google_cloud_run_v2_service" "web" {
       template[0].containers[0].image,
     ]
   }
+
+  depends_on = [
+    google_secret_manager_secret_iam_member.notion_token,
+  ]
 }

@@ -1,4 +1,6 @@
 resource "google_cloud_run_v2_job" "notify_user_job" {
+  deletion_protection = false
+
   launch_stage = "GA"
   location     = var.google_cloud_region
   name         = var.service_name

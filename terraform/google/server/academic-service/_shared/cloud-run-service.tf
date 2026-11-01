@@ -1,6 +1,8 @@
 resource "google_cloud_run_v2_service" "academic_service" {
   ingress = "INGRESS_TRAFFIC_ALL"
 
+  deletion_protection = false
+
   launch_stage = "GA"
   location     = var.google_cloud_region
   name         = var.service_name

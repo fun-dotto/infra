@@ -1,0 +1,1 @@
+../_shared/service-account.tf

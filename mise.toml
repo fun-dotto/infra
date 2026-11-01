@@ -1,3 +1,20 @@
+[settings]
+minimum_release_age = "7d"
+
+[plugins]
+gcloud = "https://github.com/jdx/vfox-gcloud.git#8bc2e33aa741c0935f219e0d5791f0dc92569ed9"
+
 [tools]
-gcloud = "575.0.0"
-terraform = "1.15.5"
+bun = "1.4.4"
+gcloud = "590.0.1"
+"npm:rulesync" = "43.1.2"
+terraform = "1.17.0"
+
+[tasks.bootstrap]
+run = [
+  { task = "rulesync" },
+  "bun install",
+]
+
+[tasks.rulesync]
+run = "rulesync generate"

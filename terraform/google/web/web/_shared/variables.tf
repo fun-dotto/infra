@@ -15,3 +15,11 @@ variable "max_instance_count" {
 variable "min_instance_count" {
   type = number
 }
+
+variable "tfstate_bucket" {
+  default = "swift2023groupc-tfstate"
+}
+
+variable "notion_mac_database_id" {
+  type = string
+}
