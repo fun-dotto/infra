@@ -3,3 +3,4 @@ service_account_display_name = "Notify User Job (Dev)"
 db_name                      = "dotto_dev"
 service_name                 = "dispatch-notifications-job-dev"
 schedule                     = "30 16 * * *"
+db_max_open_conns            = 2

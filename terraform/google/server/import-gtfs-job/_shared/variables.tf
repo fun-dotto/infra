@@ -25,3 +25,7 @@ variable "timezone" {
 variable "gtfs_schedule_url_secret_id" {
   default = "gtfs_schedule_url_hakodate_bus"
 }
+
+variable "db_max_open_conns" {
+  type = number
+}

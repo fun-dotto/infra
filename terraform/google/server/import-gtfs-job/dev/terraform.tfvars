@@ -3,3 +3,4 @@ service_account_display_name = "Import GTFS Job (Dev)"
 db_name                      = "dotto_dev"
 service_name                 = "import-gtfs-job-dev"
 schedule                     = "0 4 * * *"
+db_max_open_conns            = 2

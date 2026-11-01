@@ -21,3 +21,7 @@ variable "schedule" {
 variable "timezone" {
   default = "Asia/Tokyo"
 }
+
+variable "db_max_open_conns" {
+  type = number
+}

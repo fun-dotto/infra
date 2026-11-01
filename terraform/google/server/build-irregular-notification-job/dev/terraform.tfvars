@@ -3,3 +3,4 @@ service_account_display_name = "Build Irregular Notification Job (Dev)"
 db_name                      = "dotto_dev"
 service_name                 = "build-class-change-notifications-job-dev"
 schedule                     = "0 16 * * *"
+db_max_open_conns            = 2

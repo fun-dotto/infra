@@ -28,3 +28,7 @@ variable "min_instance_count" {
 
 # ID Token での呼び出しを許可する Web の Service Account ID
 variable "id_token_allowed_service_account_id" {}
+
+variable "db_max_open_conns" {
+  type = number
+}

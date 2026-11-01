@@ -25,6 +25,10 @@ resource "google_cloud_run_v2_job" "import_gtfs_job" {
           value = var.instance_connection_name
         }
         env {
+          name  = "DB_MAX_OPEN_CONNS"
+          value = tostring(var.db_max_open_conns)
+        }
+        env {
           name = "GTFS_SCHEDULE_URL"
           value_source {
             secret_key_ref {

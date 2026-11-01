@@ -21,3 +21,7 @@ variable "max_instance_count" {
 variable "min_instance_count" {
   type = number
 }
+
+variable "db_max_open_conns" {
+  type = number
+}

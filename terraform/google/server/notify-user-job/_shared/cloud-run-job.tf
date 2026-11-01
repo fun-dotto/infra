@@ -24,6 +24,10 @@ resource "google_cloud_run_v2_job" "notify_user_job" {
           name  = "INSTANCE_CONNECTION_NAME"
           value = var.instance_connection_name
         }
+        env {
+          name  = "DB_MAX_OPEN_CONNS"
+          value = tostring(var.db_max_open_conns)
+        }
 
         image = var.image
 
