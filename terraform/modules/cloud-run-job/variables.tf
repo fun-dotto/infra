@@ -43,6 +43,15 @@ variable "cloud_sql" {
   })
 }
 
+variable "secret_env" {
+  description = "Secret Manager secrets exposed to the container as environment variables. Access is granted to the service account."
+  type = list(object({
+    name      = string
+    secret_id = string
+  }))
+  default = []
+}
+
 variable "schedule" {
   type = string
 }
