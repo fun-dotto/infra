@@ -16,7 +16,7 @@ module "job" {
 
   command             = ["/bin/dispatch-notifications-job"]
   image               = "asia-northeast1-docker.pkg.dev/swift2023groupc/github-actions/server:latest"
-  deletion_protection = false
+  deletion_protection = true
 
   cloud_sql = {
     db_name                  = "dotto"

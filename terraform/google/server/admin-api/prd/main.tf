@@ -22,7 +22,7 @@ module "service" {
   ingress = "INGRESS_TRAFFIC_INTERNAL_ONLY"
   # ID Token を持たない経路 (App Check / Cloudflare Access) からも呼ばれるため IAM 呼び出しチェックは無効化し、アプリ側で認証する
   invoker_iam_disabled = true
-  deletion_protection  = false
+  deletion_protection  = true
 
   env = [
     # TODO: 仮で BFF のバイナリを動かすためだけに必要。統合後の API には不要なので削除する

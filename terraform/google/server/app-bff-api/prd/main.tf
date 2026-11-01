@@ -16,7 +16,7 @@ module "service" {
   image                = "asia-northeast1-docker.pkg.dev/swift2023groupc/github-actions/server:latest"
   ingress              = "INGRESS_TRAFFIC_ALL"
   invoker_iam_disabled = true
-  deletion_protection  = false
+  deletion_protection  = true
 
   env = [
     {
