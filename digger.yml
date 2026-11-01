@@ -39,15 +39,6 @@ projects:
   - name: server-admin-api-prd
     dir: terraform/google/server/admin-api/prd
     include_patterns: ["terraform/modules/cloud-run-service/**"]
-  - name: server-admin-bff-api-dev
-    dir: terraform/google/server/admin-bff-api/dev
-    include_patterns: ["terraform/modules/cloud-run-service/**"]
-  - name: server-admin-bff-api-stg
-    dir: terraform/google/server/admin-bff-api/stg
-    include_patterns: ["terraform/modules/cloud-run-service/**"]
-  - name: server-admin-bff-api-prd
-    dir: terraform/google/server/admin-bff-api/prd
-    include_patterns: ["terraform/modules/cloud-run-service/**"]
   - name: server-announcement-service-dev
     dir: terraform/google/server/announcement-service/dev
     include_patterns: ["terraform/modules/cloud-run-service/**"]
