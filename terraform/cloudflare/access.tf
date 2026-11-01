@@ -19,6 +19,32 @@ resource "cloudflare_zero_trust_access_policy" "github_members" {
   ]
 }
 
+# admin-web のサーバーが admin-api を Access 経由で呼ぶための Service Token
+resource "cloudflare_zero_trust_access_service_token" "admin_web" {
+  for_each = toset(var.environments)
+
+  account_id = data.cloudflare_zone.default.account.id
+  name       = "Admin Web (${each.key})"
+  # 失効すると admin-web から admin-api を呼べなくなるため、期限を設けない
+  duration = "forever"
+}
+
+resource "cloudflare_zero_trust_access_policy" "admin_web_service_token" {
+  for_each = toset(var.environments)
+
+  account_id = data.cloudflare_zone.default.account.id
+  name       = "Admin Web Service Token (${each.key})"
+  decision   = "non_identity"
+
+  include = [
+    {
+      service_token = {
+        token_id = cloudflare_zero_trust_access_service_token.admin_web[each.key].id
+      }
+    },
+  ]
+}
+
 resource "cloudflare_zero_trust_access_application" "default" {
   for_each = local.access_services
 
@@ -38,12 +64,20 @@ resource "cloudflare_zero_trust_access_application" "default" {
   app_launcher_visible        = each.value.app_launcher_visible
   session_duration            = "24h"
 
-  policies = [
-    {
-      id         = cloudflare_zero_trust_access_policy.github_members.id
-      precedence = 1
-    },
-  ]
+  policies = concat(
+    [
+      {
+        id         = cloudflare_zero_trust_access_policy.github_members.id
+        precedence = 1
+      },
+    ],
+    each.value.name == "admin_api" ? [
+      {
+        id         = cloudflare_zero_trust_access_policy.admin_web_service_token[each.value.environment].id
+        precedence = 2
+      },
+    ] : [],
+  )
 }
 
 resource "cloudflare_zero_trust_access_application" "bookmark" {
