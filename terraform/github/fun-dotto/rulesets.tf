@@ -2,58 +2,60 @@ locals {
   # merge_queue は全リポジトリで共通。client だけ merge commit を使う
   rulesets = {
     app = {
-      name                       = "default"
+      name                       = "Default"
       merge_method               = "squash"
       required_approving_reviews = 1
-      dismiss_stale_reviews      = false
+      dismiss_stale_reviews      = true
       max_entries_to_build       = 10
-      required_reviewers         = [{ team = "app", minimum_approvals = 1 }, { team = "masters", minimum_approvals = 1 }]
+      required_reviewers         = [{ team = "masters", minimum_approvals = 1 }]
       required_status_checks     = ["Test", "Lint"]
     }
     web = {
       name                       = "Default"
       merge_method               = "squash"
       required_approving_reviews = 1
-      dismiss_stale_reviews      = false
-      max_entries_to_build       = 5
-      required_reviewers         = [{ team = "masters", minimum_approvals = 1 }, { team = "web", minimum_approvals = 0 }]
+      dismiss_stale_reviews      = true
+      max_entries_to_build       = 10
+      required_reviewers         = [{ team = "masters", minimum_approvals = 1 }]
       required_status_checks     = ["Lint", "Build"]
     }
     admin-web = {
-      name                       = "default"
+      name                       = "Default"
       merge_method               = "squash"
       required_approving_reviews = 1
-      dismiss_stale_reviews      = false
-      max_entries_to_build       = 5
-      required_reviewers         = [{ team = "web", minimum_approvals = 0 }, { team = "masters", minimum_approvals = 1 }]
+      dismiss_stale_reviews      = true
+      max_entries_to_build       = 10
+      required_reviewers         = [{ team = "masters", minimum_approvals = 1 }]
       required_status_checks     = []
     }
     client = {
       name                       = "Default"
       merge_method               = "merge"
       required_approving_reviews = 0
-      dismiss_stale_reviews      = false
-      max_entries_to_build       = 5
-      required_reviewers         = []
+      dismiss_stale_reviews      = true
+      max_entries_to_build       = 10
+      required_reviewers         = [{ team = "masters", minimum_approvals = 1 }]
       required_status_checks     = ["check", "typecheck", "test"]
     }
     server = {
       name                       = "Default"
       merge_method               = "squash"
       required_approving_reviews = 1
-      dismiss_stale_reviews      = false
-      max_entries_to_build       = 5
-      required_reviewers         = [{ team = "masters", minimum_approvals = 1 }, { team = "server", minimum_approvals = 0 }]
+      dismiss_stale_reviews      = true
+      max_entries_to_build       = 10
+      required_reviewers         = [{ team = "masters", minimum_approvals = 1 }]
       required_status_checks     = ["Test", "Lint", "Build"]
     }
     infra = {
-      name                       = "Default"
-      merge_method               = "squash"
+      name         = "Default"
+      merge_method = "squash"
+      # required_approving_reviews = 1
       required_approving_reviews = 0
       dismiss_stale_reviews      = true
-      max_entries_to_build       = 5
-      required_reviewers         = []
-      required_status_checks     = ["Format", "Validate"]
+      max_entries_to_build       = 10
+      # required_reviewers         = [{ team = "masters", minimum_approvals = 1 }]
+      required_reviewers     = []
+      required_status_checks = ["Format", "Validate"]
     }
   }
 

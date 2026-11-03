@@ -2,31 +2,31 @@ locals {
   repositories = {
     app = {
       description        = "公立はこだて未来大学ポータルアプリ Dotto モバイルアプリ"
-      homepage_url       = "https://fun-dotto.github.io"
+      homepage_url       = "https://fun-dotto.com"
       topics             = ["app"]
-      has_wiki           = false
+      has_wiki           = true
       allow_merge_commit = true
       allow_auto_merge   = true
     }
     web = {
       description        = "公立はこだて未来大学ポータルアプリ Dotto Webアプリ"
-      homepage_url       = ""
+      homepage_url       = "https://fun-dotto.com"
       topics             = []
-      has_wiki           = false
+      has_wiki           = true
       allow_merge_commit = true
       allow_auto_merge   = true
     }
     admin-web = {
       description        = "Dotto Admin"
-      homepage_url       = "https://admin.dotto.furari.co"
+      homepage_url       = "https://admin.fun-dotto.com"
       topics             = []
-      has_wiki           = false
+      has_wiki           = true
       allow_merge_commit = true
       allow_auto_merge   = true
     }
     client = {
       description        = "公立はこだて未来大学ポータルアプリ Dotto クライアント"
-      homepage_url       = ""
+      homepage_url       = "https://fun-dotto.com"
       topics             = []
       has_wiki           = true
       allow_merge_commit = true
@@ -36,7 +36,7 @@ locals {
       description        = "Dotto サーバー"
       homepage_url       = ""
       topics             = []
-      has_wiki           = false
+      has_wiki           = true
       allow_merge_commit = true
       allow_auto_merge   = true
     }
@@ -44,9 +44,9 @@ locals {
       description        = "Dotto インフラ"
       homepage_url       = ""
       topics             = []
-      has_wiki           = false
-      allow_merge_commit = false
-      allow_auto_merge   = false
+      has_wiki           = true
+      allow_merge_commit = true
+      allow_auto_merge   = true
     }
   }
 }

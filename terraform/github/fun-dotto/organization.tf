@@ -1,8 +1,8 @@
 resource "github_organization_settings" "this" {
   name          = "Dotto"
-  description   = ""
+  description   = "公立はこだて未来大学ポータルアプリ"
   billing_email = "dotto@fun.ac.jp"
-  blog          = "https://fun-dotto.github.io"
+  blog          = "https://fun-dotto.com"
   location      = "Japan"
 
   has_organization_projects     = true

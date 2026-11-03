@@ -3,7 +3,6 @@ locals {
     "hikaru-0602",
     "kantacky",
     "masaya-osuga",
-    "masayoshisuzuki441",
     "tigertora7571",
   ]
 
@@ -15,6 +14,7 @@ locals {
     "hosu3",
     "KAZZ00777",
     "KurenNagata",
+    "masayoshisuzuki441",
     "mikaminasaki",
     "nao0507",
     "nao0701",

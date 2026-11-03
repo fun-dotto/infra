@@ -2,67 +2,63 @@ locals {
   teams = {
     app = {
       name        = "App"
-      maintainers = ["kantacky"]
-      members     = ["Hosoda-abo", "suzukimifuyu", "takuyone68", "tanakarinna"]
+      maintainers = ["kantacky", "tanakarinna"]
+      members     = ["suzukimifuyu", "takuyone68"]
     }
     designers = {
       name        = "Designers"
-      maintainers = []
-      members     = ["nao0507", "nao0701", "nearorenge", "Uenosana"]
+      maintainers = ["Uenosana"]
+      members     = ["nao0507", "nao0701"]
     }
     masters = {
       name        = "Masters"
       maintainers = ["hikaru-0602", "kantacky", "masaya-osuga"]
-      members     = ["Hosoda-abo"]
+      members     = ["tanakarinna", "Uenosana", "zakiPoteto"]
     }
     members = {
       name        = "Members"
-      maintainers = ["hikaru-0602", "kantacky", "masaya-osuga"]
+      maintainers = ["hikaru-0602", "kantacky", "masaya-osuga", "tanakarinna", "Uenosana", "zakiPoteto"]
       members = [
-        "aya-kita",
         "Hosoda-abo",
         "hosu3",
-        "KAZZ00777",
         "KurenNagata",
         "mikaminasaki",
         "nao0507",
         "nao0701",
-        "nearorenge",
         "satorutkhs",
         "sayo-o518",
         "suzukimifuyu",
         "T-shinku0314",
         "takuyone68",
-        "tanakarinna",
-        "Uenosana",
-        "zakiPoteto",
       ]
     }
     pm = {
       name        = "PM"
-      maintainers = []
-      members     = ["mikaminasaki"]
+      maintainers = ["mikaminasaki"]
+      members     = []
     }
     server = {
       name        = "Server"
-      maintainers = ["hikaru-0602", "masaya-osuga"]
-      members     = ["Hosoda-abo", "KAZZ00777", "KurenNagata", "sayo-o518", "zakiPoteto"]
+      maintainers = ["hikaru-0602", "masaya-osuga", "zakiPoteto"]
+      members     = ["Hosoda-abo", "KurenNagata", "sayo-o518", "T-shinku0314"]
     }
     web = {
       name        = "Web"
-      maintainers = []
-      members     = ["Hosoda-abo", "T-shinku0314"]
+      maintainers = ["tanakarinna"]
+      members     = ["T-shinku0314"]
     }
   }
 
-  # リポジトリごとの Team 権限（pull / triage / push / maintain / admin）
+  # リポジトリごとに直接付与した Team 権限（pull / triage / push / maintain / admin）
+  # members の全リポジトリ read と masters の admin-web / client の admin は直接付与ではなく
+  # Organization 側の設定（Organization role など）から継承しているため、ここには含めない
   team_repository_permissions = {
-    app       = { app = "push", masters = "admin", members = "pull" }
-    web       = { masters = "admin", members = "pull", web = "push" }
-    admin-web = { app = "pull", masters = "admin", members = "pull", server = "push", web = "pull" }
-    client    = { masters = "admin", members = "pull" }
-    server    = { masters = "admin", members = "pull", server = "push" }
-    infra     = { app = "push", masters = "admin", members = "pull", server = "push", web = "push" }
+    app       = { app = "push", masters = "admin" }
+    web       = { masters = "admin", web = "push" }
+    admin-web = { app = "pull", server = "push", web = "pull" }
+    client    = {}
+    server    = { masters = "admin", server = "push" }
+    infra     = { app = "push", masters = "admin", server = "push", web = "push" }
   }
 
   team_repositories = merge([
