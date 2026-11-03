@@ -22,7 +22,15 @@ module "server" {
     server  = { team_id = github_team.this["server"].id, permission = "push" }
   }
 
-  environments = ["dev", "stg", "prd"]
+  environments = {
+    dev = {}
+    stg = {}
+    prd = {
+      reviewer_user_ids       = [51151242, 136790650]
+      protected_branches_only = true
+      can_admins_bypass       = false
+    }
+  }
 
   variables = local.server_variables
 

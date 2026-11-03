@@ -28,7 +28,15 @@ module "web" {
     web     = { team_id = github_team.this["web"].id, permission = "push" }
   }
 
-  environments = ["dev", "stg", "prd"]
+  environments = {
+    dev = {}
+    stg = {}
+    prd = {
+      reviewer_user_ids       = [51151242, 135803012, 136790650]
+      protected_branches_only = true
+      can_admins_bypass       = false
+    }
+  }
 
   variables = local.web_variables
 

@@ -51,9 +51,16 @@ variable "team_permissions" {
   default = {}
 }
 
+# Environment 名 => 設定
 variable "environments" {
-  type    = list(string)
-  default = []
+  type = map(object({
+    can_admins_bypass = optional(bool, true)
+    # 承認者の GitHub ユーザー ID
+    reviewer_user_ids = optional(list(number), [])
+    # true の場合、保護されたブランチからのみデプロイできる
+    protected_branches_only = optional(bool, false)
+  }))
+  default = {}
 }
 
 # Variable 名 => 値。null のものは Terraform 管理外とする

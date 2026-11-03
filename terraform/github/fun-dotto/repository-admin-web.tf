@@ -23,7 +23,14 @@ module "admin_web" {
     web    = { team_id = github_team.this["web"].id, permission = "pull" }
   }
 
-  environments = ["dev", "stg", "prd"]
+  environments = {
+    dev = {}
+    stg = {}
+    prd = {
+      reviewer_user_ids       = [51151242, 136790650]
+      protected_branches_only = true
+    }
+  }
 
   variables = local.admin_web_variables
 
