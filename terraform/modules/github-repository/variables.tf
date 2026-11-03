@@ -57,6 +57,8 @@ variable "environments" {
     can_admins_bypass = optional(bool, true)
     # 承認者の GitHub ユーザー ID
     reviewer_user_ids = optional(list(number), [])
+    # true の場合、デプロイを実行したユーザー自身は承認できない
+    prevent_self_review = optional(bool, false)
     # true の場合、保護されたブランチからのみデプロイできる
     protected_branches_only = optional(bool, false)
   }))

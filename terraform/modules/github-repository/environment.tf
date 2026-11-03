@@ -1,9 +1,10 @@
 resource "github_repository_environment" "this" {
   for_each = var.environments
 
-  repository        = github_repository.this.name
-  environment       = each.key
-  can_admins_bypass = each.value.can_admins_bypass
+  repository          = github_repository.this.name
+  environment         = each.key
+  can_admins_bypass   = each.value.can_admins_bypass
+  prevent_self_review = each.value.prevent_self_review
 
   dynamic "reviewers" {
     for_each = length(each.value.reviewer_user_ids) > 0 ? [1] : []

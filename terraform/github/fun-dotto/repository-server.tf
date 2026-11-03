@@ -28,6 +28,7 @@ module "server" {
         136790650, # masaya-osuga
       ]
       protected_branches_only = true
+      prevent_self_review     = true
       can_admins_bypass       = false
     }
   }
