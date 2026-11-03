@@ -15,7 +15,7 @@ module "job" {
   ]
 
   image               = "asia-northeast1-docker.pkg.dev/swift2023groupc/class-change-batch/class-change-batch:latest"
-  deletion_protection = false
+  deletion_protection = true
   max_retries         = 1
 
   cloud_sql = {
