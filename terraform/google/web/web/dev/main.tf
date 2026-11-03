@@ -8,7 +8,6 @@ module "service" {
   service_account_id           = "web-dev"
   service_account_display_name = "Web (Dev)"
   project_roles = [
-    "roles/firebaseappcheck.tokenVerifier",
     "roles/logging.logWriter",
   ]
 
@@ -54,7 +53,7 @@ module "service" {
     },
     {
       name  = "API_BASE_URL"
-      value = data.terraform_remote_state.app_bff_api.outputs.cloud_run_service_uri
+      value = "https://app-api-dev-${data.google_project.default.number}.asia-northeast1.run.app"
     },
     {
       # app-api は本サービスのサービスアカウントを参照するため、remote state ではなく URI を組み立てて循環を避ける

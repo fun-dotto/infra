@@ -8,12 +8,3 @@ data "terraform_remote_state" "cloudflare" {
     prefix = "cloudflare"
   }
 }
-
-data "terraform_remote_state" "app_bff_api" {
-  backend = "gcs"
-
-  config = {
-    bucket = "swift2023groupc-tfstate"
-    prefix = "server/app-bff-api-prd"
-  }
-}
