@@ -21,6 +21,38 @@ module "service" {
 
   env = [
     {
+      name  = "DOTTO_ENV"
+      value = "dev"
+    },
+    {
+      name  = "FIREBASE_API_KEY"
+      value = data.google_firebase_web_app_config.default.api_key
+    },
+    {
+      name  = "FIREBASE_AUTH_DOMAIN"
+      value = data.google_firebase_web_app_config.default.auth_domain
+    },
+    {
+      name  = "FIREBASE_PROJECT_ID"
+      value = data.google_project.default.project_id
+    },
+    {
+      name  = "FIREBASE_STORAGE_BUCKET"
+      value = data.google_firebase_web_app_config.default.storage_bucket
+    },
+    {
+      name  = "FIREBASE_MESSAGING_SENDER_ID"
+      value = data.google_firebase_web_app_config.default.messaging_sender_id
+    },
+    {
+      name  = "FIREBASE_APP_ID"
+      value = data.google_firebase_web_app_config.default.web_app_id
+    },
+    {
+      name  = "FIREBASE_MEASUREMENT_ID"
+      value = data.google_firebase_web_app_config.default.measurement_id
+    },
+    {
       name  = "API_BASE_URL"
       value = data.terraform_remote_state.app_bff_api.outputs.cloud_run_service_uri
     },
