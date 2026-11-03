@@ -1,6 +1,6 @@
 # GitHub Actions の Secret として配布する値
 # 値 (シークレットバージョン) は Terraform 管理外とし、gcloud などで手動登録する
-# 配布は terraform/github/fun-dotto/actions.tf で行う
+# 配布は terraform/github/fun-dotto/repository-*.tf で行う
 locals {
   github_actions_secret_ids = toset([
     "github_actions_android_keystore_base64",

@@ -3,7 +3,7 @@ projects:
     dir: terraform/cloudflare
   - name: github-fun-dotto
     dir: terraform/github/fun-dotto
-    include_patterns: ["terraform/github/_shared/**"]
+    include_patterns: ["terraform/github/_shared/**", "terraform/modules/github-repository/**"]
   - name: foundation-artifact-registry
     dir: terraform/google/foundation/artifact-registry
   - name: foundation-cloud-sql
