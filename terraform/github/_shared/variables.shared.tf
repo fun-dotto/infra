@@ -8,7 +8,7 @@ variable "github_app_client_id" {
 }
 
 variable "github_app_installation_id" {
-  type        = string
+  type = string
 }
 
 variable "github_app_pem_file" {
