@@ -2,7 +2,8 @@ variable "github_owner" {
   default = "fun-dotto"
 }
 
-variable "github_app_id" {
+variable "github_app_client_id" {
+  description = "GitHub App の Client ID (App ID ではない)"
   type = string
 }
 
