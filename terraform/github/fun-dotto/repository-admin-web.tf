@@ -23,7 +23,10 @@ module "admin_web" {
     dev = {}
     stg = {}
     prd = {
-      reviewer_user_ids       = [51151242, 136790650]
+      reviewer_user_ids = [
+        51151242,  # kantacky
+        136790650, # masaya-osuga
+      ]
       protected_branches_only = true
     }
   }
