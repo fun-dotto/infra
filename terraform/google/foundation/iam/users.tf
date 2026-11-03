@@ -3,6 +3,9 @@ locals {
     "dotto@fun.ac.jp" = [
       "roles/owner",
     ]
+    "iam@kantacky.com" = [
+      "roles/admin",
+    ]
     "ictfun2022@gmail.com" = [
       "roles/billing.projectManager",
     ]
