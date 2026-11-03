@@ -15,10 +15,8 @@ resource "github_actions_organization_secret" "this" {
   value       = ""
   visibility  = "all"
 
-  # GitHub 上で値を更新しても再作成しない
-  destroy_on_drift = false
-
   lifecycle {
-    ignore_changes = [value]
+    # GitHub 上で値を更新しても上書きしない
+    ignore_changes = [value, remote_updated_at]
   }
 }
