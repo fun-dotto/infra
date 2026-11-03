@@ -4,11 +4,11 @@ variable "github_owner" {
 
 variable "github_app_client_id" {
   description = "GitHub App の Client ID (App ID ではない)"
-  type = string
+  type        = string
 }
 
 variable "github_app_installation_id" {
-  type = string
+  type        = string
 }
 
 variable "github_app_pem_file" {
