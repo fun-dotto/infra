@@ -11,6 +11,8 @@ projects:
     dir: terraform/google/foundation/cloudflared
   - name: foundation-firebase-remote-config
     dir: terraform/google/foundation/firebase-remote-config
+  - name: foundation-iam
+    dir: terraform/google/foundation/iam
   - name: foundation-iam-workload-identity
     dir: terraform/google/foundation/iam-workload-identity
   - name: foundation-monitoring
