@@ -12,7 +12,7 @@ resource "google_project_iam_member" "this" {
 }
 
 resource "google_secret_manager_secret_iam_member" "secret_env" {
-  for_each = { for env in var.secret_env : env.name => env.secret_id }
+  for_each = var.manage_secret_iam ? { for env in var.secret_env : env.name => env.secret_id } : {}
 
   secret_id = each.value
   role      = "roles/secretmanager.secretAccessor"
@@ -20,8 +20,8 @@ resource "google_secret_manager_secret_iam_member" "secret_env" {
 }
 
 resource "google_service_account" "scheduler" {
-  account_id   = "${var.service_account_id}-scheduler"
-  display_name = "${var.service_account_display_name} Scheduler"
+  account_id   = coalesce(var.scheduler_service_account_id, "${var.service_account_id}-scheduler")
+  display_name = coalesce(var.scheduler_service_account_display_name, "${var.service_account_display_name} Scheduler")
 }
 
 resource "google_cloud_run_v2_job_iam_member" "invoker" {
@@ -79,7 +79,7 @@ resource "google_cloud_run_v2_job" "this" {
         }
       }
 
-      max_retries = 0
+      max_retries = var.max_retries
 
       service_account = google_service_account.this.email
       timeout         = "900s"
@@ -101,9 +101,10 @@ resource "google_cloud_run_v2_job" "this" {
 }
 
 resource "google_cloud_scheduler_job" "trigger" {
-  name      = "${var.job_name}-trigger"
-  schedule  = var.schedule
-  time_zone = var.timezone
+  name        = "${var.job_name}-trigger"
+  description = var.scheduler_description
+  schedule    = var.schedule
+  time_zone   = var.timezone
 
   http_target {
     http_method = "POST"

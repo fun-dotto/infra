@@ -24,7 +24,9 @@ variable "project_roles" {
 }
 
 variable "command" {
-  type = list(string)
+  description = "Defaults to the image's ENTRYPOINT when null."
+  type        = list(string)
+  default     = null
 }
 
 variable "image" {
@@ -58,4 +60,32 @@ variable "schedule" {
 
 variable "timezone" {
   type = string
+}
+
+variable "manage_secret_iam" {
+  description = "Whether to grant the service account access to the secrets in secret_env. Set false when the secrets live in a project Terraform cannot manage."
+  type        = bool
+  default     = true
+}
+
+variable "max_retries" {
+  type    = number
+  default = 0
+}
+
+variable "scheduler_service_account_id" {
+  description = "Defaults to \"<service_account_id>-scheduler\"."
+  type        = string
+  default     = null
+}
+
+variable "scheduler_service_account_display_name" {
+  description = "Defaults to \"<service_account_display_name> Scheduler\"."
+  type        = string
+  default     = null
+}
+
+variable "scheduler_description" {
+  type    = string
+  default = null
 }

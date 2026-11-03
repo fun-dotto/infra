@@ -77,6 +77,9 @@ projects:
   - name: server-build-irregular-notification-job-prd
     dir: terraform/google/server/build-irregular-notification-job/prd
     include_patterns: ["terraform/modules/cloud-run-job/**"]
+  - name: server-class-change-batch-prd
+    dir: terraform/google/server/class-change-batch/prd
+    include_patterns: ["terraform/modules/cloud-run-job/**"]
   - name: server-import-gtfs-job-dev
     dir: terraform/google/server/import-gtfs-job/dev
     include_patterns: ["terraform/modules/cloud-run-job/**"]
