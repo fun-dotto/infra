@@ -7,7 +7,9 @@ resource "google_secret_manager_secret" "app_dart_define_stg" {
 }
 
 resource "google_secret_manager_secret_iam_member" "app_dart_define_stg" {
+  for_each = local.app_secret_accessor_members
+
   secret_id = google_secret_manager_secret.app_dart_define_stg.secret_id
   role      = "roles/secretmanager.secretAccessor"
-  member    = local.app_secret_accessor_member
+  member    = each.value
 }
