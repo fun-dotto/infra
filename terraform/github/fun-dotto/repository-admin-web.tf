@@ -30,6 +30,12 @@ module "admin_web" {
   secrets = [
     "PROTO_UPDATER_APP_PRIVATE_KEY",
   ]
+
+  workload_identity_roles = [
+    "roles/artifactregistry.writer",
+    "roles/iam.serviceAccountUser", # Cloud Run に実行 SA を設定するため
+    "roles/run.developer",
+  ]
 }
 
 moved {

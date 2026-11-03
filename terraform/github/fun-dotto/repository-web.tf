@@ -33,6 +33,12 @@ module "web" {
   variables = local.web_variables
 
   environment_variables = local.web_environment_variables
+
+  workload_identity_roles = [
+    "roles/artifactregistry.writer",
+    "roles/iam.serviceAccountUser", # Cloud Run に実行 SA を設定するため
+    "roles/run.developer",
+  ]
 }
 
 moved {

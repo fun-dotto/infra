@@ -73,3 +73,19 @@ variable "secrets" {
   type    = set(string)
   default = []
 }
+
+# Direct Workload Identity Federation で GitHub Actions に直接付与するプロジェクトのロール
+variable "workload_identity_roles" {
+  type    = set(string)
+  default = []
+}
+
+variable "workload_identity_pool_name" {
+  type    = string
+  default = "projects/107577467292/locations/global/workloadIdentityPools/dotto"
+}
+
+variable "google_cloud_project_id" {
+  type    = string
+  default = "swift2023groupc"
+}
