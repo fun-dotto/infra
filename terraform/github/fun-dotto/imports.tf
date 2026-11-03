@@ -16,25 +16,6 @@ import {
 }
 
 import {
-  for_each = local.repositories
-  to       = github_repository.this[each.key]
-  id       = each.key
-}
-
-import {
-  for_each = {
-    app       = 6917853
-    web       = 14617929
-    admin-web = 12979229
-    client    = 25890397
-    server    = 16189525
-    infra     = 17262173
-  }
-  to = github_repository_ruleset.default_branch[each.key]
-  id = "${each.key}:${each.value}"
-}
-
-import {
   for_each = local.memberships
   to       = github_membership.this[each.key]
   id       = "fun-dotto:${each.key}"
@@ -50,10 +31,4 @@ import {
   for_each = local.import_team_ids
   to       = github_team_members.this[each.key]
   id       = each.value
-}
-
-import {
-  for_each = local.team_repositories
-  to       = github_team_repository.this[each.key]
-  id       = "${local.import_team_ids[each.value.team]}:${each.value.repository}"
 }

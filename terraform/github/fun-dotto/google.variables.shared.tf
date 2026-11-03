@@ -1,0 +1,1 @@
+../../google/_shared/variables.shared.tf
