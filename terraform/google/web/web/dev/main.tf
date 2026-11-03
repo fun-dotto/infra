@@ -8,7 +8,6 @@ module "service" {
   service_account_id           = "web-dev"
   service_account_display_name = "Web (Dev)"
   project_roles = [
-    "roles/firebaseappcheck.tokenVerifier",
     "roles/logging.logWriter",
   ]
 
