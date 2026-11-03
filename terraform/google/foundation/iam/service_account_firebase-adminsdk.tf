@@ -2,6 +2,7 @@
 resource "google_service_account" "firebase_adminsdk" {
   account_id   = "firebase-adminsdk-v653f"
   display_name = "firebase-adminsdk"
+  description  = "Firebase Admin SDK Service Agent"
 }
 
 import {
