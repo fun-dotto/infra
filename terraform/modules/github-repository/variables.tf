@@ -68,8 +68,8 @@ variable "environment_variables" {
   default = {}
 }
 
-# Secret 名 => Secret Manager のシークレット ID
+# Secret 名。値は同名の Secret Manager のシークレットに手動で登録する
 variable "secrets" {
-  type    = map(string)
-  default = {}
+  type    = set(string)
+  default = []
 }

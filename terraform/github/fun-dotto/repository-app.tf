@@ -42,15 +42,15 @@ module "app" {
 
   variables = local.app_variables
 
-  secrets = {
-    ANDROID_KEYSTORE_BASE64                  = "github_actions_android_keystore_base64"
-    ANDROID_KEYSTORE_PASSWORD                = "github_actions_android_keystore_password"
-    APP_STORE_CONNECT_API_KEY_CONTENT_BASE64 = "github_actions_app_store_connect_api_key_content_base64"
-    MATCH_GIT_APP_PRIVATE_KEY                = "github_actions_match_git_app_private_key"
-    MATCH_PASSWORD                           = "github_actions_match_password"
-    PROTO_UPDATER_APP_PRIVATE_KEY            = "github_actions_proto_updater_app_private_key"
-    SLACK_URL                                = "github_actions_slack_url"
-  }
+  secrets = [
+    "ANDROID_KEYSTORE_BASE64",
+    "ANDROID_KEYSTORE_PASSWORD",
+    "APP_STORE_CONNECT_API_KEY_CONTENT_BASE64",
+    "MATCH_GIT_APP_PRIVATE_KEY",
+    "MATCH_PASSWORD",
+    "PROTO_UPDATER_APP_PRIVATE_KEY",
+    "SLACK_URL",
+  ]
 }
 
 moved {

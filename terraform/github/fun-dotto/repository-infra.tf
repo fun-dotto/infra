@@ -30,11 +30,11 @@ module "infra" {
 
   variables = local.infra_variables
 
-  secrets = {
-    CLOUDFLARE_API_TOKEN                = "github_actions_cloudflare_api_token"
-    CLOUDFLARE_GITHUB_IDP_CLIENT_SECRET = "github_actions_cloudflare_github_idp_client_secret"
-    TERRAFORM_GITHUB_APP_PRIVATE_KEY    = "github_actions_terraform_github_app_private_key"
-  }
+  secrets = [
+    "CLOUDFLARE_API_TOKEN",
+    "CLOUDFLARE_GITHUB_IDP_CLIENT_SECRET",
+    "TERRAFORM_GITHUB_APP_PRIVATE_KEY",
+  ]
 }
 
 moved {

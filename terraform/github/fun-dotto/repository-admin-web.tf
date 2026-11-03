@@ -27,9 +27,9 @@ module "admin_web" {
 
   variables = local.admin_web_variables
 
-  secrets = {
-    PROTO_UPDATER_APP_PRIVATE_KEY = "github_actions_proto_updater_app_private_key"
-  }
+  secrets = [
+    "PROTO_UPDATER_APP_PRIVATE_KEY",
+  ]
 }
 
 moved {
