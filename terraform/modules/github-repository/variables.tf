@@ -63,24 +63,6 @@ variable "environments" {
   default = {}
 }
 
-# Variable 名 => 値。null のものは Terraform 管理外とする
-variable "variables" {
-  type    = map(string)
-  default = {}
-}
-
-# Environment 名 => { Variable 名 => 値 }。null のものは Terraform 管理外とする
-variable "environment_variables" {
-  type    = map(map(string))
-  default = {}
-}
-
-# Secret 名。値は同名の Secret Manager のシークレットに手動で登録する
-variable "secrets" {
-  type    = set(string)
-  default = []
-}
-
 # Direct Workload Identity Federation で GitHub Actions に直接付与するプロジェクトのロール
 variable "workload_identity_roles" {
   type    = set(string)

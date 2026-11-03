@@ -1,13 +1,3 @@
-locals {
-  web_variables = local.cloud_run_deploy_variables
-
-  web_environment_variables = {
-    dev = local.web_firebase_variables
-    stg = local.web_firebase_variables
-    prd = local.web_firebase_variables
-  }
-}
-
 module "web" {
   source = "../../modules/github-repository"
 
@@ -37,10 +27,6 @@ module "web" {
       can_admins_bypass       = false
     }
   }
-
-  variables = local.web_variables
-
-  environment_variables = local.web_environment_variables
 
   workload_identity_roles = [
     "roles/artifactregistry.writer",
@@ -72,11 +58,5 @@ moved {
 import {
   for_each = toset(["dev", "stg", "prd"])
   to       = module.web.github_repository_environment.this[each.key]
-  id       = "web:${each.key}"
-}
-
-import {
-  for_each = { for k, v in local.web_variables : k => v if v != null }
-  to       = module.web.github_actions_variable.this[each.key]
   id       = "web:${each.key}"
 }

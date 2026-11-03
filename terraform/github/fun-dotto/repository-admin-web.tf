@@ -1,7 +1,3 @@
-locals {
-  admin_web_variables = merge(local.cloud_run_deploy_variables, { PROTO_UPDATER_APP_CLIENT_ID = null })
-}
-
 module "admin_web" {
   source = "../../modules/github-repository"
 
@@ -31,12 +27,6 @@ module "admin_web" {
       protected_branches_only = true
     }
   }
-
-  variables = local.admin_web_variables
-
-  secrets = [
-    "PROTO_UPDATER_APP_PRIVATE_KEY",
-  ]
 
   workload_identity_roles = [
     "roles/artifactregistry.writer",
@@ -73,11 +63,5 @@ moved {
 import {
   for_each = toset(["dev", "stg", "prd"])
   to       = module.admin_web.github_repository_environment.this[each.key]
-  id       = "admin-web:${each.key}"
-}
-
-import {
-  for_each = { for k, v in local.admin_web_variables : k => v if v != null }
-  to       = module.admin_web.github_actions_variable.this[each.key]
   id       = "admin-web:${each.key}"
 }

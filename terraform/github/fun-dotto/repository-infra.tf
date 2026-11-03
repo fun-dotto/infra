@@ -1,10 +1,3 @@
-locals {
-  infra_variables = {
-    TERRAFORM_GITHUB_APP_ID              = var.github_app_id
-    TERRAFORM_GITHUB_APP_INSTALLATION_ID = var.github_app_installation_id
-  }
-}
-
 module "infra" {
   source = "../../modules/github-repository"
 
@@ -28,13 +21,6 @@ module "infra" {
     web     = { team_id = github_team.this["web"].id, permission = "push" }
   }
 
-  variables = local.infra_variables
-
-  secrets = [
-    "CLOUDFLARE_API_TOKEN",
-    "CLOUDFLARE_GITHUB_IDP_CLIENT_SECRET",
-    "TERRAFORM_GITHUB_APP_PRIVATE_KEY",
-  ]
 }
 
 moved {
@@ -65,10 +51,4 @@ moved {
 moved {
   from = github_team_repository.this["web:infra"]
   to   = module.infra.github_team_repository.this["web"]
-}
-
-import {
-  for_each = { for k, v in local.infra_variables : k => v if v != null }
-  to       = module.infra.github_actions_variable.this[each.key]
-  id       = "infra:${each.key}"
 }
