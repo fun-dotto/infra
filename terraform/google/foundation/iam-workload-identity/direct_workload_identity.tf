@@ -1,25 +1,33 @@
 # サービスアカウントの権限借用を介さず、GitHub Actions の Workload Identity に直接ロールを付与する
 # (Direct Workload Identity Federation)
 locals {
-  direct_workload_identity_repositories = toset([
-    "admin-web",
-    "server",
-    "web",
-  ])
-
-  direct_workload_identity_roles = toset([
-    "roles/artifactregistry.writer",
-    "roles/iam.serviceAccountUser", # Cloud Run に実行 SA を設定するため
-    "roles/run.developer",
-  ])
-
-  direct_workload_identity_bindings = {
-    for pair in setproduct(local.direct_workload_identity_repositories, local.direct_workload_identity_roles) :
-    "${pair[0]}:${pair[1]}" => {
-      repository = pair[0]
-      role       = pair[1]
-    }
+  # リポジトリ => 付与するロール
+  direct_workload_identity_roles = {
+    admin-web = [
+      "roles/artifactregistry.writer",
+      "roles/iam.serviceAccountUser", # Cloud Run に実行 SA を設定するため
+      "roles/run.developer",
+    ]
+    server = [
+      "roles/artifactregistry.writer",
+      "roles/iam.serviceAccountUser", # Cloud Run に実行 SA を設定するため
+      "roles/run.developer",
+    ]
+    web = [
+      "roles/artifactregistry.writer",
+      "roles/iam.serviceAccountUser", # Cloud Run に実行 SA を設定するため
+      "roles/run.developer",
+    ]
   }
+
+  direct_workload_identity_bindings = merge([
+    for repository, roles in local.direct_workload_identity_roles : {
+      for role in roles : "${repository}:${role}" => {
+        repository = repository
+        role       = role
+      }
+    }
+  ]...)
 }
 
 resource "google_project_iam_member" "direct_workload_identity" {
