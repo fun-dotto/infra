@@ -94,7 +94,7 @@ resource "github_repository_ruleset" "default_branch" {
           file_patterns     = ["*"]
           minimum_approvals = required_reviewers.value.minimum_approvals
           reviewer {
-            id   = local.team_ids[required_reviewers.value.team]
+            id   = github_team.this[required_reviewers.value.team].id
             type = "Team"
           }
         }

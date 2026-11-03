@@ -50,15 +50,16 @@ Cloudflare Access の GitHub ログインに使う GitHub OAuth App の client s
 
 ## GitHub の Terraform 管理
 
-`terraform/github/fun-dotto/` の project は fun-dotto Organization の設定と、
-app, web, admin-web, client, server, infra リポジトリの設定・ruleset を管理する。
+`terraform/github/fun-dotto/` の project は fun-dotto Organization の設定・メンバー・
+Team と、app, web, admin-web, client, server, infra リポジトリの設定・ruleset・
+Team 権限を管理する。
 `GITHUB_TOKEN`（Actions のトークン）では Organization やほかのリポジトリを操作
 できないため、専用の GitHub App で認証する。
 
 GitHub App を fun-dotto に作成して上記リポジトリにインストールし、次の権限を付与する。
 
-- Organization: Administration（Read and write）、Members（Read-only）
-- Repository: Administration（Read and write）、Metadata（Read-only）
+- Organization: Administration（Read and write）、Members（Read and write）
+- Repository: Administration（Read and write）、Metadata（Read-only）、Pages（Read-only）
 
 infra リポジトリに次を登録する。
 

@@ -1,12 +1,4 @@
 locals {
-  # ruleset の required_reviewers で参照する Team ID
-  team_ids = {
-    app     = 13010427
-    masters = 14928826
-    server  = 14928885
-    web     = 17258603
-  }
-
   repositories = {
     app = {
       description        = "公立はこだて未来大学ポータルアプリ Dotto モバイルアプリ"
