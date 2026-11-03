@@ -17,6 +17,6 @@ resource "github_actions_organization_secret" "this" {
 
   lifecycle {
     # GitHub 上で値を更新しても上書きしない
-    ignore_changes = [value, remote_updated_at]
+    ignore_changes = [value]
   }
 }

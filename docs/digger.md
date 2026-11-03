@@ -61,10 +61,10 @@ GitHub App を fun-dotto に作成して上記リポジトリにインストー�
 - Organization: Administration（Read and write）、Members（Read and write）
 - Repository: Administration（Read and write）、Metadata（Read-only）、Pages（Read-only）
 
-infra リポジトリに次を登録する。
+認証情報は Organization の Variable / Secret（`terraform/github/fun-dotto` で管理）を利用する。
 
-- Repository variables: `TERRAFORM_GITHUB_APP_ID`, `TERRAFORM_GITHUB_APP_INSTALLATION_ID`
-- Repository secrets: `TERRAFORM_GITHUB_APP_PRIVATE_KEY`（秘密鍵 PEM の中身）
+- Organization variables: `DOTTO_GITHUB_MANAGER_APP_CLIENT_ID`, `DOTTO_GITHUB_MANAGER_APP_INSTALLATION_ID`
+- Organization secrets: `DOTTO_GITHUB_MANAGER_APP_PRIVATE_KEY`（秘密鍵 PEM の中身。値は GitHub 上で手動登録）
 
 ## Project の追加
 
