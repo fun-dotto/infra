@@ -1,6 +1,8 @@
 locals {
-  # dotto@fun.ac.jp・iam@kantacky.com はプロジェクト管理者のため Terraform で管理しない
   user_project_roles = {
+    "dotto@fun.ac.jp" = [
+      "roles/owner",
+    ]
     "ictfun2022@gmail.com" = [
       "roles/billing.projectManager",
     ]
