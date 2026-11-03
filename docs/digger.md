@@ -48,6 +48,24 @@ Cloudflare Tunnel・Access（アプリケーション・ポリシー）・Zero T
 Cloudflare Access の GitHub ログインに使う GitHub OAuth App の client secret を
 `CLOUDFLARE_GITHUB_IDP_CLIENT_SECRET` として Repository secrets に登録する。
 
+## GitHub の Terraform 管理
+
+`terraform/github/fun-dotto/` の project は fun-dotto Organization の設定・メンバー・
+Team と、app, web, admin-web, client, server, infra リポジトリの設定・ruleset・
+Team 権限を管理する。
+`GITHUB_TOKEN`（Actions のトークン）では Organization やほかのリポジトリを操作
+できないため、専用の GitHub App で認証する。
+
+GitHub App を fun-dotto に作成して上記リポジトリにインストールし、次の権限を付与する。
+
+- Organization: Administration（Read and write）、Members（Read and write）
+- Repository: Administration（Read and write）、Metadata（Read-only）、Pages（Read-only）
+
+infra リポジトリに次を登録する。
+
+- Repository variables: `TERRAFORM_GITHUB_APP_ID`, `TERRAFORM_GITHUB_APP_INSTALLATION_ID`
+- Repository secrets: `TERRAFORM_GITHUB_APP_PRIVATE_KEY`（秘密鍵 PEM の中身）
+
 ## Project の追加
 
 Terraform root（`backend.tf` を持つディレクトリ）を追加した場合は、同じ変更で
