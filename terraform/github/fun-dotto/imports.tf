@@ -57,3 +57,16 @@ import {
   to       = github_team_repository.this[each.key]
   id       = "${local.import_team_ids[each.value.team]}:${each.value.repository}"
 }
+
+# 既存の Environment・Variable を取り込む (Secret は値を上書きするため import 不要)
+import {
+  for_each = local.repository_environments
+  to       = github_repository_environment.this[each.key]
+  id       = each.key
+}
+
+import {
+  for_each = local.repository_variables
+  to       = github_actions_variable.this[each.key]
+  id       = each.key
+}
