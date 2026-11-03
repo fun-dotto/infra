@@ -16,8 +16,7 @@ module "service" {
     "roles/logging.logWriter",
   ]
 
-  # TODO: app-api のバイナリが用意できたら "/bin/app-api" に戻す
-  command = ["/bin/app-bff-api"]
+  command = ["/bin/app-api"]
   image   = "asia-northeast1-docker.pkg.dev/swift2023groupc/github-actions/server:latest"
   # Access をかけず Tunnel も通さないため、Cloudflare プロキシから直接受ける（App Check / ID Token で認証する）
   ingress = "INGRESS_TRAFFIC_ALL"
@@ -26,21 +25,6 @@ module "service" {
   deletion_protection  = false
 
   env = [
-    # TODO: 仮で BFF のバイナリを動かすためだけに必要。統合後の API には不要なので削除する
-    {
-      name  = "ACADEMIC_API_URL"
-      value = data.terraform_remote_state.academic_service.outputs.cloud_run_service_uri
-    },
-    # TODO: 仮で BFF のバイナリを動かすためだけに必要。統合後の API には不要なので削除する
-    {
-      name  = "ANNOUNCEMENT_API_URL"
-      value = data.terraform_remote_state.announcement_service.outputs.cloud_run_service_uri
-    },
-    # TODO: 仮で BFF のバイナリを動かすためだけに必要。統合後の API には不要なので削除する
-    {
-      name  = "USER_API_URL"
-      value = data.terraform_remote_state.user_service.outputs.cloud_run_service_uri
-    },
     {
       name  = "CF_ACCESS_ENABLED"
       value = "false"
