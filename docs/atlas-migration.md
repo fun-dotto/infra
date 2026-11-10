@@ -7,88 +7,78 @@
 
 | 対象 | 場所 |
 | --- | --- |
-| SA `gha-server-migrate-dry-run`（読み取り専用）/ `gha-server-migrate-apply`（DDL） | `terraform/google/foundation/iam-workload-identity/service_account_github-actions-server-migrate.tf` |
+| SA `gha-server-migrate-dry-run-<env>`（読み取り専用）/ `gha-server-migrate-apply-<env>`（DDL）。`<env>` は `dev` / `stg` / `prd` | `terraform/google/foundation/iam-workload-identity/service_account_github-actions-server-migrate.tf` |
 | 各 SA の `roles/cloudsql.client` / `roles/cloudsql.instanceUser` | 同上 |
-| Cloud SQL の IAM ユーザー（`<sa>@swift2023groupc.iam`） | `terraform/google/foundation/cloud-sql/users.tf` |
+| Cloud SQL の IAM ユーザー（`<sa>@swift2023groupc.iam`）と所属ロール | `terraform/google/foundation/cloud-sql/users.tf` |
 | WIF 属性 `attribute.repository_environment` | `terraform/google/foundation/iam-workload-identity/identity_pool_provider_github.tf` |
+
+ロール構成の全体像は [postgresql_roles.md](./postgresql_roles.md) を参照。
 
 ### 環境ごとの権限分離
 
-- dry-run 用 SA: `fun-dotto/server` の任意のワークフローから借用可（読み取り専用のため）。
-- 適用用 SA: `attribute.repository_environment` が `fun-dotto/server/{dev,stg,prd}` のジョブのみ借用可。PR の dry-run ジョブは Environment を指定しないので借用できない。`prd` は GitHub Environment 側の承認者必須・保護ブランチ限定で守る。
+- dry-run 用 SA: `fun-dotto/server` の任意のワークフローから借用可（読み取り専用のため）。環境ごとに別 SA で、対応する `dotto_migrate_readonly_<env>` にのみ所属する。
+- 適用用 SA: `attribute.repository_environment` が `fun-dotto/server/<env>` のジョブのみ、同名の環境の SA を借用可。PR の dry-run ジョブは Environment を指定しないので借用できない。`prd` は GitHub Environment 側の承認者必須・保護ブランチ限定で守る。
+- 適用用 SA は `dotto_admin_<env>` のメンバー。接続時に `role=dotto_admin_<env>`（`SET ROLE`）を指定して DDL を実行する。
 
 ## 手動で実施する SQL（Terraform の管理外）
 
-各 DB（`dotto` / `dotto_stg` / `dotto_dev`）で、`dotto_admin` 権限で 1 回実行する。dev → stg → prd の順。
+ロール自体と DB 内の権限は Terraform の管理外。新しい環境の DB を作る場合や、ロール構成を変える場合は、人間の管理者（`dotto_admin` のメンバー）が実施する。
+Terraform の `google_sql_user` が `database_roles` で参照するロールは、先に作成しておく必要がある。
 
-### 1. dry-run 用の読み取り専用ロール
-
-ロール自体はインスタンス共通なので 1 回だけ作成し、DB ごとに権限を付与する。
-
-```sql
--- 1 回だけ
-CREATE ROLE dotto_migrate_readonly NOLOGIN;
-GRANT dotto_migrate_readonly TO "gha-server-migrate-dry-run@swift2023groupc.iam";
-
--- 各 DB で実行
-GRANT CONNECT ON DATABASE dotto TO dotto_migrate_readonly;  -- DB 名は環境ごとに読み替える
--- リビジョンテーブルは public ではなく、専用スキーマ atlas_schema_revisions にある
--- （スキーマ・テーブルが無い DB では、マイグレーションを初めて適用した後に実行する）
-GRANT USAGE ON SCHEMA atlas_schema_revisions TO dotto_migrate_readonly;
-GRANT SELECT ON TABLE atlas_schema_revisions.atlas_schema_revisions TO dotto_migrate_readonly;
-```
-
-### 2. 適用用 SA の `SET ROLE` と、新規テーブルへの自動権限付与
+### ロールの作成（インスタンスで 1 回）
 
 ```sql
--- 適用用 SA は Terraform (database_roles) で dotto_admin のメンバーになっている。
--- 追加の GRANT は不要（実機確認済み: inherit_option / set_option がともに true）。
--- 念のため確認する場合:
---   SELECT m.rolname AS member, a.inherit_option, a.set_option
---   FROM pg_auth_members a
---   JOIN pg_roles r ON r.oid = a.roleid JOIN pg_roles m ON m.oid = a.member
---   WHERE r.rolname = 'dotto_admin';
+CREATE ROLE dotto_admin_<env> NOLOGIN;
+CREATE ROLE dotto_service_<env> NOLOGIN;
+CREATE ROLE dotto_migrate_readonly_<env> NOLOGIN;
 
--- 各 DB で 1 回: dotto_admin が作るテーブルに権限を自動付与する（dotto_admin で SET ROLE して実行）
--- dotto_service は全環境共通
-ALTER DEFAULT PRIVILEGES FOR ROLE dotto_admin
-  GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO dotto_service;
-
--- dotto_developer は環境で異なる
--- dotto_dev / dotto_stg:
-ALTER DEFAULT PRIVILEGES FOR ROLE dotto_admin
-  GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO dotto_developer;
--- dotto (prd): 運用上 SELECT のみ
-ALTER DEFAULT PRIVILEGES FOR ROLE dotto_admin
-  GRANT SELECT ON TABLES TO dotto_developer;
+GRANT dotto_admin_<env> TO dotto_admin;
+GRANT dotto_service_<env> TO dotto_admin_<env>;
 ```
 
-既に `dotto_developer` に `INSERT, UPDATE, DELETE` を含む `ALTER DEFAULT PRIVILEGES` を実行してしまった DB（特に prd）は、次で取り消す。
+### 各 DB での権限設定
+
+DB は dev が `dotto_dev`、stg が `dotto_stg`、prd が `dotto`。対象 DB に接続して実行する。
 
 ```sql
-ALTER DEFAULT PRIVILEGES FOR ROLE dotto_admin
-  REVOKE INSERT, UPDATE, DELETE ON TABLES FROM dotto_developer;
-```
+-- 接続制限: 他環境のロールから接続できないようにする
+REVOKE CONNECT ON DATABASE <db> FROM PUBLIC;
+GRANT CONNECT ON DATABASE <db> TO cloudsqlsuperuser, dotto_admin, dotto_developer,
+  dotto_admin_<env>, dotto_service_<env>, dotto_migrate_readonly_<env>;
 
-設定内容は `SELECT pg_get_userbyid(defaclrole) AS creator, defaclobjtype, defaclacl FROM pg_default_acl;` で確認できる。
+-- 既存オブジェクトの owner を環境用ロールにする
+REASSIGN OWNED BY dotto_admin TO dotto_admin_<env>;
+
+-- 新規テーブルへの自動権限付与（dotto_admin_<env> が作るテーブル）
+ALTER DEFAULT PRIVILEGES FOR ROLE dotto_admin_<env>
+  GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO dotto_service_<env>;
+-- dotto_developer: dev / stg は CRUD、prd は SELECT のみ
+ALTER DEFAULT PRIVILEGES FOR ROLE dotto_admin_<env>
+  GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO dotto_developer;  -- prd は GRANT SELECT ON TABLES
+```
 
 `serial` / `bigserial` を使うテーブルがある場合は、シーケンスの `USAGE` も同様に `ALTER DEFAULT PRIVILEGES ... ON SEQUENCES` で付与する。
+設定内容は `SELECT pg_get_userbyid(defaclrole) AS creator, defaclobjtype, defaclacl FROM pg_default_acl;` で確認できる。
 
-### 3. 既存テーブルの owner / 権限
-
-現行の `apply-table-privileges` と同じ内容を各 DB で手動実施する。
+### 既存テーブルの権限
 
 | ロール | dotto_dev / dotto_stg | dotto (prd) |
 | --- | --- | --- |
-| `dotto_admin` | owner、`ALL` | owner、`ALL` |
-| `dotto_service` | `SELECT, INSERT, UPDATE, DELETE` | `SELECT, INSERT, UPDATE, DELETE` |
+| `dotto_admin_<env>` | owner、`ALL` | owner、`ALL` |
+| `dotto_service_<env>` | `SELECT, INSERT, UPDATE, DELETE` | `SELECT, INSERT, UPDATE, DELETE` |
 | `dotto_developer` | `SELECT, INSERT, UPDATE, DELETE` | **`SELECT` のみ** |
-
-prd では、現行の `apply-table-privileges` が `dotto_developer` に `INSERT, UPDATE, DELETE` を付与している場合があるため、既存テーブルから取り消す。
+| `dotto_migrate_readonly_<env>` | `atlas_schema_revisions` の `SELECT` | 同左 |
 
 ```sql
--- prd (dotto) のみ
+GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO dotto_service_<env>;
+GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO dotto_developer;  -- prd は SELECT のみ
+-- prd のみ、developer の書き込み権限が残っている場合
 REVOKE INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public FROM dotto_developer;
+
+-- dry-run 用: リビジョンテーブルは public ではなく専用スキーマ atlas_schema_revisions にある
+-- （スキーマ・テーブルが無い DB では、マイグレーションを初めて適用した後に実行する）
+GRANT USAGE ON SCHEMA atlas_schema_revisions TO dotto_migrate_readonly_<env>;
+GRANT SELECT ON TABLE atlas_schema_revisions.atlas_schema_revisions TO dotto_migrate_readonly_<env>;
 ```
 
 ## 未対応（ワークフロー導入後に実施）
