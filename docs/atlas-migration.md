@@ -41,8 +41,13 @@ GRANT SELECT ON TABLE atlas_schema_revisions.atlas_schema_revisions TO dotto_mig
 ### 2. 適用用 SA の `SET ROLE` と、新規テーブルへの自動権限付与
 
 ```sql
--- 適用用 SA が dotto_admin に SET ROLE できること（PostgreSQL 16+）
-GRANT dotto_admin TO "gha-server-migrate-apply@swift2023groupc.iam" WITH INHERIT TRUE, SET TRUE;
+-- 適用用 SA は Terraform (database_roles) で dotto_admin のメンバーになっている。
+-- 追加の GRANT は不要（実機確認済み: inherit_option / set_option がともに true）。
+-- 念のため確認する場合:
+--   SELECT m.rolname AS member, a.inherit_option, a.set_option
+--   FROM pg_auth_members a
+--   JOIN pg_roles r ON r.oid = a.roleid JOIN pg_roles m ON m.oid = a.member
+--   WHERE r.rolname = 'dotto_admin';
 
 -- 各 DB で 1 回: dotto_admin が作るテーブルに dotto_service / dotto_developer の権限を自動付与
 ALTER DEFAULT PRIVILEGES FOR ROLE dotto_admin
