@@ -49,16 +49,47 @@ GRANT SELECT ON TABLE atlas_schema_revisions.atlas_schema_revisions TO dotto_mig
 --   JOIN pg_roles r ON r.oid = a.roleid JOIN pg_roles m ON m.oid = a.member
 --   WHERE r.rolname = 'dotto_admin';
 
--- 各 DB で 1 回: dotto_admin が作るテーブルに dotto_service / dotto_developer の権限を自動付与
+-- 各 DB で 1 回: dotto_admin が作るテーブルに権限を自動付与する（dotto_admin で SET ROLE して実行）
+-- dotto_service は全環境共通
 ALTER DEFAULT PRIVILEGES FOR ROLE dotto_admin
-  GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO dotto_service, dotto_developer;
+  GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO dotto_service;
+
+-- dotto_developer は環境で異なる
+-- dotto_dev / dotto_stg:
+ALTER DEFAULT PRIVILEGES FOR ROLE dotto_admin
+  GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO dotto_developer;
+-- dotto (prd): 運用上 SELECT のみ
+ALTER DEFAULT PRIVILEGES FOR ROLE dotto_admin
+  GRANT SELECT ON TABLES TO dotto_developer;
 ```
+
+既に `dotto_developer` に `INSERT, UPDATE, DELETE` を含む `ALTER DEFAULT PRIVILEGES` を実行してしまった DB（特に prd）は、次で取り消す。
+
+```sql
+ALTER DEFAULT PRIVILEGES FOR ROLE dotto_admin
+  REVOKE INSERT, UPDATE, DELETE ON TABLES FROM dotto_developer;
+```
+
+設定内容は `SELECT pg_get_userbyid(defaclrole) AS creator, defaclobjtype, defaclacl FROM pg_default_acl;` で確認できる。
 
 `serial` / `bigserial` を使うテーブルがある場合は、シーケンスの `USAGE` も同様に `ALTER DEFAULT PRIVILEGES ... ON SEQUENCES` で付与する。
 
 ### 3. 既存テーブルの owner / 権限
 
-現行の `apply-table-privileges` と同じ内容を各 DB で手動実施する（owner を `dotto_admin` に変更、`dotto_admin` に `ALL`、`dotto_service` / `dotto_developer` に `SELECT, INSERT, UPDATE, DELETE`）。
+現行の `apply-table-privileges` と同じ内容を各 DB で手動実施する。
+
+| ロール | dotto_dev / dotto_stg | dotto (prd) |
+| --- | --- | --- |
+| `dotto_admin` | owner、`ALL` | owner、`ALL` |
+| `dotto_service` | `SELECT, INSERT, UPDATE, DELETE` | `SELECT, INSERT, UPDATE, DELETE` |
+| `dotto_developer` | `SELECT, INSERT, UPDATE, DELETE` | **`SELECT` のみ** |
+
+prd では、現行の `apply-table-privileges` が `dotto_developer` に `INSERT, UPDATE, DELETE` を付与している場合があるため、既存テーブルから取り消す。
+
+```sql
+-- prd (dotto) のみ
+REVOKE INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public FROM dotto_developer;
+```
 
 ## 未対応（ワークフロー導入後に実施）
 
