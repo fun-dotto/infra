@@ -48,29 +48,3 @@ module "server" {
     "roles/run.developer",
   ]
 }
-
-moved {
-  from = github_repository.this["server"]
-  to   = module.server.github_repository.this
-}
-
-moved {
-  from = github_repository_ruleset.default_branch["server"]
-  to   = module.server.github_repository_ruleset.default_branch
-}
-
-moved {
-  from = github_team_repository.this["masters:server"]
-  to   = module.server.github_team_repository.this["masters"]
-}
-
-moved {
-  from = github_team_repository.this["server:server"]
-  to   = module.server.github_team_repository.this["server"]
-}
-
-import {
-  for_each = toset(["dev", "stg", "prd"])
-  to       = module.server.github_repository_environment.this[each.key]
-  id       = "server:${each.key}"
-}

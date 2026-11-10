@@ -20,35 +20,4 @@ module "infra" {
     server  = { team_id = github_team.this["server"].id, permission = "push" }
     web     = { team_id = github_team.this["web"].id, permission = "push" }
   }
-
-}
-
-moved {
-  from = github_repository.this["infra"]
-  to   = module.infra.github_repository.this
-}
-
-moved {
-  from = github_repository_ruleset.default_branch["infra"]
-  to   = module.infra.github_repository_ruleset.default_branch
-}
-
-moved {
-  from = github_team_repository.this["app:infra"]
-  to   = module.infra.github_team_repository.this["app"]
-}
-
-moved {
-  from = github_team_repository.this["masters:infra"]
-  to   = module.infra.github_team_repository.this["masters"]
-}
-
-moved {
-  from = github_team_repository.this["server:infra"]
-  to   = module.infra.github_team_repository.this["server"]
-}
-
-moved {
-  from = github_team_repository.this["web:infra"]
-  to   = module.infra.github_team_repository.this["web"]
 }

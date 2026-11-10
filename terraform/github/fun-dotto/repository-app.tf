@@ -17,25 +17,4 @@ module "app" {
     app     = { team_id = github_team.this["app"].id, permission = "push" }
     masters = { team_id = github_team.this["masters"].id, permission = "admin" }
   }
-
-}
-
-moved {
-  from = github_repository.this["app"]
-  to   = module.app.github_repository.this
-}
-
-moved {
-  from = github_repository_ruleset.default_branch["app"]
-  to   = module.app.github_repository_ruleset.default_branch
-}
-
-moved {
-  from = github_team_repository.this["app:app"]
-  to   = module.app.github_team_repository.this["app"]
-}
-
-moved {
-  from = github_team_repository.this["masters:app"]
-  to   = module.app.github_team_repository.this["masters"]
 }

@@ -13,13 +13,3 @@ module "client" {
     required_status_checks     = ["check", "typecheck", "test"]
   }
 }
-
-moved {
-  from = github_repository.this["client"]
-  to   = module.client.github_repository.this
-}
-
-moved {
-  from = github_repository_ruleset.default_branch["client"]
-  to   = module.client.github_repository_ruleset.default_branch
-}
