@@ -32,8 +32,10 @@ GRANT dotto_migrate_readonly TO "gha-server-migrate-dry-run@swift2023groupc.iam"
 
 -- 各 DB で実行
 GRANT CONNECT ON DATABASE dotto TO dotto_migrate_readonly;  -- DB 名は環境ごとに読み替える
-GRANT USAGE ON SCHEMA public TO dotto_migrate_readonly;
-GRANT SELECT ON TABLE public.atlas_schema_revisions TO dotto_migrate_readonly;
+-- リビジョンテーブルは public ではなく、専用スキーマ atlas_schema_revisions にある
+-- （スキーマ・テーブルが無い DB では、マイグレーションを初めて適用した後に実行する）
+GRANT USAGE ON SCHEMA atlas_schema_revisions TO dotto_migrate_readonly;
+GRANT SELECT ON TABLE atlas_schema_revisions.atlas_schema_revisions TO dotto_migrate_readonly;
 ```
 
 ### 2. 適用用 SA の `SET ROLE` と、新規テーブルへの自動権限付与
