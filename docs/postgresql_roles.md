@@ -29,6 +29,9 @@ Cloud SQL インスタンス `dotto`（PostgreSQL 18）のロール構成と、D
 | `dotto_service_dev` | グループ | dev のアプリ実行時 | `dotto_dev` の `SELECT, INSERT, UPDATE, DELETE` |
 | `dotto_service_stg` | グループ | stg のアプリ実行時 | `dotto_stg` の `SELECT, INSERT, UPDATE, DELETE` |
 | `dotto_service_prd` | グループ | prd のアプリ実行時 | `dotto` の `SELECT, INSERT, UPDATE, DELETE` |
+| `dotto_migrate_readonly_dev` | グループ | dev の dry-run 用（読み取り専用） | `dotto_dev` の `CONNECT` と `atlas_schema_revisions` の `SELECT` のみ |
+| `dotto_migrate_readonly_stg` | グループ | stg の dry-run 用（読み取り専用） | `dotto_stg` の `CONNECT` と `atlas_schema_revisions` の `SELECT` のみ |
+| `dotto_migrate_readonly_prd` | グループ | prd の dry-run 用（読み取り専用） | `dotto` の `CONNECT` と `atlas_schema_revisions` の `SELECT` のみ |
 | `dotto_developer` | グループ | 開発者の調査・検証 | dev / stg は `SELECT, INSERT, UPDATE, DELETE`、prd は `SELECT` のみ |
 
 ## ロールの親子関係
@@ -49,14 +52,17 @@ flowchart BT
         subgraph dev["dev"]
             admin_dev[dotto_admin_dev]
             service_dev[dotto_service_dev]
+            readonly_dev[dotto_migrate_readonly_dev]
         end
         subgraph stg["stg"]
             admin_stg[dotto_admin_stg]
             service_stg[dotto_service_stg]
+            readonly_stg[dotto_migrate_readonly_stg]
         end
         subgraph prd["prd"]
             admin_prd[dotto_admin_prd]
             service_prd[dotto_service_prd]
+            readonly_prd[dotto_migrate_readonly_prd]
         end
     end
 
@@ -80,6 +86,7 @@ flowchart BT
 | `dotto_admin_<env>` | `dotto_service_<env>` | owner が自環境のアプリ権限を持つ（現行の `dotto_admin` → `dotto_service` 相当を環境内に限定） |
 
 `dotto_admin_<env>` どうしは独立しており、`dotto_admin_dev` は stg / prd のオブジェクトに触れない。
+`dotto_migrate_readonly_<env>` は他のロールのメンバーにならず、メンバーは対応する環境の dry-run SA のみ。
 
 ## SA / IAM ユーザーとロールの対応
 
@@ -90,14 +97,14 @@ flowchart BT
 | `gha-server-migrate-apply-dev` | `gha-server-migrate-apply-dev@swift2023groupc.iam` | `dotto_admin_dev` | dev へ適用 | `fun-dotto/server` の Environment `dev` |
 | `gha-server-migrate-apply-stg` | `gha-server-migrate-apply-stg@swift2023groupc.iam` | `dotto_admin_stg` | stg へ適用 | 同 Environment `stg` |
 | `gha-server-migrate-apply-prd` | `gha-server-migrate-apply-prd@swift2023groupc.iam` | `dotto_admin_prd` | prd へ適用 | 同 Environment `prd`（承認者必須・保護ブランチ限定） |
-| `gha-server-migrate-dry-run-dev` | `gha-server-migrate-dry-run-dev@swift2023groupc.iam` | 下記 ※ | dev への dry-run | `fun-dotto/server` の任意のワークフロー |
-| `gha-server-migrate-dry-run-stg` | `gha-server-migrate-dry-run-stg@swift2023groupc.iam` | 下記 ※ | stg への dry-run | 同上 |
-| `gha-server-migrate-dry-run-prd` | `gha-server-migrate-dry-run-prd@swift2023groupc.iam` | 下記 ※ | prd への dry-run | 同上 |
+| `gha-server-migrate-dry-run-dev` | `gha-server-migrate-dry-run-dev@swift2023groupc.iam` | `dotto_migrate_readonly_dev` | dev への dry-run | `fun-dotto/server` の任意のワークフロー |
+| `gha-server-migrate-dry-run-stg` | `gha-server-migrate-dry-run-stg@swift2023groupc.iam` | `dotto_migrate_readonly_stg` | stg への dry-run | 同上 |
+| `gha-server-migrate-dry-run-prd` | `gha-server-migrate-dry-run-prd@swift2023groupc.iam` | `dotto_migrate_readonly_prd` | prd への dry-run | 同上 |
 
-※ dry-run 用のロールは今回の指定に含まれていないため未確定。現行の `dotto_migrate_readonly`（`NOLOGIN`、リビジョンテーブルの `SELECT` のみ）を環境ごとの DB に対して使い続けるのが最も安全。`dotto_developer` に寄せる場合、dev / stg では書き込み権限が付くため dry-run SA には過剰になる。
+dry-run 用ロールを環境ごとに分けるのは、ロールがインスタンス共通で `CONNECT` / `SELECT` がロール単位の付与になるため。単一のロールだと dev 用 SA から prd のリビジョンテーブルが読めてしまう。
 
 - `account_id` の上限は 30 文字。`gha-server-migrate-dry-run-stg` はちょうど 30 文字。
-- 各 SA の `DB 接続先` は自環境の DB のみ（`dotto_admin_<env>` には他環境 DB への `CONNECT` を付与しない）。
+- 各 SA が接続できるのは自環境の DB のみ（`dotto_admin_<env>` / `dotto_migrate_readonly_<env>` には他環境 DB への `CONNECT` を付与しない）。
 
 ### アプリ実行時 SA
 
@@ -124,7 +131,9 @@ flowchart LR
         apply_dev[gha-server-migrate-apply-dev]
         apply_stg[gha-server-migrate-apply-stg]
         apply_prd[gha-server-migrate-apply-prd]
-        dry["gha-server-migrate-dry-run-{dev,stg,prd}"]
+        dry_dev[gha-server-migrate-dry-run-dev]
+        dry_stg[gha-server-migrate-dry-run-stg]
+        dry_prd[gha-server-migrate-dry-run-prd]
     end
 
     subgraph runtime["アプリ実行時 SA"]
@@ -145,8 +154,11 @@ flowchart LR
         admin_stg[dotto_admin_stg]
         admin_prd[dotto_admin_prd]
         service_dev[dotto_service_dev]
+        readonly_dev[dotto_migrate_readonly_dev]
         service_stg[dotto_service_stg]
+        readonly_stg[dotto_migrate_readonly_stg]
         service_prd[dotto_service_prd]
+        readonly_prd[dotto_migrate_readonly_prd]
     end
 
     subgraph dbs["DB"]
@@ -177,7 +189,12 @@ flowchart LR
     dotto_developer -. "CRUD" .-> db_dev
     dotto_developer -. "CRUD" .-> db_stg
     dotto_developer -. "SELECT のみ" .-> db_prd
-    dry -. "読み取りのみ" .-> dbs
+    dry_dev --> readonly_dev
+    dry_stg --> readonly_stg
+    dry_prd --> readonly_prd
+    readonly_dev -. "SELECT (revisions)" .-> db_dev
+    readonly_stg -. "SELECT (revisions)" .-> db_stg
+    readonly_prd -. "SELECT (revisions)" .-> db_prd
 ```
 
 ## DB ごとの権限
@@ -192,6 +209,9 @@ flowchart LR
 | `dotto_service_dev` | `SELECT, INSERT, UPDATE, DELETE` | 接続不可 | 接続不可 |
 | `dotto_service_stg` | 接続不可 | `SELECT, INSERT, UPDATE, DELETE` | 接続不可 |
 | `dotto_service_prd` | 接続不可 | 接続不可 | `SELECT, INSERT, UPDATE, DELETE` |
+| `dotto_migrate_readonly_dev` | `atlas_schema_revisions` の `SELECT` | 接続不可 | 接続不可 |
+| `dotto_migrate_readonly_stg` | 接続不可 | `atlas_schema_revisions` の `SELECT` | 接続不可 |
+| `dotto_migrate_readonly_prd` | 接続不可 | 接続不可 | `atlas_schema_revisions` の `SELECT` |
 | `dotto_developer` | `SELECT, INSERT, UPDATE, DELETE` | `SELECT, INSERT, UPDATE, DELETE` | `SELECT` のみ |
 | `dotto_admin` | 各 `dotto_admin_*` 経由で全環境 owner / `ALL` | ← 同左 | ← 同左 |
 
@@ -202,16 +222,17 @@ flowchart LR
 | 項目 | 現行 | 目標 |
 | --- | --- | --- |
 | マイグレーション適用 SA | `gha-server-migrate-apply` 1 つ（`dotto_admin` に所属） | 環境ごとに 3 つ（`dotto_admin_<env>` に所属） |
-| dry-run SA | `gha-server-migrate-dry-run` 1 つ（`dotto_migrate_readonly`） | 環境ごとに 3 つ |
+| dry-run SA | `gha-server-migrate-dry-run` 1 つ（`dotto_migrate_readonly`） | 環境ごとに 3 つ（`dotto_migrate_readonly_<env>`） |
+| dry-run 用ロール | `dotto_migrate_readonly` を全環境で共有 | `dotto_migrate_readonly_<env>` に分割 |
 | アプリ実行時ロール | `dotto_service` を全環境で共有 | `dotto_service_<env>` に分割 |
-| `dotto_admin` の位置づけ | `dotto_developer` / `dotto_service` / `dotto_migrate_readonly` の親。SA も所属 | 人間の管理者専用。各 `dotto_admin_<env>` の親 |
+| `dotto_admin` の位置づけ | `dotto_developer` / `dotto_service` の親。SA も所属 | 人間の管理者専用。各 `dotto_admin_<env>` の親 |
 | 環境間の分離 | ロール上は無し（`dotto_service` は全 DB に同じ権限） | ロール単位で分離。他環境 DB へは `CONNECT` 不可 |
 | `class-change-batch-job` | DB にのみ存在（Terraform 管理外） | Terraform 管理に取り込む（要判断） |
 
 ## 移行に必要な作業（概要）
 
-1. **ロール作成**（`dotto_admin` で実行）: `dotto_admin_{dev,stg,prd}`、`dotto_service_{dev,stg,prd}` を `NOLOGIN` で作成し、上記のメンバーシップを `GRANT` する。
-2. **DB の接続制限**: 各 DB で `REVOKE CONNECT ON DATABASE <db> FROM PUBLIC` した上で、対応する環境のロールにだけ `GRANT CONNECT` する。
+1. **ロール作成**（`dotto_admin` で実行）: `dotto_admin_{dev,stg,prd}`、`dotto_service_{dev,stg,prd}`、`dotto_migrate_readonly_{dev,stg,prd}` を `NOLOGIN` で作成し、上記のメンバーシップを `GRANT` する。
+2. **DB の接続制限**: 各 DB で `REVOKE CONNECT ON DATABASE <db> FROM PUBLIC` した上で、対応する環境のロールにだけ `GRANT CONNECT` する。`dotto_migrate_readonly_<env>` には `atlas_schema_revisions` の `USAGE` / `SELECT` も付与する。
 3. **オブジェクトの owner 付け替え**: 各 DB のスキーマ・テーブル・シーケンス（`atlas_schema_revisions` スキーマ含む）を `dotto_admin_<env>` に `REASSIGN OWNED` / `ALTER ... OWNER TO` し、`ALTER DEFAULT PRIVILEGES FOR ROLE dotto_admin_<env>` を `dotto_service_<env>` と `dotto_developer`（prd は `SELECT` のみ）に設定し直す。
 4. **Terraform**:
    - `iam-workload-identity`: マイグレーション用 SA を環境ごとに作成。適用用 SA の `roles/iam.workloadIdentityUser` は対応する Environment のみ許可する。
