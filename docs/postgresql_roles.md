@@ -2,7 +2,7 @@
 
 Cloud SQL インスタンス `dotto`（PostgreSQL 18）のロール構成と、DB マイグレーション用 SA を環境ごとに分けた後の対応関係をまとめる。
 
-- 状態: **目標構成（案）**。Terraform・SQL は未反映。
+- 状態: SA と Cloud SQL ユーザーは Terraform で管理する。ロールと DB 内の権限は手動 SQL で作成する（[atlas-migration.md](./atlas-migration.md)）。
 - 現行の構成は [現状との差分](#現状との差分) を参照。
 - マイグレーション運用は [atlas-migration.md](./atlas-migration.md) を参照。
 
