@@ -10,7 +10,16 @@ module "server" {
     merge_method               = "squash"
     required_approving_reviews = 1
     required_reviewers         = [{ team_id = github_team.this["masters"].id, minimum_approvals = 1 }]
-    required_status_checks     = ["Test", "Lint", "Build"]
+    required_status_checks = [
+      "Test",
+      "Lint",
+      "Build",
+      "Migration Validate",
+      # migrate.yml の matrix ジョブのチェック名は "<ジョブ名> (<environment>, <database_name>)"
+      "Migration Dry Run (dev, dotto_dev)",
+      "Migration Dry Run (stg, dotto_stg)",
+      "Migration Dry Run (prd, dotto)",
+    ]
   }
 
   team_permissions = {
