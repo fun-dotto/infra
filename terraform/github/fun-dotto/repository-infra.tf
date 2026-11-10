@@ -6,11 +6,10 @@ module "infra" {
   homepage_url = ""
   topics       = []
 
-  # required_approving_reviews = 1, required_reviewers = masters に戻す予定
   ruleset = {
     merge_method               = "squash"
-    required_approving_reviews = 0
-    required_reviewers         = []
+    required_approving_reviews = 1
+    required_reviewers         = [{ team_id = github_team.this["masters"].id, minimum_approvals = 1 }]
     required_status_checks     = ["Format", "Validate"]
   }
 
