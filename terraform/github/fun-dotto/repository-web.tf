@@ -39,29 +39,3 @@ module "web" {
     "roles/run.developer",
   ]
 }
-
-moved {
-  from = github_repository.this["web"]
-  to   = module.web.github_repository.this
-}
-
-moved {
-  from = github_repository_ruleset.default_branch["web"]
-  to   = module.web.github_repository_ruleset.default_branch
-}
-
-moved {
-  from = github_team_repository.this["masters:web"]
-  to   = module.web.github_team_repository.this["masters"]
-}
-
-moved {
-  from = github_team_repository.this["web:web"]
-  to   = module.web.github_team_repository.this["web"]
-}
-
-import {
-  for_each = toset(["dev", "stg", "prd"])
-  to       = module.web.github_repository_environment.this[each.key]
-  id       = "web:${each.key}"
-}
