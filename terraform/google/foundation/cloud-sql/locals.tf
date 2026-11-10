@@ -40,4 +40,9 @@ locals {
     "user-svc-dev",
     "user-svc-stg",
   ])
+
+  # fun-dotto/server の GitHub Actions でマイグレーションを実行する SA の account_id
+  # (terraform/google/foundation/iam-workload-identity/service_account_github-actions-server-migrate.tf の account_id と一致させる)
+  migrate_dry_run_service_account = "gha-server-migrate-dry-run"
+  migrate_apply_service_account   = "gha-server-migrate-apply"
 }
