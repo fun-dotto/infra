@@ -38,34 +38,3 @@ module "admin_web" {
     "roles/run.developer",
   ]
 }
-
-moved {
-  from = github_repository.this["admin-web"]
-  to   = module.admin_web.github_repository.this
-}
-
-moved {
-  from = github_repository_ruleset.default_branch["admin-web"]
-  to   = module.admin_web.github_repository_ruleset.default_branch
-}
-
-moved {
-  from = github_team_repository.this["app:admin-web"]
-  to   = module.admin_web.github_team_repository.this["app"]
-}
-
-moved {
-  from = github_team_repository.this["server:admin-web"]
-  to   = module.admin_web.github_team_repository.this["server"]
-}
-
-moved {
-  from = github_team_repository.this["web:admin-web"]
-  to   = module.admin_web.github_team_repository.this["web"]
-}
-
-import {
-  for_each = toset(["dev", "stg", "prd"])
-  to       = module.admin_web.github_repository_environment.this[each.key]
-  id       = "admin-web:${each.key}"
-}
