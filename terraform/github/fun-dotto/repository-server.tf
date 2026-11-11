@@ -14,6 +14,7 @@ module "server" {
       "Test",
       "Lint",
       "Build",
+      "Vulncheck",
       "Migration Validate",
       # migrate.yml の matrix ジョブのチェック名は "<ジョブ名> (<environment>, <database_name>)"
       "Migration Dry Run (dev, dotto_dev)",
