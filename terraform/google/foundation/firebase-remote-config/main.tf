@@ -147,7 +147,7 @@ resource "google_firebase_remote_config_remote_config" "basic" {
 
       default_value {
         use_in_app_default = false
-        value              = "https://fun-dotto.github.io/privacy-policy"
+        value              = "https://fun-dotto.com/privacy"
       }
     }
     parameters {
@@ -157,7 +157,7 @@ resource "google_firebase_remote_config_remote_config" "basic" {
 
       default_value {
         use_in_app_default = false
-        value              = "https://fun-dotto.github.io/terms-of-service"
+        value              = "https://fun-dotto.com/terms"
       }
     }
     parameters {
