@@ -3,8 +3,8 @@ minimum_release_age = "24h"
 
 [tools]
 bun = "1.4.4"
-gcloud = "591.0.0"
-"npm:rulesync" = "43.4.1"
+gcloud = "593.0.0"
+"npm:rulesync" = "43.8.0"
 terraform = "1.17.1"
 
 [tasks.bootstrap]
