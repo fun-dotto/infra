@@ -22,7 +22,7 @@
 
 ## 手動で実施する SQL（Terraform の管理外）
 
-ロール自体と DB 内の権限は Terraform の管理外。新しい環境の DB を作る場合や、ロール構成を変える場合は、人間の管理者（`dotto_admin` のメンバー）が実施する。
+ロール自体と DB 内の権限は Terraform の管理外。新しい環境の DB を作る場合や、ロール構成を変える場合は、人間の管理者（`dotto_admin_<env>` のメンバー）が実施する。
 Terraform の `google_sql_user` が `database_roles` で参照するロールは、先に作成しておく必要がある。
 
 ### ロールの作成（インスタンスで 1 回）
@@ -32,7 +32,6 @@ CREATE ROLE dotto_admin_<env> NOLOGIN;
 CREATE ROLE dotto_service_<env> NOLOGIN;
 CREATE ROLE dotto_migrate_readonly_<env> NOLOGIN;
 
-GRANT dotto_admin_<env> TO dotto_admin;
 GRANT dotto_service_<env> TO dotto_admin_<env>;
 ```
 
@@ -43,10 +42,11 @@ DB は dev が `dotto_dev`、stg が `dotto_stg`、prd が `dotto`。対象 DB �
 ```sql
 -- 接続制限: 他環境のロールから接続できないようにする
 REVOKE CONNECT ON DATABASE <db> FROM PUBLIC;
-GRANT CONNECT ON DATABASE <db> TO cloudsqlsuperuser, dotto_admin, dotto_developer,
+GRANT CONNECT ON DATABASE <db> TO cloudsqlsuperuser, dotto_developer,
   dotto_admin_<env>, dotto_service_<env>, dotto_migrate_readonly_<env>;
 
 -- 既存オブジェクトの owner を環境用ロールにする
+-- （旧構成から移行する場合のみ）旧 dotto_admin が所有するオブジェクトを付け替える
 REASSIGN OWNED BY dotto_admin TO dotto_admin_<env>;
 
 -- 新規テーブルへの自動権限付与（dotto_admin_<env> が作るテーブル）
@@ -80,6 +80,31 @@ REVOKE INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public FROM dotto_develope
 GRANT USAGE ON SCHEMA atlas_schema_revisions TO dotto_migrate_readonly_<env>;
 GRANT SELECT ON TABLE atlas_schema_revisions.atlas_schema_revisions TO dotto_migrate_readonly_<env>;
 ```
+
+### dotto_admin ロールの削除
+
+`dotto_admin` は廃止した。管理者は Terraform（`google_sql_user.admin`）で `dotto_admin_<env>` と `dotto_developer` に直接所属させる。
+先に Terraform を apply して管理者の所属を切り替えてから、管理者（`cloudsqlsuperuser` のメンバー）で次を実行する。
+
+```sql
+-- 1. 所属を確認（dotto_admin のメンバーが残っていないこと、管理者が dotto_admin_<env> に入っていること）
+SELECT r.rolname AS role, m.rolname AS member
+FROM pg_auth_members am
+JOIN pg_roles r ON r.oid = am.roleid
+JOIN pg_roles m ON m.oid = am.member
+WHERE 'dotto_admin' IN (r.rolname, m.rolname);
+
+-- 2. 各 DB（dotto_dev / dotto_stg / dotto / postgres）に接続して、それぞれ実行する
+--    <env_role> は dotto_dev→dotto_admin_dev、dotto_stg→dotto_admin_stg、dotto→dotto_admin_prd。
+--    postgres DB では REASSIGN を省略し DROP OWNED のみ。
+REASSIGN OWNED BY dotto_admin TO <env_role>;
+DROP OWNED BY dotto_admin;  -- 残った権限付与・DEFAULT PRIVILEGES を削除
+
+-- 3. いずれかの DB で 1 回
+DROP ROLE dotto_admin;
+```
+
+`DROP ROLE` が `role "dotto_admin" cannot be dropped because some objects depend on it` で失敗した場合は、エラーに出た DB で手順 2 が漏れている。
 
 ## 未対応（ワークフロー導入後に実施）
 
