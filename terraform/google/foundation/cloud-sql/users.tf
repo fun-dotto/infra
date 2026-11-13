@@ -16,10 +16,10 @@ resource "google_sql_user" "admin" {
     [for environment in sort(tolist(local.database_migrate_environments)) : "dotto_admin_${environment}"],
     ["dotto_developer"],
   )
-  instance       = google_sql_database_instance.dotto.name
-  name           = each.value
-  project        = google_sql_database_instance.dotto.project
-  type           = "CLOUD_IAM_USER"
+  instance = google_sql_database_instance.dotto.name
+  name     = each.value
+  project  = google_sql_database_instance.dotto.project
+  type     = "CLOUD_IAM_USER"
 }
 
 resource "google_sql_user" "developer" {
