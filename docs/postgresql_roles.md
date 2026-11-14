@@ -22,7 +22,6 @@ Cloud SQL インスタンス `dotto`（PostgreSQL 18）のロール構成と、D
 
 | ロール | 種別 | 用途 | 権限の範囲 |
 | --- | --- | --- | --- |
-| `dotto_admin` | グループ | 人間の管理者。全環境の管理 | 全環境の `dotto_admin_*` と `dotto_developer` のメンバー（`SET ROLE` で切替可） |
 | `dotto_admin_dev` | グループ | dev のマイグレーション実行・オブジェクトの owner | `dotto_dev` の DDL / 全権限 |
 | `dotto_admin_stg` | グループ | stg のマイグレーション実行・オブジェクトの owner | `dotto_stg` の DDL / 全権限 |
 | `dotto_admin_prd` | グループ | prd のマイグレーション実行・オブジェクトの owner | `dotto` の DDL / 全権限 |
@@ -46,7 +45,6 @@ flowchart BT
     end
 
     subgraph groups["グループロール"]
-        dotto_admin
         dotto_developer
 
         subgraph dev["dev"]
@@ -66,13 +64,11 @@ flowchart BT
         end
     end
 
-    admins --> dotto_admin
+    admins --> admin_dev
+    admins --> admin_stg
+    admins --> admin_prd
+    admins --> dotto_developer
     devs --> dotto_developer
-
-    dotto_admin --> admin_dev
-    dotto_admin --> admin_stg
-    dotto_admin --> admin_prd
-    dotto_admin --> dotto_developer
 
     admin_dev --> service_dev
     admin_stg --> service_stg
@@ -81,9 +77,11 @@ flowchart BT
 
 | メンバー | 親ロール | 目的 |
 | --- | --- | --- |
-| `dotto_admin` | `dotto_admin_dev` / `dotto_admin_stg` / `dotto_admin_prd` | 人の管理者が各環境の owner として操作する |
-| `dotto_admin` | `dotto_developer` | 管理者も開発者と同じ調査権限を持つ（現行踏襲） |
-| `dotto_admin_<env>` | `dotto_service_<env>` | owner が自環境のアプリ権限を持つ（現行の `dotto_admin` → `dotto_service` 相当を環境内に限定） |
+| 管理者（IAM ユーザー） | `dotto_admin_dev` / `dotto_admin_stg` / `dotto_admin_prd` | 人の管理者が各環境の owner として操作する（`SET ROLE` で切替） |
+| 管理者（IAM ユーザー） | `dotto_developer` | 管理者も開発者と同じ調査権限を持つ |
+| `dotto_admin_<env>` | `dotto_service_<env>` | owner が自環境のアプリ権限を持つ |
+
+全環境をまとめる `dotto_admin` グループは廃止した。管理者は各環境のロールに直接所属する。
 
 `dotto_admin_<env>` どうしは独立しており、`dotto_admin_dev` は stg / prd のオブジェクトに触れない。
 `dotto_migrate_readonly_<env>` は他のロールのメンバーにならず、メンバーは対応する環境の dry-run SA のみ。
@@ -120,7 +118,7 @@ dry-run 用ロールを環境ごとに分けるのは、ロールがインスタ
 
 | 所属ロール | IAM ユーザー |
 | --- | --- |
-| `dotto_admin` | `iam@kantacky.com` / `msyaaa456910@gmail.com` / `beretta0602@gmail.com` |
+| `dotto_admin_dev` / `dotto_admin_stg` / `dotto_admin_prd` / `dotto_developer` | `iam@kantacky.com` / `msyaaa456910@gmail.com` / `beretta0602@gmail.com` |
 | `dotto_developer` | `axitian882@gmail.com` / `identityv5656@gmail.com` / `kaxu123456@gmail.com` / `tash19695@gmail.com` / `yamas.jto@gmail.com` / `yonggoutwitter89@gmail.com` |
 
 ### 全体像
@@ -148,7 +146,6 @@ flowchart LR
     end
 
     subgraph roles["ロール"]
-        dotto_admin
         dotto_developer
         admin_dev[dotto_admin_dev]
         admin_stg[dotto_admin_stg]
@@ -173,9 +170,8 @@ flowchart LR
     svc_dev --> service_dev
     svc_stg --> service_stg
     svc_prd --> service_prd
-    admins --> dotto_admin
+    admins --> admin_dev & admin_stg & admin_prd & dotto_developer
     devs --> dotto_developer
-    dotto_admin --> admin_dev & admin_stg & admin_prd & dotto_developer
     admin_dev --> service_dev
     admin_stg --> service_stg
     admin_prd --> service_prd
@@ -213,7 +209,6 @@ flowchart LR
 | `dotto_migrate_readonly_stg` | 接続不可 | `atlas_schema_revisions` の `SELECT` | 接続不可 |
 | `dotto_migrate_readonly_prd` | 接続不可 | 接続不可 | `atlas_schema_revisions` の `SELECT` |
 | `dotto_developer` | `SELECT, INSERT, UPDATE, DELETE` | `SELECT, INSERT, UPDATE, DELETE` | `SELECT` のみ |
-| `dotto_admin` | 各 `dotto_admin_*` 経由で全環境 owner / `ALL` | ← 同左 | ← 同左 |
 
 ## 現状との差分
 
@@ -225,19 +220,19 @@ flowchart LR
 | dry-run SA | `gha-server-migrate-dry-run` 1 つ（`dotto_migrate_readonly`） | 環境ごとに 3 つ（`dotto_migrate_readonly_<env>`） |
 | dry-run 用ロール | `dotto_migrate_readonly` を全環境で共有 | `dotto_migrate_readonly_<env>` に分割 |
 | アプリ実行時ロール | `dotto_service` を全環境で共有 | `dotto_service_<env>` に分割 |
-| `dotto_admin` の位置づけ | `dotto_developer` / `dotto_service` の親。SA も所属 | 人間の管理者専用。各 `dotto_admin_<env>` の親 |
+| `dotto_admin` | `dotto_developer` / `dotto_service` の親。SA と管理者が所属 | 廃止。管理者は各 `dotto_admin_<env>` と `dotto_developer` に直接所属 |
 | 環境間の分離 | ロール上は無し（`dotto_service` は全 DB に同じ権限） | ロール単位で分離。他環境 DB へは `CONNECT` 不可 |
 | `class-change-batch-job` | DB にのみ存在（Terraform 管理外） | Terraform 管理に取り込む（要判断） |
 
 ## 移行に必要な作業（概要）
 
-1. **ロール作成**（`dotto_admin` で実行）: `dotto_admin_{dev,stg,prd}`、`dotto_service_{dev,stg,prd}`、`dotto_migrate_readonly_{dev,stg,prd}` を `NOLOGIN` で作成し、上記のメンバーシップを `GRANT` する。
+1. **ロール作成**（管理者が実行）: `dotto_admin_{dev,stg,prd}`、`dotto_service_{dev,stg,prd}`、`dotto_migrate_readonly_{dev,stg,prd}` を `NOLOGIN` で作成し、上記のメンバーシップを `GRANT` する。
 2. **DB の接続制限**: 各 DB で `REVOKE CONNECT ON DATABASE <db> FROM PUBLIC` した上で、対応する環境のロールにだけ `GRANT CONNECT` する。`dotto_migrate_readonly_<env>` には `atlas_schema_revisions` の `USAGE` / `SELECT` も付与する。
 3. **オブジェクトの owner 付け替え**: 各 DB のスキーマ・テーブル・シーケンス（`atlas_schema_revisions` スキーマ含む）を `dotto_admin_<env>` に `REASSIGN OWNED` / `ALTER ... OWNER TO` し、`ALTER DEFAULT PRIVILEGES FOR ROLE dotto_admin_<env>` を `dotto_service_<env>` と `dotto_developer`（prd は `SELECT` のみ）に設定し直す。
 4. **Terraform**:
    - `iam-workload-identity`: マイグレーション用 SA を環境ごとに作成。適用用 SA の `roles/iam.workloadIdentityUser` は対応する Environment のみ許可する。
    - `cloud-sql/locals.tf` / `users.tf`: `database_service_accounts` を環境別に分け、`google_sql_user.service_account` の `database_roles` を `dotto_service_<env>` にする。マイグレーション用ユーザーも同様に環境別にする。
 5. **`fun-dotto/server` のワークフロー**: Environment ごとに使う SA（`workload_identity_provider` の `service_account`）と接続時の `role`（`dotto_admin_<env>`）を切り替える。
-6. 切り替え完了後、旧 SA（`gha-server-migrate-apply` / `gha-server-migrate-dry-run`）と旧ロール（`dotto_service`、`dotto_migrate_readonly`）を削除する。
+6. 切り替え完了後、旧 SA（`gha-server-migrate-apply` / `gha-server-migrate-dry-run`）と旧ロール（`dotto_service`、`dotto_migrate_readonly`、`dotto_admin`）を削除する。`dotto_admin` の削除手順は [atlas-migration.md](./atlas-migration.md#dotto_admin-ロールの削除) を参照。
 
 切り替えの順序は dev → stg → prd とし、各環境でアプリが新ロールで接続できることを確認してから旧ロールを外す。

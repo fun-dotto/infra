@@ -8,14 +8,18 @@ resource "google_sql_user" "service_account" {
   type           = "CLOUD_IAM_SERVICE_ACCOUNT"
 }
 
+# 人間の管理者。dotto_admin グループは廃止し、各環境の owner ロールと dotto_developer に直接所属させる
 resource "google_sql_user" "admin" {
   for_each = local.database_admins
 
-  database_roles = ["dotto_admin"]
-  instance       = google_sql_database_instance.dotto.name
-  name           = each.value
-  project        = google_sql_database_instance.dotto.project
-  type           = "CLOUD_IAM_USER"
+  database_roles = concat(
+    [for environment in sort(tolist(local.database_migrate_environments)) : "dotto_admin_${environment}"],
+    ["dotto_developer"],
+  )
+  instance = google_sql_database_instance.dotto.name
+  name     = each.value
+  project  = google_sql_database_instance.dotto.project
+  type     = "CLOUD_IAM_USER"
 }
 
 resource "google_sql_user" "developer" {
