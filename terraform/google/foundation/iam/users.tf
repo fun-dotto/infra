@@ -9,6 +9,9 @@ locals {
     "ictfun2022@gmail.com" = [
       "roles/billing.projectManager",
     ]
+    "satoru2001130830@gmail.com" = [
+      "roles/firebase.developAdmin",
+    ]
   }
 
   user_project_role_members = merge([
@@ -24,11 +27,4 @@ resource "google_project_iam_member" "user" {
   project = var.google_cloud_project_id
   role    = each.value.role
   member  = "user:${each.value.user}"
-}
-
-import {
-  for_each = local.user_project_role_members
-
-  to = google_project_iam_member.user[each.key]
-  id = "${var.google_cloud_project_id} ${each.value.role} user:${each.value.user}"
 }
