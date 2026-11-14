@@ -14,7 +14,6 @@ locals {
     ]
   }
 
-
   user_project_role_members = merge([
     for user, roles in local.user_project_roles : {
       for role in roles : "${user} ${role}" => { user = user, role = role }
