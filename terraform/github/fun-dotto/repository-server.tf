@@ -15,8 +15,7 @@ module "server" {
       "Lint",
       "Build",
       "Vulncheck",
-      # migrate.yml の集約ジョブ。Migration Validate / Migration Dry Run（matrix）の結果をまとめて報告する。
-      # matrix ジョブはスキップされるとチェック名に "(<environment>, <database_name>)" が付かないため、個別には必須にしない
+      # migrate.yml の集約ジョブ（validate / dry-run の結果をまとめて報告する）
       "Migration",
     ]
   }

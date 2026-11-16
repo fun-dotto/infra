@@ -11,7 +11,7 @@
 | 各 SA の `roles/cloudsql.client` / `roles/cloudsql.instanceUser` | 同上 |
 | Cloud SQL の IAM ユーザー（`<sa>@swift2023groupc.iam`）と所属ロール | `terraform/google/foundation/cloud-sql/users.tf` |
 | WIF 属性 `attribute.repository_environment` | `terraform/google/foundation/iam-workload-identity/identity_pool_provider_github.tf` |
-| `fun-dotto/server` の必須ステータスチェック `Migration`（`migrate.yml` の集約ジョブ。validate / dry-run の結果をまとめて報告する） | `terraform/github/fun-dotto/repository-server.tf` |
+| `fun-dotto/server` の必須ステータスチェック `Migration`（`migrate.yml` の集約ジョブ） | `terraform/github/fun-dotto/repository-server.tf` |
 
 ロール構成の全体像は [postgresql_roles.md](./postgresql_roles.md) を参照。
 
