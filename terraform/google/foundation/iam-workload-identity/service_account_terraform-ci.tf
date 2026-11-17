@@ -40,3 +40,10 @@ resource "google_service_account_iam_member" "terraform_ci_workload_identity_use
   role               = "roles/iam.workloadIdentityUser"
   member             = "principal://iam.googleapis.com/${google_iam_workload_identity_pool.dotto.name}/subject/${var.owner}/${each.value}"
 }
+
+# postgresql プロバイダは Cloud SQL に IAM 認証で接続するとき、指定した SA を借用する。CI では自分自身を借用するため必要
+resource "google_service_account_iam_member" "terraform_ci_self_token_creator" {
+  service_account_id = "projects/${var.google_cloud_project_id}/serviceAccounts/${google_service_account.terraform_ci.email}"
+  role               = "roles/iam.serviceAccountTokenCreator"
+  member             = "serviceAccount:${google_service_account.terraform_ci.email}"
+}
