@@ -17,27 +17,6 @@ resource "github_repository_ruleset" "default_branch" {
   }
 
   rules {
-    pull_request {
-      allowed_merge_methods             = [var.ruleset.merge_method]
-      dismiss_stale_reviews_on_push     = var.ruleset.dismiss_stale_reviews
-      require_code_owner_review         = false
-      require_last_push_approval        = false
-      required_approving_review_count   = var.ruleset.required_approving_reviews
-      required_review_thread_resolution = false
-
-      dynamic "required_reviewers" {
-        for_each = var.ruleset.required_reviewers
-        content {
-          file_patterns     = ["*"]
-          minimum_approvals = required_reviewers.value.minimum_approvals
-          reviewer {
-            id   = required_reviewers.value.team_id
-            type = "Team"
-          }
-        }
-      }
-    }
-
     dynamic "required_status_checks" {
       for_each = length(var.ruleset.required_status_checks) > 0 ? [1] : []
       content {
@@ -79,6 +58,27 @@ resource "github_repository_ruleset" "default_branch_only" {
   rules {
     deletion         = true
     non_fast_forward = true
+
+    pull_request {
+      allowed_merge_methods             = [var.ruleset.merge_method]
+      dismiss_stale_reviews_on_push     = var.ruleset.dismiss_stale_reviews
+      require_code_owner_review         = false
+      require_last_push_approval        = false
+      required_approving_review_count   = var.ruleset.required_approving_reviews
+      required_review_thread_resolution = false
+
+      dynamic "required_reviewers" {
+        for_each = var.ruleset.required_reviewers
+        content {
+          file_patterns     = ["*"]
+          minimum_approvals = required_reviewers.value.minimum_approvals
+          reviewer {
+            id   = required_reviewers.value.team_id
+            type = "Team"
+          }
+        }
+      }
+    }
 
     dynamic "merge_queue" {
       for_each = var.ruleset.merge_queue ? [1] : []
