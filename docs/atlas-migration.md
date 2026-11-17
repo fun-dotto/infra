@@ -28,7 +28,6 @@
 ## 手動で実施する SQL（Terraform の管理外）
 
 DB への `CONNECT` と、既存オブジェクトの owner の付け替えは Terraform の管理外。Cloud SQL の組み込みユーザー（`cloudsqlsuperuser` のメンバー）で実施する。
-シーケンスの権限も管理していない。`serial` / `bigserial` を使う場合は `privileges.tf` に追加する。
 
 ### terraform-ci に既存ロールの ADMIN OPTION を付与する（初回のみ）
 

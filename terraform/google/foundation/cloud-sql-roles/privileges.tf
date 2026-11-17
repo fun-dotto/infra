@@ -29,6 +29,10 @@ resource "postgresql_grant" "developer_tables" {
   schema      = "public"
   object_type = "table"
   privileges  = each.value.developer_table_privileges
+
+  # 同じテーブルへの GRANT を並列に実行すると tuple concurrently updated で失敗するため直列にする
+  # (cyrilgdn/terraform-provider-postgresql#178)
+  depends_on = [postgresql_grant.service_tables]
 }
 
 resource "postgresql_default_privileges" "service_tables" {
@@ -39,6 +43,16 @@ resource "postgresql_default_privileges" "service_tables" {
   role        = postgresql_role.service[each.key].name
   object_type = "table"
   privileges  = local.service_table_privileges
+}
+
+resource "postgresql_default_privileges" "service_sequences" {
+  for_each = local.environments
+
+  database    = each.value.database
+  owner       = postgresql_role.admin_environment[each.key].name
+  role        = postgresql_role.service[each.key].name
+  object_type = "sequence"
+  privileges  = ["SELECT", "USAGE"]
 }
 
 resource "postgresql_default_privileges" "developer_tables" {
