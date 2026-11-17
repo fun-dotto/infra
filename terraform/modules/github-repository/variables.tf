@@ -34,7 +34,7 @@ variable "allow_auto_merge" {
 # 全ブランチに適用する Ruleset
 variable "ruleset" {
   type = object({
-    name                       = optional(string, "Default")
+    name                       = optional(string, "All branches")
     merge_method               = string
     required_approving_reviews = number
     dismiss_stale_reviews      = optional(bool, true)
