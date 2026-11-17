@@ -49,6 +49,13 @@ GRANT CONNECT ON DATABASE <db> TO cloudsqlsuperuser, dotto_developer,
 -- （旧構成から移行する場合のみ）旧 dotto_admin が所有するオブジェクトを付け替える
 REASSIGN OWNED BY dotto_admin TO dotto_admin_<env>;
 
+-- 主キー追加時のインデックス作成などに必要。対象 DB の public スキーマの所有者など、
+-- CREATE を付与できるロールで実行する。
+GRANT CREATE ON SCHEMA public TO dotto_admin_<env>;
+
+-- 対象 DB 名と、適用ロールの実効権限（can_create が true）を確認する
+SELECT current_database(), has_schema_privilege('dotto_admin_<env>', 'public', 'CREATE') AS can_create;
+
 -- 新規テーブルへの自動権限付与（dotto_admin_<env> が作るテーブル）
 ALTER DEFAULT PRIVILEGES FOR ROLE dotto_admin_<env>
   GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO dotto_service_<env>;
