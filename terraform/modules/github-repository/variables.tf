@@ -39,6 +39,9 @@ variable "ruleset" {
     required_approving_reviews = number
     dismiss_stale_reviews      = optional(bool, true)
     max_entries_to_build       = optional(number, 10)
+    merge_queue                = optional(bool, true)
+    # PR のブランチが最新でないとマージできないようにする
+    strict_required_status_checks = optional(bool, false)
     # team_id は github_team の id
     required_reviewers     = optional(list(object({ team_id = string, minimum_approvals = number })), [])
     required_status_checks = optional(list(string), [])
