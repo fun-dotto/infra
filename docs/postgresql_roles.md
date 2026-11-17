@@ -107,6 +107,14 @@ dry-run 用ロールを環境ごとに分けるのは、ロールがインスタ
 
 ※ `class-change-batch-job` は現行の DB には存在するが `terraform/google/foundation/cloud-sql/locals.tf` の `database_service_accounts` に無い（Terraform 管理外）。ロール移行時に Terraform へ取り込むか削除するか決める。
 
+### Terraform CI
+
+| SA（account_id） | DB 上のユーザー | 所属ロール | 用途 |
+| --- | --- | --- | --- |
+| `terraform-ci` | `terraform-ci@swift2023groupc.iam` | `cloudsqlsuperuser` | DB 内のロールと権限を Terraform で管理する（検証中） |
+
+IAM ユーザーに `CREATEROLE` 属性が付くかは未確認（属性はメンバーシップでは継承されない）。
+
 ### 人（IAM ユーザー）
 
 | 所属ロール | IAM ユーザー |

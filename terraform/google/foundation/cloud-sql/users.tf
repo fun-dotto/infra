@@ -43,6 +43,16 @@ resource "google_sql_user" "migrate_apply" {
   type           = "CLOUD_IAM_SERVICE_ACCOUNT"
 }
 
+# DB 内のロールと権限を Terraform で管理するための terraform-ci の IAM ユーザー。
+# Cloud SQL では SUPERUSER を作れないため cloudsqlsuperuser に所属させる。
+resource "google_sql_user" "terraform_ci" {
+  database_roles = ["cloudsqlsuperuser"]
+  instance       = google_sql_database_instance.dotto.name
+  name           = "terraform-ci@${google_sql_database_instance.dotto.project}.iam"
+  project        = google_sql_database_instance.dotto.project
+  type           = "CLOUD_IAM_SERVICE_ACCOUNT"
+}
+
 # 旧 google_sql_user.admin (dotto_admin) の 3 名は dotto_developer に統合した。ユーザーを作り直さないよう移動する
 moved {
   from = google_sql_user.admin["beretta0602@gmail.com"]
