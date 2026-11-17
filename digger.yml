@@ -9,6 +9,8 @@ projects:
     dir: terraform/google/foundation/artifact-registry
   - name: foundation-cloud-sql
     dir: terraform/google/foundation/cloud-sql
+  - name: foundation-cloud-sql-roles
+    dir: terraform/google/foundation/cloud-sql-roles
   - name: foundation-cloud-storage
     dir: terraform/google/foundation/cloud-storage
   - name: foundation-cloudflared

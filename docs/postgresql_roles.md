@@ -2,7 +2,7 @@
 
 Cloud SQL インスタンス `dotto`（PostgreSQL 18）のロール構成と、DB マイグレーション用 SA を環境ごとに分けた後の対応関係をまとめる。
 
-- 状態: SA と Cloud SQL ユーザーは Terraform で管理する。ロールと DB 内の権限は手動 SQL で作成する（[atlas-migration.md](./atlas-migration.md)）。
+- 状態: SA、Cloud SQL ユーザー、ロールと DB 内の権限は Terraform で管理する。DB への `CONNECT` は手動 SQL で設定する（[atlas-migration.md](./atlas-migration.md)）。
 - 現行の構成は [現状との差分](#現状との差分) を参照。
 - マイグレーション運用は [atlas-migration.md](./atlas-migration.md) を参照。
 
@@ -74,7 +74,7 @@ flowchart BT
 | --- | --- | --- |
 | `dotto_admin_<env>` | `dotto_service_<env>` | owner が自環境のアプリ権限を持つ |
 
-`dotto_admin` グループは廃止した。人（IAM ユーザー）は全員 `dotto_developer` のみに所属し、`dotto_admin_<env>` には所属しない（`dotto_admin_<env>` のメンバーはマイグレーション適用 SA のみ）。ロールの作成や権限変更などの手動 SQL は、Cloud SQL の組み込みユーザー（`cloudsqlsuperuser` のメンバー）で実行する。
+`dotto_admin` グループは廃止した。人（IAM ユーザー）は全員 `dotto_developer` のみに所属し、`dotto_admin_<env>` には所属しない（`dotto_admin_<env>` のメンバーはマイグレーション適用 SA のみ）。ロールと権限は Terraform（`cloud-sql-roles`）で管理し、残りの手動 SQL は Cloud SQL の組み込みユーザー（`cloudsqlsuperuser` のメンバー）で実行する。
 
 `dotto_admin_<env>` どうしは独立しており、`dotto_admin_dev` は stg / prd のオブジェクトに触れない。
 `dotto_migrate_readonly_<env>` は他のロールのメンバーにならず、メンバーは対応する環境の dry-run SA のみ。
@@ -111,9 +111,9 @@ dry-run 用ロールを環境ごとに分けるのは、ロールがインスタ
 
 | SA（account_id） | DB 上のユーザー | 所属ロール | 用途 |
 | --- | --- | --- | --- |
-| `terraform-ci` | `terraform-ci@swift2023groupc.iam` | `cloudsqlsuperuser` | DB 内のロールと権限を Terraform で管理する（検証中） |
+| `terraform-ci` | `terraform-ci@swift2023groupc.iam` | `cloudsqlsuperuser` | `cloud-sql-roles` でロールと DB 内の権限を管理する |
 
-IAM ユーザーに `CREATEROLE` 属性が付くかは未確認（属性はメンバーシップでは継承されない）。
+`CREATEROLE` / `CREATEDB` 属性を持ち、既存の `dotto_*` ロールすべてに `ADMIN OPTION` を付与している。
 
 ### 人（IAM ユーザー）
 

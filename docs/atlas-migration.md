@@ -12,6 +12,10 @@
 | Cloud SQL の IAM ユーザー（`<sa>@swift2023groupc.iam`）と所属ロール | `terraform/google/foundation/cloud-sql/users.tf` |
 | WIF 属性 `attribute.repository_environment` | `terraform/google/foundation/iam-workload-identity/identity_pool_provider_github.tf` |
 | `fun-dotto/server` の必須ステータスチェック `Migration`（`migrate.yml` の集約ジョブ） | `terraform/github/fun-dotto/repository-server.tf` |
+| ロール（`dotto_admin_<env>` など）とロール間のメンバーシップ | `terraform/google/foundation/cloud-sql-roles/roles.tf` |
+| スキーマ・テーブルの権限、default privileges、`atlas_schema_revisions` スキーマ | `terraform/google/foundation/cloud-sql-roles/privileges.tf` |
+
+`cloud-sql-roles` は terraform-ci の IAM ユーザー（`cloudsqlsuperuser`）で接続する。`google_sql_user` の `database_roles` が参照するロールを作るため、`cloud-sql` より先に apply する。
 
 ロール構成の全体像は [postgresql_roles.md](./postgresql_roles.md) を参照。
 
@@ -23,20 +27,21 @@
 
 ## 手動で実施する SQL（Terraform の管理外）
 
-ロール自体と DB 内の権限は Terraform の管理外。新しい環境の DB を作る場合や、ロール構成を変える場合は、Cloud SQL の組み込みユーザー（`cloudsqlsuperuser` のメンバー）で実施する。
-Terraform の `google_sql_user` が `database_roles` で参照するロールは、先に作成しておく必要がある。
+DB への `CONNECT` と、既存オブジェクトの owner の付け替えは Terraform の管理外。Cloud SQL の組み込みユーザー（`cloudsqlsuperuser` のメンバー）で実施する。
 
-### ロールの作成（インスタンスで 1 回）
+### terraform-ci に既存ロールの ADMIN OPTION を付与する（初回のみ）
+
+PostgreSQL 16 以降は、`CREATEROLE` を持っていても `ADMIN OPTION` のあるロールしか変更できない。手動で作ったロールを Terraform で管理するため、Cloud SQL の組み込みユーザー（`cloudsqlsuperuser` のメンバー）で実行する（2026-11-17 に実施済み）。Terraform が新しく作るロールには自動で付く。
 
 ```sql
-CREATE ROLE dotto_admin_<env> NOLOGIN;
-CREATE ROLE dotto_service_<env> NOLOGIN;
-CREATE ROLE dotto_migrate_readonly_<env> NOLOGIN;
-
-GRANT dotto_service_<env> TO dotto_admin_<env>;
+GRANT dotto_developer,
+  dotto_admin_dev, dotto_admin_stg, dotto_admin_prd,
+  dotto_service_dev, dotto_service_stg, dotto_service_prd,
+  dotto_migrate_readonly_dev, dotto_migrate_readonly_stg, dotto_migrate_readonly_prd
+  TO "terraform-ci@swift2023groupc.iam" WITH ADMIN OPTION;
 ```
 
-### 各 DB での権限設定
+### 各 DB での接続制限と owner
 
 DB は dev が `dotto_dev`、stg が `dotto_stg`、prd が `dotto`。対象 DB に接続して実行する。
 
@@ -49,44 +54,6 @@ GRANT CONNECT ON DATABASE <db> TO cloudsqlsuperuser, dotto_developer,
 -- 既存オブジェクトの owner を環境用ロールにする
 -- （旧構成から移行する場合のみ）旧 dotto_admin が所有するオブジェクトを付け替える
 REASSIGN OWNED BY dotto_admin TO dotto_admin_<env>;
-
--- 主キー追加時のインデックス作成などに必要。対象 DB の public スキーマの所有者など、
--- CREATE を付与できるロールで実行する。
-GRANT CREATE ON SCHEMA public TO dotto_admin_<env>;
-
--- 対象 DB 名と、適用ロールの実効権限（can_create が true）を確認する
-SELECT current_database(), has_schema_privilege('dotto_admin_<env>', 'public', 'CREATE') AS can_create;
-
--- 新規テーブルへの自動権限付与（dotto_admin_<env> が作るテーブル）
-ALTER DEFAULT PRIVILEGES FOR ROLE dotto_admin_<env>
-  GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO dotto_service_<env>;
--- dotto_developer: dev / stg は CRUD、prd は SELECT のみ
-ALTER DEFAULT PRIVILEGES FOR ROLE dotto_admin_<env>
-  GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO dotto_developer;  -- prd は GRANT SELECT ON TABLES
-```
-
-`serial` / `bigserial` を使うテーブルがある場合は、シーケンスの `USAGE` も同様に `ALTER DEFAULT PRIVILEGES ... ON SEQUENCES` で付与する。
-設定内容は `SELECT pg_get_userbyid(defaclrole) AS creator, defaclobjtype, defaclacl FROM pg_default_acl;` で確認できる。
-
-### 既存テーブルの権限
-
-| ロール | dotto_dev / dotto_stg | dotto (prd) |
-| --- | --- | --- |
-| `dotto_admin_<env>` | owner、`ALL` | owner、`ALL` |
-| `dotto_service_<env>` | `SELECT, INSERT, UPDATE, DELETE` | `SELECT, INSERT, UPDATE, DELETE` |
-| `dotto_developer` | `SELECT, INSERT, UPDATE, DELETE` | **`SELECT` のみ** |
-| `dotto_migrate_readonly_<env>` | `atlas_schema_revisions` の `SELECT` | 同左 |
-
-```sql
-GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO dotto_service_<env>;
-GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO dotto_developer;  -- prd は SELECT のみ
--- prd のみ、developer の書き込み権限が残っている場合
-REVOKE INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public FROM dotto_developer;
-
--- dry-run 用: リビジョンテーブルは public ではなく専用スキーマ atlas_schema_revisions にある
--- （スキーマ・テーブルが無い DB では、マイグレーションを初めて適用した後に実行する）
-GRANT USAGE ON SCHEMA atlas_schema_revisions TO dotto_migrate_readonly_<env>;
-GRANT SELECT ON TABLE atlas_schema_revisions.atlas_schema_revisions TO dotto_migrate_readonly_<env>;
 ```
 
 ### dotto_admin ロールの削除
