@@ -113,7 +113,7 @@ dry-run 用ロールを環境ごとに分けるのは、ロールがインスタ
 | --- | --- | --- | --- |
 | `terraform-ci` | `terraform-ci@swift2023groupc.iam` | `cloudsqlsuperuser` | DB 内のロールと権限を Terraform で管理する（検証中） |
 
-IAM ユーザーに `cloudsqlsuperuser` を付与したとき、ロールの作成に必要な `CREATEROLE` 属性が付くかは Cloud SQL のドキュメントに記載がない。ロール属性はメンバーシップでは継承されないため、属性が付かなければ Terraform からロールを作成できない。
+IAM ユーザーに `CREATEROLE` 属性が付くかは未確認（属性はメンバーシップでは継承されない）。
 
 ### 人（IAM ユーザー）
 
