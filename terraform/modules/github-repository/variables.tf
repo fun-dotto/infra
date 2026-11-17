@@ -31,7 +31,7 @@ variable "allow_auto_merge" {
   default = true
 }
 
-# デフォルトブランチの Ruleset
+# 全ブランチに適用する Ruleset
 variable "ruleset" {
   type = object({
     name                       = optional(string, "Default")
