@@ -45,6 +45,18 @@ module "service" {
       name  = "ID_TOKEN_ALLOWED_SERVICE_ACCOUNTS"
       value = "web-stg@swift2023groupc.iam.gserviceaccount.com"
     },
+    {
+      name  = "MICROCMS_SERVICE_DOMAIN"
+      value = "dotto"
+    },
+    {
+      name      = "MICROCMS_API_KEY"
+      secret_id = "microcms-api-key"
+    },
+    {
+      name  = "ARTICLE_BASE_URL"
+      value = "https://stg.fun-dotto.com"
+    },
   ]
 
   cloud_sql = {
