@@ -45,7 +45,7 @@ resource "github_repository_ruleset" "default_branch" {
       for_each = length(var.ruleset.required_status_checks) > 0 ? [1] : []
       content {
         do_not_enforce_on_create             = false
-        strict_required_status_checks_policy = false
+        strict_required_status_checks_policy = var.ruleset.strict_required_status_checks
 
         dynamic "required_check" {
           for_each = var.ruleset.required_status_checks
@@ -57,14 +57,17 @@ resource "github_repository_ruleset" "default_branch" {
       }
     }
 
-    merge_queue {
-      check_response_timeout_minutes    = 60
-      grouping_strategy                 = "ALLGREEN"
-      max_entries_to_build              = var.ruleset.max_entries_to_build
-      max_entries_to_merge              = 5
-      merge_method                      = upper(var.ruleset.merge_method)
-      min_entries_to_merge              = 1
-      min_entries_to_merge_wait_minutes = 5
+    dynamic "merge_queue" {
+      for_each = var.ruleset.merge_queue ? [1] : []
+      content {
+        check_response_timeout_minutes    = 60
+        grouping_strategy                 = "ALLGREEN"
+        max_entries_to_build              = var.ruleset.max_entries_to_build
+        max_entries_to_merge              = 5
+        merge_method                      = upper(var.ruleset.merge_method)
+        min_entries_to_merge              = 1
+        min_entries_to_merge_wait_minutes = 5
+      }
     }
   }
 
