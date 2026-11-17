@@ -1,3 +1,4 @@
+# このサービスは廃止予定。digger destroy 後にディレクトリごと削除する
 module "service" {
   source = "../../../../modules/cloud-run-service"
 
