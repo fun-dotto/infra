@@ -17,6 +17,7 @@ resource "google_project_iam_member" "terraform_ci" {
     "roles/iam.serviceAccountAdmin",
     "roles/iam.serviceAccountUser", # Cloud Run・Cloud Scheduler に実行 SA を設定するため
     "roles/iam.workloadIdentityPoolAdmin",
+    "roles/logging.configWriter", # ログ一致アラートポリシーの通知ルール（logging.notificationRules.*）の更新・削除のため
     "roles/monitoring.alertPolicyEditor",
     "roles/monitoring.notificationChannelEditor",
     "roles/resourcemanager.projectIamAdmin",
