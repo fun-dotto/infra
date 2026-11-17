@@ -32,7 +32,7 @@ DB への `CONNECT` と、既存オブジェクトの owner の付け替えは T
 
 ### terraform-ci に既存ロールの ADMIN OPTION を付与する（初回のみ）
 
-PostgreSQL 16 以降は、`CREATEROLE` を持っていても `ADMIN OPTION` のあるロールしか変更できない。手動で作ったロールを Terraform で管理するため、ロールを作ったユーザーで実行する。
+PostgreSQL 16 以降は、`CREATEROLE` を持っていても `ADMIN OPTION` のあるロールしか変更できない。手動で作ったロールを Terraform で管理するため、Cloud SQL の組み込みユーザー（`cloudsqlsuperuser` のメンバー）で実行する（2026-11-17 に実施済み）。Terraform が新しく作るロールには自動で付く。
 
 ```sql
 GRANT dotto_developer,

@@ -111,9 +111,9 @@ dry-run 用ロールを環境ごとに分けるのは、ロールがインスタ
 
 | SA（account_id） | DB 上のユーザー | 所属ロール | 用途 |
 | --- | --- | --- | --- |
-| `terraform-ci` | `terraform-ci@swift2023groupc.iam` | `cloudsqlsuperuser` | `cloud-sql-roles` でロールと DB 内の権限を管理する（検証中） |
+| `terraform-ci` | `terraform-ci@swift2023groupc.iam` | `cloudsqlsuperuser` | `cloud-sql-roles` でロールと DB 内の権限を管理する |
 
-IAM ユーザーに `CREATEROLE` 属性が付くかは未確認（属性はメンバーシップでは継承されない）。
+`CREATEROLE` / `CREATEDB` 属性を持ち、既存の `dotto_*` ロールすべてに `ADMIN OPTION` を付与している。
 
 ### 人（IAM ユーザー）
 
