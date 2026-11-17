@@ -11,6 +11,7 @@
 | 各 SA の `roles/cloudsql.client` / `roles/cloudsql.instanceUser` | 同上 |
 | Cloud SQL の IAM ユーザー（`<sa>@swift2023groupc.iam`）と所属ロール | `terraform/google/foundation/cloud-sql/users.tf` |
 | WIF 属性 `attribute.repository_environment` | `terraform/google/foundation/iam-workload-identity/identity_pool_provider_github.tf` |
+| `fun-dotto/server` の必須ステータスチェック `Migration`（`migrate.yml` の集約ジョブ） | `terraform/github/fun-dotto/repository-server.tf` |
 
 ロール構成の全体像は [postgresql_roles.md](./postgresql_roles.md) を参照。
 
@@ -115,5 +116,4 @@ DROP ROLE dotto_admin;
 
 ## 未対応（ワークフロー導入後に実施）
 
-- `terraform/github/fun-dotto/repository-server.tf` の `required_status_checks` に `migrate.yml` のチェック名を追加する。先に追加すると、まだ存在しないチェックを待ってマージ不能になるため、`fun-dotto/server` 側のワークフローが main に入ってから行う。
 - 既存の `migrate` / `apply-table-privileges` Cloud Run Job（Terraform 管理外）の実在確認と削除。
