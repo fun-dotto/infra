@@ -31,6 +31,18 @@ module "service" {
       name  = "USER_API_URL"
       value = data.terraform_remote_state.user_service.outputs.cloud_run_service_uri
     },
+    {
+      name  = "MICROCMS_SERVICE_DOMAIN"
+      value = "dotto"
+    },
+    {
+      name      = "MICROCMS_API_KEY"
+      secret_id = "microcms-api-key"
+    },
+    {
+      name  = "ARTICLE_BASE_URL"
+      value = "https://fun-dotto.com"
+    },
   ]
 
   max_instance_count = 10

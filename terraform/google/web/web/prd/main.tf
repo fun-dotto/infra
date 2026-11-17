@@ -80,6 +80,14 @@ module "service" {
       name  = "NOTION_MAC_DATABASE_ID"
       value = "33528560ac7980698b3bcc050130d91a"
     },
+    {
+      name  = "MICROCMS_SERVICE_DOMAIN"
+      value = "dotto"
+    },
+    {
+      name      = "MICROCMS_API_KEY"
+      secret_id = "microcms-api-key"
+    },
   ]
 
   max_instance_count = 10
