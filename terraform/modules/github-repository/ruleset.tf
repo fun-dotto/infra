@@ -56,22 +56,42 @@ resource "github_repository_ruleset" "default_branch" {
         }
       }
     }
-
-    dynamic "merge_queue" {
-      for_each = var.ruleset.merge_queue ? [1] : []
-      content {
-        check_response_timeout_minutes    = 60
-        grouping_strategy                 = "ALLGREEN"
-        max_entries_to_build              = var.ruleset.max_entries_to_build
-        max_entries_to_merge              = 5
-        merge_method                      = upper(var.ruleset.merge_method)
-        min_entries_to_merge              = 1
-        min_entries_to_merge_wait_minutes = 5
-      }
-    }
   }
 
   # 既存の bypass は User（kantacky）だが provider が actor_type = "User" に未対応のため、コンソール管理とする
+  lifecycle {
+    ignore_changes = [bypass_actors]
+  }
+}
+
+# merge queue はワイルドカード（~ALL）を対象にした Ruleset に入れられないため、デフォルトブランチ用に分ける
+resource "github_repository_ruleset" "merge_queue" {
+  count = var.ruleset.merge_queue ? 1 : 0
+
+  repository  = github_repository.this.name
+  name        = "Merge queue"
+  target      = "branch"
+  enforcement = "active"
+
+  conditions {
+    ref_name {
+      include = ["~DEFAULT_BRANCH"]
+      exclude = []
+    }
+  }
+
+  rules {
+    merge_queue {
+      check_response_timeout_minutes    = 60
+      grouping_strategy                 = "ALLGREEN"
+      max_entries_to_build              = var.ruleset.max_entries_to_build
+      max_entries_to_merge              = 5
+      merge_method                      = upper(var.ruleset.merge_method)
+      min_entries_to_merge              = 1
+      min_entries_to_merge_wait_minutes = 5
+    }
+  }
+
   lifecycle {
     ignore_changes = [bypass_actors]
   }
