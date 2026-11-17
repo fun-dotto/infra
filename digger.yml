@@ -11,6 +11,7 @@ projects:
     dir: terraform/google/foundation/cloud-sql
   - name: foundation-cloud-sql-roles
     dir: terraform/google/foundation/cloud-sql-roles
+    workflow: serial-apply
   - name: foundation-cloud-storage
     dir: terraform/google/foundation/cloud-storage
   - name: foundation-cloudflared
@@ -128,3 +129,12 @@ projects:
   - name: web-web-prd
     dir: terraform/google/web/web/prd
     include_patterns: ["terraform/modules/cloud-run-service/**"]
+
+workflows:
+  # postgresql プロバイダは同じ DB への処理を並列に実行するとデッドロックするため、直列に apply する
+  serial-apply:
+    apply:
+      steps:
+        - init
+        - apply:
+            extra_args: ["-parallelism=1"]
