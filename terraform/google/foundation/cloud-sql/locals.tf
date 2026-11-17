@@ -17,7 +17,6 @@ locals {
     dev = toset([
       "academic-svc-dev",
       "admin-api-dev",
-      "announcement-svc-dev",
       "app-api-dev",
       "bld-irr-noti-job-dev",
       "import-gtfs-job-dev",
@@ -27,7 +26,6 @@ locals {
     stg = toset([
       "academic-svc-stg",
       "admin-api-stg",
-      "announcement-svc-stg",
       "app-api-stg",
       "bld-irr-noti-job-stg",
       "import-gtfs-job-stg",
@@ -37,7 +35,6 @@ locals {
     prd = toset([
       "academic-svc",
       "admin-api",
-      "announcement-svc",
       "app-api",
       "bld-irr-noti-job",
       "import-gtfs-job",
