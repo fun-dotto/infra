@@ -24,10 +24,6 @@ module "service" {
       value = data.terraform_remote_state.academic_service.outputs.cloud_run_service_uri
     },
     {
-      name  = "ANNOUNCEMENT_API_URL"
-      value = data.terraform_remote_state.announcement_service.outputs.cloud_run_service_uri
-    },
-    {
       name  = "USER_API_URL"
       value = data.terraform_remote_state.user_service.outputs.cloud_run_service_uri
     },
@@ -51,12 +47,6 @@ module "service" {
 
 resource "google_cloud_run_v2_service_iam_member" "academic_service_invoker" {
   name   = data.terraform_remote_state.academic_service.outputs.cloud_run_service_name
-  role   = "roles/run.invoker"
-  member = "serviceAccount:${module.service.service_account_email}"
-}
-
-resource "google_cloud_run_v2_service_iam_member" "announcement_service_invoker" {
-  name   = data.terraform_remote_state.announcement_service.outputs.cloud_run_service_name
   role   = "roles/run.invoker"
   member = "serviceAccount:${module.service.service_account_email}"
 }

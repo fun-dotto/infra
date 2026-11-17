@@ -101,9 +101,9 @@ dry-run 用ロールを環境ごとに分けるのは、ロールがインスタ
 
 | 環境 | ロール | 所属する SA（DB ユーザー名は `<name>@swift2023groupc.iam`） |
 | --- | --- | --- |
-| dev | `dotto_service_dev` | `academic-svc-dev` / `admin-api-dev` / `announcement-svc-dev` / `app-api-dev` / `bld-irr-noti-job-dev` / `import-gtfs-job-dev` / `noti-user-job-dev` / `user-svc-dev` |
-| stg | `dotto_service_stg` | `academic-svc-stg` / `admin-api-stg` / `announcement-svc-stg` / `app-api-stg` / `bld-irr-noti-job-stg` / `import-gtfs-job-stg` / `noti-user-job-stg` / `user-svc-stg` |
-| prd | `dotto_service_prd` | `academic-svc` / `admin-api` / `announcement-svc` / `app-api` / `bld-irr-noti-job` / `import-gtfs-job` / `noti-user-job` / `user-svc` / `class-change-batch-job`（※） |
+| dev | `dotto_service_dev` | `academic-svc-dev` / `admin-api-dev` / `app-api-dev` / `bld-irr-noti-job-dev` / `import-gtfs-job-dev` / `noti-user-job-dev` / `user-svc-dev` |
+| stg | `dotto_service_stg` | `academic-svc-stg` / `admin-api-stg` / `app-api-stg` / `bld-irr-noti-job-stg` / `import-gtfs-job-stg` / `noti-user-job-stg` / `user-svc-stg` |
+| prd | `dotto_service_prd` | `academic-svc` / `admin-api` / `app-api` / `bld-irr-noti-job` / `import-gtfs-job` / `noti-user-job` / `user-svc` / `class-change-batch-job`（※） |
 
 ※ `class-change-batch-job` は現行の DB には存在するが `terraform/google/foundation/cloud-sql/locals.tf` の `database_service_accounts` に無い（Terraform 管理外）。ロール移行時に Terraform へ取り込むか削除するか決める。
 

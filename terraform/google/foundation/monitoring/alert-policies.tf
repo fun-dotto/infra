@@ -12,7 +12,6 @@ resource "google_monitoring_alert_policy" "cloud_run_service_server_error_prd" {
         resource.type="cloud_run_revision"
         severity >= ERROR
         (
-          resource.labels.service_name="announcement-api" OR
           resource.labels.service_name="academic-api" OR
           resource.labels.service_name="user-api"
         )
