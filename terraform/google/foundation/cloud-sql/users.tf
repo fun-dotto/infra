@@ -8,16 +8,6 @@ resource "google_sql_user" "service_account" {
   type           = "CLOUD_IAM_SERVICE_ACCOUNT"
 }
 
-resource "google_sql_user" "admin" {
-  for_each = local.database_admins
-
-  database_roles = ["dotto_admin"]
-  instance       = google_sql_database_instance.dotto.name
-  name           = each.value
-  project        = google_sql_database_instance.dotto.project
-  type           = "CLOUD_IAM_USER"
-}
-
 resource "google_sql_user" "developer" {
   for_each = local.database_developers
 
@@ -51,4 +41,20 @@ resource "google_sql_user" "migrate_apply" {
   name           = "${local.migrate_apply_service_account_prefix}-${each.key}@${google_sql_database_instance.dotto.project}.iam"
   project        = google_sql_database_instance.dotto.project
   type           = "CLOUD_IAM_SERVICE_ACCOUNT"
+}
+
+# 旧 google_sql_user.admin (dotto_admin) の 3 名は dotto_developer に統合した。ユーザーを作り直さないよう移動する
+moved {
+  from = google_sql_user.admin["beretta0602@gmail.com"]
+  to   = google_sql_user.developer["beretta0602@gmail.com"]
+}
+
+moved {
+  from = google_sql_user.admin["iam@kantacky.com"]
+  to   = google_sql_user.developer["iam@kantacky.com"]
+}
+
+moved {
+  from = google_sql_user.admin["msyaaa456910@gmail.com"]
+  to   = google_sql_user.developer["msyaaa456910@gmail.com"]
 }
