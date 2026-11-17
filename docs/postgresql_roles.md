@@ -40,8 +40,7 @@ Cloud SQL インスタンス `dotto`（PostgreSQL 18）のロール構成と、D
 ```mermaid
 flowchart BT
     subgraph human["人（CLOUD_IAM_USER）"]
-        admins["管理者 3 名"]
-        devs["開発者 6 名"]
+        devs["開発者 9 名"]
     end
 
     subgraph groups["グループロール"]
@@ -64,10 +63,6 @@ flowchart BT
         end
     end
 
-    admins --> admin_dev
-    admins --> admin_stg
-    admins --> admin_prd
-    admins --> dotto_developer
     devs --> dotto_developer
 
     admin_dev --> service_dev
@@ -77,11 +72,9 @@ flowchart BT
 
 | メンバー | 親ロール | 目的 |
 | --- | --- | --- |
-| 管理者（IAM ユーザー） | `dotto_admin_dev` / `dotto_admin_stg` / `dotto_admin_prd` | 人の管理者が各環境の owner として操作する（`SET ROLE` で切替） |
-| 管理者（IAM ユーザー） | `dotto_developer` | 管理者も開発者と同じ調査権限を持つ |
 | `dotto_admin_<env>` | `dotto_service_<env>` | owner が自環境のアプリ権限を持つ |
 
-全環境をまとめる `dotto_admin` グループは廃止した。管理者は各環境のロールに直接所属する。
+`dotto_admin` グループは廃止した。人（IAM ユーザー）は全員 `dotto_developer` のみに所属し、`dotto_admin_<env>` には所属しない（`dotto_admin_<env>` のメンバーはマイグレーション適用 SA のみ）。ロールの作成や権限変更などの手動 SQL は、Cloud SQL の組み込みユーザー（`cloudsqlsuperuser` のメンバー）で実行する。
 
 `dotto_admin_<env>` どうしは独立しており、`dotto_admin_dev` は stg / prd のオブジェクトに触れない。
 `dotto_migrate_readonly_<env>` は他のロールのメンバーにならず、メンバーは対応する環境の dry-run SA のみ。
@@ -118,8 +111,7 @@ dry-run 用ロールを環境ごとに分けるのは、ロールがインスタ
 
 | 所属ロール | IAM ユーザー |
 | --- | --- |
-| `dotto_admin_dev` / `dotto_admin_stg` / `dotto_admin_prd` / `dotto_developer` | `iam@kantacky.com` / `msyaaa456910@gmail.com` / `beretta0602@gmail.com` |
-| `dotto_developer` | `axitian882@gmail.com` / `identityv5656@gmail.com` / `kaxu123456@gmail.com` / `tash19695@gmail.com` / `yamas.jto@gmail.com` / `yonggoutwitter89@gmail.com` |
+| `dotto_developer` | `beretta0602@gmail.com` / `iam@kantacky.com` / `msyaaa456910@gmail.com` / `axitian882@gmail.com` / `identityv5656@gmail.com` / `kaxu123456@gmail.com` / `tash19695@gmail.com` / `yamas.jto@gmail.com` / `yonggoutwitter89@gmail.com` |
 
 ### 全体像
 
@@ -141,8 +133,7 @@ flowchart LR
     end
 
     subgraph people["人"]
-        admins["管理者 3 名"]
-        devs["開発者 6 名"]
+        devs["開発者 9 名"]
     end
 
     subgraph roles["ロール"]
@@ -170,7 +161,6 @@ flowchart LR
     svc_dev --> service_dev
     svc_stg --> service_stg
     svc_prd --> service_prd
-    admins --> admin_dev & admin_stg & admin_prd & dotto_developer
     devs --> dotto_developer
     admin_dev --> service_dev
     admin_stg --> service_stg
@@ -220,13 +210,13 @@ flowchart LR
 | dry-run SA | `gha-server-migrate-dry-run` 1 つ（`dotto_migrate_readonly`） | 環境ごとに 3 つ（`dotto_migrate_readonly_<env>`） |
 | dry-run 用ロール | `dotto_migrate_readonly` を全環境で共有 | `dotto_migrate_readonly_<env>` に分割 |
 | アプリ実行時ロール | `dotto_service` を全環境で共有 | `dotto_service_<env>` に分割 |
-| `dotto_admin` | `dotto_developer` / `dotto_service` の親。SA と管理者が所属 | 廃止。管理者は各 `dotto_admin_<env>` と `dotto_developer` に直接所属 |
+| `dotto_admin` | `dotto_developer` / `dotto_service` の親。SA と管理者が所属 | 廃止。旧メンバーの人は `dotto_developer` のみに所属 |
 | 環境間の分離 | ロール上は無し（`dotto_service` は全 DB に同じ権限） | ロール単位で分離。他環境 DB へは `CONNECT` 不可 |
 | `class-change-batch-job` | DB にのみ存在（Terraform 管理外） | Terraform 管理に取り込む（要判断） |
 
 ## 移行に必要な作業（概要）
 
-1. **ロール作成**（管理者が実行）: `dotto_admin_{dev,stg,prd}`、`dotto_service_{dev,stg,prd}`、`dotto_migrate_readonly_{dev,stg,prd}` を `NOLOGIN` で作成し、上記のメンバーシップを `GRANT` する。
+1. **ロール作成**（`cloudsqlsuperuser` のメンバーで実行）: `dotto_admin_{dev,stg,prd}`、`dotto_service_{dev,stg,prd}`、`dotto_migrate_readonly_{dev,stg,prd}` を `NOLOGIN` で作成し、上記のメンバーシップを `GRANT` する。
 2. **DB の接続制限**: 各 DB で `REVOKE CONNECT ON DATABASE <db> FROM PUBLIC` した上で、対応する環境のロールにだけ `GRANT CONNECT` する。`dotto_migrate_readonly_<env>` には `atlas_schema_revisions` の `USAGE` / `SELECT` も付与する。
 3. **オブジェクトの owner 付け替え**: 各 DB のスキーマ・テーブル・シーケンス（`atlas_schema_revisions` スキーマ含む）を `dotto_admin_<env>` に `REASSIGN OWNED` / `ALTER ... OWNER TO` し、`ALTER DEFAULT PRIVILEGES FOR ROLE dotto_admin_<env>` を `dotto_service_<env>` と `dotto_developer`（prd は `SELECT` のみ）に設定し直す。
 4. **Terraform**:

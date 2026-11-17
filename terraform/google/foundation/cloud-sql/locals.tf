@@ -1,11 +1,8 @@
 locals {
-  database_admins = toset([
+  database_developers = toset([
+    "beretta0602@gmail.com",
     "iam@kantacky.com",
     "msyaaa456910@gmail.com",
-    "beretta0602@gmail.com",
-  ])
-
-  database_developers = toset([
     "axitian882@gmail.com",
     "identityv5656@gmail.com",
     "kaxu123456@gmail.com",

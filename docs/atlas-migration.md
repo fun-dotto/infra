@@ -22,7 +22,7 @@
 
 ## 手動で実施する SQL（Terraform の管理外）
 
-ロール自体と DB 内の権限は Terraform の管理外。新しい環境の DB を作る場合や、ロール構成を変える場合は、人間の管理者（`dotto_admin_<env>` のメンバー）が実施する。
+ロール自体と DB 内の権限は Terraform の管理外。新しい環境の DB を作る場合や、ロール構成を変える場合は、Cloud SQL の組み込みユーザー（`cloudsqlsuperuser` のメンバー）で実施する。
 Terraform の `google_sql_user` が `database_roles` で参照するロールは、先に作成しておく必要がある。
 
 ### ロールの作成（インスタンスで 1 回）
@@ -90,11 +90,11 @@ GRANT SELECT ON TABLE atlas_schema_revisions.atlas_schema_revisions TO dotto_mig
 
 ### dotto_admin ロールの削除
 
-`dotto_admin` は廃止した。管理者は Terraform（`google_sql_user.admin`）で `dotto_admin_<env>` と `dotto_developer` に直接所属させる。
-先に Terraform を apply して管理者の所属を切り替えてから、管理者（`cloudsqlsuperuser` のメンバー）で次を実行する。
+`dotto_admin` は廃止した。旧メンバーの人 3 名は Terraform（`google_sql_user.developer`）で `dotto_developer` のみに所属させる。
+先に Terraform を apply して所属を切り替えてから、`cloudsqlsuperuser` のメンバーで次を実行する。
 
 ```sql
--- 1. 所属を確認（dotto_admin のメンバーが残っていないこと、管理者が dotto_admin_<env> に入っていること）
+-- 1. 所属を確認（dotto_admin のメンバーが残っていないこと）
 SELECT r.rolname AS role, m.rolname AS member
 FROM pg_auth_members am
 JOIN pg_roles r ON r.oid = am.roleid
