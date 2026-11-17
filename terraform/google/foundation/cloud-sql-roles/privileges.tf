@@ -1,7 +1,6 @@
-# 各環境の DB 内の権限。DB への CONNECT はプロバイダの不具合 (cyrilgdn/terraform-provider-postgresql#681) で
-# 反映されないことがあるため、手動 SQL で管理する (docs/atlas-migration.md)
+# DB への CONNECT はプロバイダの不具合 (cyrilgdn/terraform-provider-postgresql#681) のため手動 SQL で管理する
 
-# public スキーマ: 主キー追加時のインデックス作成などに CREATE が必要
+# 主キー追加時のインデックス作成などに必要
 resource "postgresql_grant" "admin_public_schema" {
   for_each = local.environments
 
@@ -12,7 +11,6 @@ resource "postgresql_grant" "admin_public_schema" {
   privileges  = ["CREATE", "USAGE"]
 }
 
-# 既存テーブル
 resource "postgresql_grant" "service_tables" {
   for_each = local.environments
 
@@ -33,7 +31,6 @@ resource "postgresql_grant" "developer_tables" {
   privileges  = each.value.developer_table_privileges
 }
 
-# dotto_admin_<env> がこれから作るテーブル (スキーマを問わない)
 resource "postgresql_default_privileges" "service_tables" {
   for_each = local.environments
 
@@ -54,8 +51,7 @@ resource "postgresql_default_privileges" "developer_tables" {
   privileges  = each.value.developer_table_privileges
 }
 
-# Atlas のリビジョンテーブル用のスキーマ。既にあれば owner だけを設定する。
-# 先に作っておくことで、初回のマイグレーション前から dry-run 用ロールに権限を付与できる
+# 初回のマイグレーション前から dry-run 用ロールに権限を付与するため先に作る (既にあれば owner だけを設定する)
 resource "postgresql_schema" "atlas_schema_revisions" {
   for_each = local.environments
 

@@ -1,5 +1,3 @@
-# 手動 SQL で作成済みのロールを取り込む。GRANT と default privileges は import に対応していないため、
-# apply で同じ内容が再設定される
 import {
   to = postgresql_role.developer
   id = "dotto_developer"

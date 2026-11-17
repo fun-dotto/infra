@@ -1,5 +1,4 @@
 locals {
-  # 環境 => DB 名と、dotto_developer に付与するテーブル権限 (prd は SELECT のみ)
   environments = {
     dev = {
       database                   = "dotto_dev"
