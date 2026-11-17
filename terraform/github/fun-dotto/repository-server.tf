@@ -15,6 +15,7 @@ module "server" {
       "Lint",
       "Build",
       "Vulncheck",
+      "Check generated code",
       # migrate.yml の集約ジョブ（validate / dry-run の結果をまとめて報告する）
       "Migration",
     ]
