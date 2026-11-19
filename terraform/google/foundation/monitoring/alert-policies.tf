@@ -82,6 +82,8 @@ resource "google_monitoring_alert_policy" "cloud_run_job_error_prd" {
         severity>=ERROR
         (
           resource.labels.job_name="build-class-change-notifications-job" OR
+          resource.labels.job_name="fetch-syllabuses-job" OR
+          resource.labels.job_name="build-subjects-job" OR
           resource.labels.job_name="class-change-batch" OR
           resource.labels.job_name="dispatch-notifications-job"
         )

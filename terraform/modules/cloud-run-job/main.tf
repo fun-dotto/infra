@@ -82,7 +82,7 @@ resource "google_cloud_run_v2_job" "this" {
       max_retries = 0
 
       service_account = google_service_account.this.email
-      timeout         = "900s"
+      timeout         = var.timeout
     }
   }
 

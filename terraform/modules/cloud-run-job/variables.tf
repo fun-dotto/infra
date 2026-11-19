@@ -59,3 +59,9 @@ variable "schedule" {
 variable "timezone" {
   type = string
 }
+
+variable "timeout" {
+  description = "Max duration of a task attempt (e.g. \"900s\")."
+  type        = string
+  default     = "900s"
+}
