@@ -54,6 +54,7 @@ resource "google_compute_instance" "cloudflared" {
       | sed -n 's/.*"data": *"\([^"]*\)".*/\1/p' | base64 -d)
     export TUNNEL_TOKEN
 
+    docker rm -f cloudflared 2>/dev/null || true
     docker run -d --name cloudflared --restart=always \
       -e TUNNEL_TOKEN \
       '${var.image}' ${join(" ", local.cloudflared_command)}
