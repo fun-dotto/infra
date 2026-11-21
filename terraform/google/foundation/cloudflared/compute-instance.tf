@@ -52,6 +52,7 @@ resource "google_compute_instance" "cloudflared" {
     TUNNEL_TOKEN=$(curl -sS -H "Authorization: Bearer $ACCESS_TOKEN" \
       'https://secretmanager.googleapis.com/v1/projects/${var.google_cloud_project_id}/secrets/${google_secret_manager_secret.tunnel_token.secret_id}/versions/latest:access' \
       | sed -n 's/.*"data": *"\([^"]*\)".*/\1/p' | base64 -d)
+    export TUNNEL_TOKEN
 
     docker run -d --name cloudflared --restart=always \
       -e TUNNEL_TOKEN \
