@@ -48,10 +48,10 @@ resource "google_compute_instance" "cloudflared" {
 
     ACCESS_TOKEN=$(curl -sS -H 'Metadata-Flavor: Google' \
       'http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/token' \
-      | sed -n 's/.*"access_token":"\([^"]*\)".*/\1/p')
+      | sed -n 's/.*"access_token": *"\([^"]*\)".*/\1/p')
     TUNNEL_TOKEN=$(curl -sS -H "Authorization: Bearer $ACCESS_TOKEN" \
       'https://secretmanager.googleapis.com/v1/projects/${var.google_cloud_project_id}/secrets/${google_secret_manager_secret.tunnel_token.secret_id}/versions/latest:access' \
-      | sed -n 's/.*"data":"\([^"]*\)".*/\1/p' | base64 -d)
+      | sed -n 's/.*"data": *"\([^"]*\)".*/\1/p' | base64 -d)
 
     docker run -d --name cloudflared --restart=always \
       -e TUNNEL_TOKEN \
