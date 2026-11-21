@@ -46,6 +46,15 @@ module "service" {
       value = "web-prd@swift2023groupc.iam.gserviceaccount.com"
     },
     {
+      name = "APP_CHECK_ALLOWED_APP_IDS"
+      value = join(",", [
+        data.terraform_remote_state.project.outputs.firebase_apple_app_ids["default"],
+        data.terraform_remote_state.project.outputs.firebase_apple_app_ids["prd"],
+        data.terraform_remote_state.project.outputs.firebase_android_app_ids["default"],
+        data.terraform_remote_state.project.outputs.firebase_android_app_ids["prd"],
+      ])
+    },
+    {
       name  = "MICROCMS_SERVICE_DOMAIN"
       value = "dotto"
     },
