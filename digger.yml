@@ -75,6 +75,24 @@ projects:
   - name: server-build-irregular-notification-job-prd
     dir: terraform/google/server/build-irregular-notification-job/prd
     include_patterns: ["terraform/modules/cloud-run-job/**"]
+  - name: server-fetch-syllabuses-job-dev
+    dir: terraform/google/server/fetch-syllabuses-job/dev
+    include_patterns: ["terraform/modules/cloud-run-job/**"]
+  - name: server-fetch-syllabuses-job-stg
+    dir: terraform/google/server/fetch-syllabuses-job/stg
+    include_patterns: ["terraform/modules/cloud-run-job/**"]
+  - name: server-fetch-syllabuses-job-prd
+    dir: terraform/google/server/fetch-syllabuses-job/prd
+    include_patterns: ["terraform/modules/cloud-run-job/**"]
+  - name: server-build-subjects-job-dev
+    dir: terraform/google/server/build-subjects-job/dev
+    include_patterns: ["terraform/modules/cloud-run-job/**"]
+  - name: server-build-subjects-job-stg
+    dir: terraform/google/server/build-subjects-job/stg
+    include_patterns: ["terraform/modules/cloud-run-job/**"]
+  - name: server-build-subjects-job-prd
+    dir: terraform/google/server/build-subjects-job/prd
+    include_patterns: ["terraform/modules/cloud-run-job/**"]
   - name: server-import-gtfs-job-dev
     dir: terraform/google/server/import-gtfs-job/dev
     include_patterns: ["terraform/modules/cloud-run-job/**"]
