@@ -17,7 +17,7 @@ module "job" {
   image               = "asia-northeast1-docker.pkg.dev/swift2023groupc/github-actions/server:latest"
   deletion_protection = false
 
-  timeout = "1800s"
+  timeout = "3600s"
 
   cloud_sql = {
     db_name                  = "dotto"

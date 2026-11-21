@@ -22,6 +22,6 @@ module "job" {
     instance_connection_name = "swift2023groupc:asia-northeast1:dotto"
   }
 
-  schedule = "0 4 * * 0"
+  schedule = "0 2 * * 0"
   timezone = "Asia/Tokyo"
 }
