@@ -74,5 +74,5 @@ module "service" {
   }
 
   max_instance_count = 10
-  min_instance_count = 0 # TODO: 本番運用開始時に 1 に戻す
+  min_instance_count = 1
 }

@@ -25,5 +25,5 @@ module "service" {
   }
 
   max_instance_count = 10
-  min_instance_count = 1
+  min_instance_count = 0
 }
