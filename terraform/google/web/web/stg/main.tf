@@ -96,7 +96,4 @@ module "service" {
     network    = data.terraform_remote_state.network.outputs.network_name
     subnetwork = data.terraform_remote_state.network.outputs.cloud_run_subnetwork_name
   }
-
-  max_instance_count = 10
-  min_instance_count = 0
 }
