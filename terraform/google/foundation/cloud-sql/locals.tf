@@ -15,31 +15,25 @@ locals {
   # prd の SA はサフィックスなし
   database_service_accounts_by_environment = {
     dev = toset([
-      "academic-svc-dev",
       "admin-api-dev",
       "app-api-dev",
       "bld-irr-noti-job-dev",
       "import-gtfs-job-dev",
       "noti-user-job-dev",
-      "user-svc-dev",
     ])
     stg = toset([
-      "academic-svc-stg",
       "admin-api-stg",
       "app-api-stg",
       "bld-irr-noti-job-stg",
       "import-gtfs-job-stg",
       "noti-user-job-stg",
-      "user-svc-stg",
     ])
     prd = toset([
-      "academic-svc",
       "admin-api",
       "app-api",
       "bld-irr-noti-job",
       "import-gtfs-job",
       "noti-user-job",
-      "user-svc",
     ])
   }
 

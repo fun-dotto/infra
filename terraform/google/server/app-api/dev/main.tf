@@ -46,6 +46,13 @@ module "service" {
       value = "web-dev@swift2023groupc.iam.gserviceaccount.com"
     },
     {
+      name = "APP_CHECK_ALLOWED_APP_IDS"
+      value = join(",", [
+        data.terraform_remote_state.project.outputs.firebase_apple_app_ids["dev"],
+        data.terraform_remote_state.project.outputs.firebase_android_app_ids["dev"],
+      ])
+    },
+    {
       name  = "MICROCMS_SERVICE_DOMAIN"
       value = "dotto"
     },
@@ -63,7 +70,4 @@ module "service" {
     db_name                  = "dotto_dev"
     instance_connection_name = "swift2023groupc:asia-northeast1:dotto"
   }
-
-  max_instance_count = 10
-  min_instance_count = 0
 }

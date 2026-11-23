@@ -50,7 +50,4 @@ module "service" {
     db_name                  = "dotto"
     instance_connection_name = "swift2023groupc:asia-northeast1:dotto"
   }
-
-  max_instance_count = 10
-  min_instance_count = 0
 }

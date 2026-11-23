@@ -46,6 +46,15 @@ module "service" {
       value = "web-prd@swift2023groupc.iam.gserviceaccount.com"
     },
     {
+      name = "APP_CHECK_ALLOWED_APP_IDS"
+      value = join(",", [
+        data.terraform_remote_state.project.outputs.firebase_apple_app_ids["default"],
+        data.terraform_remote_state.project.outputs.firebase_apple_app_ids["prd"],
+        data.terraform_remote_state.project.outputs.firebase_android_app_ids["default"],
+        data.terraform_remote_state.project.outputs.firebase_android_app_ids["prd"],
+      ])
+    },
+    {
       name  = "MICROCMS_SERVICE_DOMAIN"
       value = "dotto"
     },
@@ -64,6 +73,5 @@ module "service" {
     instance_connection_name = "swift2023groupc:asia-northeast1:dotto"
   }
 
-  max_instance_count = 10
-  min_instance_count = 0 # TODO: 本番運用開始時に 1 に戻す
+  min_instance_count = 1
 }
