@@ -30,15 +30,6 @@ projects:
     dir: terraform/google/foundation/project
   - name: foundation-secret-manager
     dir: terraform/google/foundation/secret-manager
-  - name: server-academic-service-dev
-    dir: terraform/google/server/academic-service/dev
-    include_patterns: ["terraform/modules/cloud-run-service/**"]
-  - name: server-academic-service-stg
-    dir: terraform/google/server/academic-service/stg
-    include_patterns: ["terraform/modules/cloud-run-service/**"]
-  - name: server-academic-service-prd
-    dir: terraform/google/server/academic-service/prd
-    include_patterns: ["terraform/modules/cloud-run-service/**"]
   - name: server-admin-api-dev
     dir: terraform/google/server/admin-api/dev
     include_patterns: ["terraform/modules/cloud-run-service/**"]
@@ -56,15 +47,6 @@ projects:
     include_patterns: ["terraform/modules/cloud-run-service/**"]
   - name: server-app-api-prd
     dir: terraform/google/server/app-api/prd
-    include_patterns: ["terraform/modules/cloud-run-service/**"]
-  - name: server-app-bff-api-dev
-    dir: terraform/google/server/app-bff-api/dev
-    include_patterns: ["terraform/modules/cloud-run-service/**"]
-  - name: server-app-bff-api-stg
-    dir: terraform/google/server/app-bff-api/stg
-    include_patterns: ["terraform/modules/cloud-run-service/**"]
-  - name: server-app-bff-api-prd
-    dir: terraform/google/server/app-bff-api/prd
     include_patterns: ["terraform/modules/cloud-run-service/**"]
   - name: server-build-irregular-notification-job-dev
     dir: terraform/google/server/build-irregular-notification-job/dev
@@ -111,15 +93,6 @@ projects:
   - name: server-notify-user-job-prd
     dir: terraform/google/server/notify-user-job/prd
     include_patterns: ["terraform/modules/cloud-run-job/**"]
-  - name: server-user-service-dev
-    dir: terraform/google/server/user-service/dev
-    include_patterns: ["terraform/modules/cloud-run-service/**"]
-  - name: server-user-service-stg
-    dir: terraform/google/server/user-service/stg
-    include_patterns: ["terraform/modules/cloud-run-service/**"]
-  - name: server-user-service-prd
-    dir: terraform/google/server/user-service/prd
-    include_patterns: ["terraform/modules/cloud-run-service/**"]
   - name: web-admin-web-dev
     dir: terraform/google/web/admin-web/dev
     include_patterns: ["terraform/modules/cloud-run-service/**"]

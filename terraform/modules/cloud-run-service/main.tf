@@ -51,6 +51,12 @@ resource "google_cloud_run_v2_service" "this" {
   location     = var.location
   name         = var.service_name
 
+  # サービス単位とリビジョン単位 (template.scaling) の両方に同じ値を設定する
+  scaling {
+    max_instance_count = var.max_instance_count
+    min_instance_count = var.min_instance_count
+  }
+
   template {
     execution_environment = null
 

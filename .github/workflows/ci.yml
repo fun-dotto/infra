@@ -56,10 +56,42 @@ jobs:
 
           mapfile -d '' directories < <(find terraform -name versions.tf -not -path '*/_shared/*' -printf '%h\0')
 
-          # plugin cache は並行書き込みに対応していないため、init は直列で実行する
+          # plugin cache は並行書き込みに対応していないため、プロバイダのダウンロードが起こりうる init は直列で実行する。
+          # 内容が同じ lock ファイルごとに代表 1 ディレクトリと、lock ファイルを持たないディレクトリを直列で init してキャッシュを埋め、
+          # 残りはキャッシュを読むだけなので並列で init する。
+          # lock ファイルに linux_amd64 の h1 ハッシュがないとキャッシュが使われず並列 init で再ダウンロードが競合するため、
+          # lock ファイルは `terraform providers lock -platform=linux_amd64 -platform=darwin_arm64` で更新する
+          declare -A seen_lock_hashes=()
+          serial_directories=()
+          parallel_directories=()
           for directory in "${directories[@]}"; do
+            lock_file="$directory/.terraform.lock.hcl"
+            if [[ ! -f "$lock_file" ]]; then
+              serial_directories+=("$directory")
+              continue
+            fi
+            lock_hash="$(sha256sum "$lock_file" | cut -d ' ' -f 1)"
+            if [[ -n "${seen_lock_hashes[$lock_hash]:-}" ]]; then
+              parallel_directories+=("$directory")
+            else
+              seen_lock_hashes[$lock_hash]=1
+              serial_directories+=("$directory")
+            fi
+          done
+
+          for directory in "${serial_directories[@]}"; do
             terraform -chdir="$directory" init -backend=false >/dev/null
           done
+
+          if ((${#parallel_directories[@]} > 0)); then
+            printf '%s\0' "${parallel_directories[@]}" |
+              xargs -0 -n 1 -P "$(nproc)" bash -c '
+                if ! output="$(terraform -chdir="$1" init -backend=false 2>&1)"; then
+                  printf "init failed: %s\n%s\n" "$1" "$output"
+                  exit 1
+                fi
+              ' _
+          fi
 
           printf '%s\0' "${directories[@]}" |
             xargs -0 -n 1 -P "$(nproc)" bash -c '

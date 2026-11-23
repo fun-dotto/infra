@@ -89,7 +89,4 @@ module "service" {
       secret_id = "microcms-api-key"
     },
   ]
-
-  max_instance_count = 10
-  min_instance_count = 0
 }
