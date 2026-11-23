@@ -51,9 +51,10 @@ resource "google_cloud_run_v2_service" "this" {
   location     = var.location
   name         = var.service_name
 
-  # サービス単位の最小インスタンス数。リビジョン単位 (template.scaling) と大きいほうが実際の最低台数になる
+  # サービス単位とリビジョン単位 (template.scaling) の両方に同じ値を設定する
   scaling {
-    min_instance_count = var.service_min_instance_count
+    max_instance_count = var.max_instance_count
+    min_instance_count = var.min_instance_count
   }
 
   template {

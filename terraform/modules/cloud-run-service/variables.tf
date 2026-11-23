@@ -80,14 +80,11 @@ variable "vpc_access" {
 }
 
 variable "max_instance_count" {
-  type = number
+  type    = number
+  default = 10
 }
 
 variable "min_instance_count" {
-  type = number
-}
-
-variable "service_min_instance_count" {
   type    = number
   default = 0
 }
