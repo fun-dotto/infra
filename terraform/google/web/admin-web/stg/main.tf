@@ -53,9 +53,6 @@ module "service" {
     subnetwork = data.terraform_remote_state.network.outputs.cloud_run_subnetwork_name
   }
 
-  max_instance_count = 10
-  min_instance_count = 0
-
   # Secret のバージョンがないとリビジョンを起動できない
   depends_on = [google_secret_manager_secret_version.cf_access_client_secret]
 }
