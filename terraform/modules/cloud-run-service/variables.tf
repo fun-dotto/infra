@@ -86,3 +86,8 @@ variable "max_instance_count" {
 variable "min_instance_count" {
   type = number
 }
+
+variable "service_min_instance_count" {
+  type    = number
+  default = 0
+}
