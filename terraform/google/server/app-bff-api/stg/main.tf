@@ -40,9 +40,6 @@ module "service" {
       value = "https://stg.fun-dotto.com"
     },
   ]
-
-  max_instance_count = 10
-  min_instance_count = 0
 }
 
 resource "google_cloud_run_v2_service_iam_member" "academic_service_invoker" {
