@@ -57,9 +57,11 @@ jobs:
           mapfile -d '' directories < <(find terraform -name versions.tf -not -path '*/_shared/*' -printf '%h\0')
 
           # plugin cache は並行書き込みに対応していないため、プロバイダのダウンロードが起こりうる init は直列で実行する。
-          # lock ファイルのプロバイダ構成ごとに代表 1 ディレクトリと、lock ファイルを持たないディレクトリを直列で init してキャッシュを埋め、
-          # 残りはキャッシュを読むだけなので並列で init する
-          declare -A seen_provider_sets=()
+          # 内容が同じ lock ファイルごとに代表 1 ディレクトリと、lock ファイルを持たないディレクトリを直列で init してキャッシュを埋め、
+          # 残りはキャッシュを読むだけなので並列で init する。
+          # lock ファイルに linux_amd64 の h1 ハッシュがないとキャッシュが使われず並列 init で再ダウンロードが競合するため、
+          # lock ファイルは `terraform providers lock -platform=linux_amd64 -platform=darwin_arm64` で更新する
+          declare -A seen_lock_hashes=()
           serial_directories=()
           parallel_directories=()
           for directory in "${directories[@]}"; do
@@ -68,11 +70,11 @@ jobs:
               serial_directories+=("$directory")
               continue
             fi
-            provider_set="$(grep -E '^provider |^  version ' "$lock_file" | sha256sum | cut -d ' ' -f 1)"
-            if [[ -n "${seen_provider_sets[$provider_set]:-}" ]]; then
+            lock_hash="$(sha256sum "$lock_file" | cut -d ' ' -f 1)"
+            if [[ -n "${seen_lock_hashes[$lock_hash]:-}" ]]; then
               parallel_directories+=("$directory")
             else
-              seen_provider_sets[$provider_set]=1
+              seen_lock_hashes[$lock_hash]=1
               serial_directories+=("$directory")
             fi
           done
