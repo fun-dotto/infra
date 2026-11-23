@@ -179,7 +179,7 @@ resource "google_firebase_remote_config_remote_config" "basic" {
 
     default_value {
       use_in_app_default = false
-      value              = "2.0.2"
+      value              = "2.3.0"
     }
   }
   parameters {
@@ -189,7 +189,7 @@ resource "google_firebase_remote_config_remote_config" "basic" {
 
     default_value {
       use_in_app_default = false
-      value              = "2.2.0"
+      value              = "2.3.0"
     }
   }
   parameters {

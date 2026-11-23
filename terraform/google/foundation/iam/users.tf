@@ -6,6 +6,9 @@ locals {
     "iam@kantacky.com" = [
       "roles/admin",
     ]
+    "msyaaa456910@gmail.com" = [
+      "roles/admin",
+    ]
     "ictfun2022@gmail.com" = [
       "roles/billing.projectManager",
     ]
