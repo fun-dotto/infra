@@ -6,3 +6,12 @@ data "terraform_remote_state" "cloudflare" {
     prefix = "cloudflare"
   }
 }
+
+data "terraform_remote_state" "project" {
+  backend = "gcs"
+
+  config = {
+    bucket = "swift2023groupc-tfstate"
+    prefix = "project"
+  }
+}
