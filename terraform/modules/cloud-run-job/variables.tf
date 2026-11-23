@@ -59,3 +59,14 @@ variable "schedule" {
 variable "timezone" {
   type = string
 }
+
+variable "timeout" {
+  description = "Max duration of a task attempt (e.g. \"900s\")."
+  type        = string
+  default     = "900s"
+
+  validation {
+    condition     = can(regex("^[0-9]+(\\.[0-9]{1,9})?s$", var.timeout))
+    error_message = "timeout must be a duration in seconds, e.g. \"900s\"."
+  }
+}

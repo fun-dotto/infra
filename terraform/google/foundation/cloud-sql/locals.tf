@@ -18,6 +18,8 @@ locals {
       "admin-api-dev",
       "app-api-dev",
       "bld-irr-noti-job-dev",
+      "bld-subj-job-dev",
+      "fetch-syl-job-dev",
       "import-gtfs-job-dev",
       "noti-user-job-dev",
     ])
@@ -25,6 +27,8 @@ locals {
       "admin-api-stg",
       "app-api-stg",
       "bld-irr-noti-job-stg",
+      "bld-subj-job-stg",
+      "fetch-syl-job-stg",
       "import-gtfs-job-stg",
       "noti-user-job-stg",
     ])
@@ -32,6 +36,8 @@ locals {
       "admin-api",
       "app-api",
       "bld-irr-noti-job",
+      "bld-subj-job",
+      "fetch-syl-job",
       "import-gtfs-job",
       "noti-user-job",
     ])
