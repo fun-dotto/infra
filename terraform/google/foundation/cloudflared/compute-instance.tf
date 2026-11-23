@@ -42,16 +42,28 @@ resource "google_compute_instance" "cloudflared" {
     automatic_restart = true
   }
 
+  # COS のログエージェントはデフォルトで無効。SSH できない構成のため、
+  # cloudflared と startup script のログを Cloud Logging に送る。
+  metadata = {
+    google-logging-enabled = "true"
+  }
+
+  # curl は -f で HTTP エラーを失敗扱いにし、起動直後の一時的な失敗は --retry で吸収する。
+  # 空のトークンで起動するとコンテナが再起動を繰り返すだけで復帰しないため、明示的に検査する。
   metadata_startup_script = <<-EOT
     #!/bin/bash
     set -euo pipefail
 
-    ACCESS_TOKEN=$(curl -sS -H 'Metadata-Flavor: Google' \
+    ACCESS_TOKEN=$(curl -fsS --retry 5 --retry-connrefused -H 'Metadata-Flavor: Google' \
       'http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/token' \
       | sed -n 's/.*"access_token": *"\([^"]*\)".*/\1/p')
-    TUNNEL_TOKEN=$(curl -sS -H "Authorization: Bearer $ACCESS_TOKEN" \
+    TUNNEL_TOKEN=$(curl -fsS --retry 5 --retry-connrefused -H "Authorization: Bearer $ACCESS_TOKEN" \
       'https://secretmanager.googleapis.com/v1/projects/${var.google_cloud_project_id}/secrets/${google_secret_manager_secret.tunnel_token.secret_id}/versions/latest:access' \
       | sed -n 's/.*"data": *"\([^"]*\)".*/\1/p' | base64 -d)
+    if [ -z "$TUNNEL_TOKEN" ]; then
+      echo "failed to read tunnel token from Secret Manager" >&2
+      exit 1
+    fi
     export TUNNEL_TOKEN
 
     docker rm -f cloudflared 2>/dev/null || true
