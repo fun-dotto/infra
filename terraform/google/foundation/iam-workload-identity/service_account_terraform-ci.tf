@@ -11,6 +11,7 @@ resource "google_project_iam_member" "terraform_ci" {
     "roles/cloudconfig.admin",
     "roles/cloudscheduler.admin",
     "roles/cloudsql.admin",
+    "roles/compute.instanceAdmin.v1", # cloudflared の GCE インスタンス作成のため
     "roles/compute.networkAdmin",
     "roles/dns.admin",
     "roles/firebase.admin",
