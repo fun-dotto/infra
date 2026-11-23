@@ -52,6 +52,7 @@ resource "google_cloud_run_v2_service" "this" {
   name         = var.service_name
 
   # サービス単位とリビジョン単位 (template.scaling) の両方に同じ値を設定する
+  # min_instance_schedules を指定した場合、サービス単位の min は Cloud Scheduler が書き換え、リビジョン単位の min は 0 にする
   scaling {
     max_instance_count = var.max_instance_count
     min_instance_count = var.min_instance_count
@@ -118,7 +119,7 @@ resource "google_cloud_run_v2_service" "this" {
 
     scaling {
       max_instance_count = var.max_instance_count
-      min_instance_count = var.min_instance_count
+      min_instance_count = length(var.min_instance_schedules) == 0 ? var.min_instance_count : 0
     }
 
     dynamic "vpc_access" {
@@ -152,8 +153,67 @@ resource "google_cloud_run_v2_service" "this" {
       client,
       client_version,
       labels,
+      # min_instance_schedules を使うサービスでは Cloud Scheduler が書き換えるため、作成後は Terraform で管理しない
+      # (lifecycle は動的に切り替えられないため全サービスで ignore する)
+      scaling[0].min_instance_count,
       template[0].labels,
       template[0].containers[0].image,
     ]
   }
+}
+
+resource "google_service_account" "scaler" {
+  count = length(var.min_instance_schedules) == 0 ? 0 : 1
+
+  account_id   = "${var.service_account_id}-scaler"
+  display_name = "${var.service_account_display_name} Scaler"
+}
+
+# サービスの更新には実行 SA の actAs が必要
+resource "google_service_account_iam_member" "scaler_act_as" {
+  count = length(var.min_instance_schedules) == 0 ? 0 : 1
+
+  service_account_id = google_service_account.this.name
+  role               = "roles/iam.serviceAccountUser"
+  member             = "serviceAccount:${google_service_account.scaler[0].email}"
+}
+
+resource "google_cloud_run_v2_service_iam_member" "scaler" {
+  count = length(var.min_instance_schedules) == 0 ? 0 : 1
+
+  name     = google_cloud_run_v2_service.this.name
+  location = google_cloud_run_v2_service.this.location
+  role     = "roles/run.developer"
+  member   = "serviceAccount:${google_service_account.scaler[0].email}"
+}
+
+# サービス単位の scaling のみ更新するため、新しいリビジョンは作られない
+resource "google_cloud_scheduler_job" "min_instance" {
+  for_each = { for s in var.min_instance_schedules : s.name => s }
+
+  name      = "${var.service_name}-min-instance-${each.key}"
+  schedule  = each.value.schedule
+  time_zone = var.timezone
+
+  http_target {
+    http_method = "PATCH"
+    uri         = "https://run.googleapis.com/v2/${google_cloud_run_v2_service.this.id}?updateMask=scaling.minInstanceCount"
+    headers = {
+      "Content-Type" = "application/json"
+    }
+    body = base64encode(jsonencode({
+      scaling = {
+        minInstanceCount = each.value.min_instance_count
+      }
+    }))
+
+    oauth_token {
+      service_account_email = google_service_account.scaler[0].email
+    }
+  }
+
+  depends_on = [
+    google_service_account_iam_member.scaler_act_as,
+    google_cloud_run_v2_service_iam_member.scaler,
+  ]
 }

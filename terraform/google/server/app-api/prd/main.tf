@@ -74,4 +74,17 @@ module "service" {
   }
 
   min_instance_count = 1
+  # 1-7 時はアクセスが少ないため min を 0 にする
+  min_instance_schedules = [
+    {
+      name               = "night"
+      schedule           = "0 1 * * *"
+      min_instance_count = 0
+    },
+    {
+      name               = "day"
+      schedule           = "0 7 * * *"
+      min_instance_count = 1
+    },
+  ]
 }

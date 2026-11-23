@@ -88,3 +88,18 @@ variable "min_instance_count" {
   type    = number
   default = 0
 }
+
+variable "min_instance_schedules" {
+  description = "Cloud Scheduler jobs that update the service-level min instance count. When set, the revision-level min instance count is 0."
+  type = list(object({
+    name               = string
+    schedule           = string
+    min_instance_count = number
+  }))
+  default = []
+}
+
+variable "timezone" {
+  type    = string
+  default = "Asia/Tokyo"
+}
