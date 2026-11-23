@@ -23,9 +23,9 @@ locals {
 
   firebase_android_apps = {
     default = {
-      display_name  = "Dotto"
-      package_name  = "jp.ac.fun.dotto"
-      sha1_hashes   = [
+      display_name = "Dotto"
+      package_name = "jp.ac.fun.dotto"
+      sha1_hashes = [
         "611fbdf49f5a6fd105a70154b56913a3f32c4773",
         "108b0e26f04568e33941ca6cdfe8f73140a27be2",
         "53fe9369521065ac32b65d4226ecb0d67d74e783",
@@ -37,9 +37,9 @@ locals {
       ]
     }
     dev = {
-      display_name  = "Dotto Dev"
-      package_name  = "jp.ac.fun.dotto.dev"
-      sha1_hashes   = [
+      display_name = "Dotto Dev"
+      package_name = "jp.ac.fun.dotto.dev"
+      sha1_hashes = [
         "74d3226a1f3925658d212622ca8bfb3eb5e4706c",
         "8b53d5738699ef46eaefe4e8f4cec6f6fb0096c0",
         "bb349d527518f61a7756f05f5b57422cda847139",
@@ -53,9 +53,9 @@ locals {
       ]
     }
     stg = {
-      display_name  = "Dotto Stg"
-      package_name  = "jp.ac.fun.dotto.stg"
-      sha1_hashes   = [
+      display_name = "Dotto Stg"
+      package_name = "jp.ac.fun.dotto.stg"
+      sha1_hashes = [
         "68c25913cbd4fc7cd2e1e3c6202b1459417da011",
         "73627b8099260da13a23530f5901b0c256dde5cb",
         "18ab29a8d95b292d8178f38ec3daab7e0f65c2db",
@@ -69,9 +69,9 @@ locals {
       ]
     }
     prd = {
-      display_name  = "Dotto Prd"
-      package_name  = "jp.ac.fun.dotto.prd"
-      sha1_hashes   = [
+      display_name = "Dotto Prd"
+      package_name = "jp.ac.fun.dotto.prd"
+      sha1_hashes = [
         "4e9dccea9d017d247b9c09660d5d7640f001138a",
         "8d6c9a15e8071ad061fce4d6b6c716e0641365e1",
         "f424475c61d071bd8cef78949ccaa0bb31a9b334",
